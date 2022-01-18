@@ -58,29 +58,27 @@
             <p>为他人冻结: {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX</p>
           </a-card>
         </a-col>
+        <a-col :xl="6">
+          <a-card title="每日出租情况" style="min-width: 350px">
+            <p>平台: {{ accountResouce.frozenForBandWidth || 0 }} TRX</p>
+            <p>商户: {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX</p>
+          </a-card>
+        </a-col>
       </a-row>
 
-      <a-card class="card-box">
+      <a-card class="card-box" size="small">
         <template #title>
           <BarsOutlined />当前订单
         </template>
-        <template #extra>
-          <a-space>
-            <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
-              <template #icon>
-                <ShoppingCartOutlined />
-              </template>
-              租赁
-            </a-button>
-            <a-button type="primary" @click="sellTip">
-              <template #icon>
-                <SendOutlined />
-              </template>
-              出售
-            </a-button>
-          </a-space>
-        </template>
+        <a-table
+          size="small"
+          bordered
+          :dataSource="tableData.currentOrderDataSource"
+          :columns="tableData.currentOrderCounmns"
+        />
+      </a-card>
 
+      <a-card class="card-box" size="small">
         <a-tabs v-model:activeKey="activeKey" @change="tabsChange">
           <a-tab-pane key="1">
             <template #tab>
@@ -89,6 +87,7 @@
               </span>
             </template>
             <a-table
+              size="small"
               bordered
               :dataSource="tableData.recentDataSource"
               :columns="tableData.recentColumns"
@@ -101,6 +100,7 @@
               </span>
             </template>
             <a-table
+              size="small"
               bordered
               :dataSource="tableData.freezeDataSource"
               :columns="tableData.freezeColumns"
@@ -114,11 +114,28 @@
               </span>
             </template>
             <a-table
+              size="small"
               bordered
               :dataSource="tableData.buyDataSource"
               :columns="tableData.buyColumns"
             />
           </a-tab-pane>
+          <template #tabBarExtraContent>
+            <a-space>
+              <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
+                <template #icon>
+                  <ShoppingCartOutlined />
+                </template>
+                租赁
+              </a-button>
+              <a-button type="primary" @click="sellTip">
+                <template #icon>
+                  <SendOutlined />
+                </template>
+                出售
+              </a-button>
+            </a-space>
+          </template>
         </a-tabs>
       </a-card>
     </a-layout-content>
@@ -155,16 +172,6 @@
         </a-radio-group>
       </a-form-item>
 
-      <!-- <a-form-item label="质押TRX数量" v-bind="validateInfos.amount">
-        <a-input-number
-          placeholder="至少质押1TRX"
-          style="width: 200px"
-          :precision="0"
-          v-model:value="formState.amount"
-          :min="1"
-        />
-      </a-form-item>-->
-
       <a-form-item label="选购资源数量" v-bind="validateInfos.amount">
         <a-input-number
           v-if="formState.resource === 'ENERGY'"
@@ -184,31 +191,42 @@
         />
       </a-form-item>
 
-      <a-form-item label="实时资源单价" v-bind="validateInfos.amount">
+      <!-- <a-form-item label="实时资源单价" v-bind="validateInfos.amount">
         1TRX = {{ resourceCount() }} {{ formState.resource === 'ENERGY' ? '能量' : '带宽' }}
         <a-tooltip title="获得资源 = 为获取资源质押的TRX / 整个网络当中为获取资源而质押的TRX总数*总资源限制">
           <span>
             <QuestionOutlined />
           </span>
         </a-tooltip>
+      </a-form-item>-->
+
+      <a-form-item label="价格(sun)/天" v-bind="validateInfos.unitPrice">
+        <a-input-number
+          placeholder="至少质押100带宽"
+          style="width: 300px"
+          :precision="0"
+          v-model:value="formState.unitPrice"
+          :min="30"
+        />
       </a-form-item>
 
-      <a-form-item label="质押时长(天)" v-bind="validateInfos.duration">
+      <a-form-item label="冻结时间(天)" v-bind="validateInfos.duration">
         <a-input-number
-          placeholder="至少质押3天"
+          placeholder="至少冻结3天"
           style="width: 200px"
           :precision="0"
           v-model:value="formState.duration"
           :min="3"
+          :max="200"
         />
       </a-form-item>
 
       <div class="modal-info">
         <div>订单金额：{{ needTrxCount || 0 }} TRX</div>
         <div>您的余额：{{ accountResouce.balance || 0 }} TRX</div>
-        <div>原本需要：{{ trxCount || 0 }} TRX</div>
-        <div>节省：{{ (trxCount - needTrxCount).toFixed(2) }} TRX</div>
-        <div>折扣：{{ (100 - needTrxCount / trxCount * 100).toFixed(0) }}%</div>
+        <!-- <div>原本需要：{{ trxCount || 0 }} TRX</div> -->
+        <div>相比较燃烧获得资源节省：{{ (trxCount - needTrxCount).toFixed(2) }} TRX</div>
+        <!-- <div>折扣：{{ (100 - needTrxCount / trxCount * 100).toFixed(0) }}%</div> -->
         <div>交易手续费：0 TRX (50 TRX) 永久免费！</div>
       </div>
     </a-form>
@@ -220,6 +238,7 @@
 import { ref, reactive, h, onMounted, computed, watch } from "vue";
 import dayjs from 'dayjs'
 import { message, Form, Modal, Space, Divider } from "ant-design-vue";
+import { mergeEqual } from './utils/utils'
 const useForm = Form.useForm;
 
 import {
@@ -247,6 +266,7 @@ const formState = reactive({
   resource: 'ENERGY',
   amount: 100000,
   duration: 3,
+  unitPrice: 30,
   ownerAddress: undefined,
   receiverAddress: undefined
 });
@@ -270,6 +290,12 @@ const rulesRef = reactive({
       message: '请输入质押TRX数量',
     },
   ],
+  unitPrice: [
+    {
+      required: true,
+      message: '请输入想要的单价',
+    },
+  ],
   duration: [
     {
       required: true,
@@ -281,6 +307,17 @@ const rulesRef = reactive({
 const { resetFields, validate, validateInfos } = useForm(formState, rulesRef);
 
 const tableData = reactive({
+  currentOrderDataSource: [],
+  currentOrderCounmns: [
+    {
+      title: "卖家",
+      dataIndex: "",
+    },
+    {
+      title: "买家",
+      dataIndex: "",
+    },
+  ],
   recentDataSource: [],
   recentColumns: [
     {
@@ -356,7 +393,7 @@ const tableData = reactive({
       customRender: ({ record }) => {
         const disabled = +dayjs() < record.expireTime
         return <a-space>
-          <a target="_blank" href={'https://tronscan.org/#/transaction/' + record.hash}>交易哈希</a>
+          {/*<a target="_blank" href={'https://tronscan.org/#/transaction/' + record.hash}>交易哈希</a> */}
           <a-button size="small" disabled={disabled} type="primary" shape="round" onClick={() => unfreeze(record)}>解锁</a-button>
         </a-space>
       }
@@ -481,13 +518,17 @@ const sellTip = () => {
  * @param {*} record 
  */
 const unfreeze = async (record) => {
-  const signedTransaction = await tronWeb.value.transactionBuilder.unfreezeBalance(record.resource, ownerAddress.value, record.receiverAddress, 1);
-  const signedTx = await tronWeb.value.trx.sign(signedTransaction);
-  const res = await tronWeb.value.trx.sendRawTransaction(signedTx);
-  if (res.result) {
-    getAccount()
-    getAccountResource()
-    message.success('解冻成功')
+  try {
+    const signedTransaction = await tronWeb.value.transactionBuilder.unfreezeBalance(record.resource, ownerAddress.value, record.receiverAddress, 1);
+    const signedTx = await tronWeb.value.trx.sign(signedTransaction);
+    const res = await tronWeb.value.trx.sendRawTransaction(signedTx);
+    if (res.result) {
+      getAccount()
+      getAccountResource()
+      message.success('解冻中，请稍等3s')
+    }
+  } catch (error) {
+    message.error(error)
   }
 }
 
@@ -500,7 +541,7 @@ const linkWallet = async () => {
       tronWeb.value = window.tronWeb;
       ownerAddress.value = tronWeb.value.defaultAddress.base58;
       getAccount()
-    }else {
+    } else {
       message.warning("请切换到TRON主网使用");
     }
   } else {
@@ -514,6 +555,8 @@ const linkWallet = async () => {
 const getAccountResource = async () => {
   const res = await getAccountResourceApi({ limit: 5000, type: 2, start: 0, address: ownerAddress.value })
   tableData.freezeDataSource = res.data.map(v => ({ ...v, key: v.hash })) || []
+  console.log(JSON.stringify( tableData.freezeDataSource))
+  console.log(mergeEqual(tableData.freezeDataSource))
 }
 
 /**
@@ -541,7 +584,7 @@ const computedResouceCount = computed(() => {
 })
 
 // 计算需要用户支付多少TRX
-const needTrxCount = computed(() => (formState.amount * formState.duration / resourceCount() * 0.05).toFixed(2))
+const needTrxCount = computed(() => (formState.amount * formState.duration / resourceCount()).toFixed(2))
 
 // 计算原价需要多少TRX
 const trxCount = computed(() => (formState.amount / resourceCount()).toFixed(2))
