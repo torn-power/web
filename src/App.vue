@@ -1,4 +1,3 @@
-
 <template>
   <a-layout>
     <a-layout-header>
@@ -31,9 +30,10 @@
             <template #extra>
               <a-space align="center">
                 <span>
-                  <a-tooltip
-                    title="剩余能量/总能量"
-                  >{{ accountResouce.bandwidth?.energyRemaining || 0 }} / {{ accountResouce.bandwidth?.energyLimit || 0 }}</a-tooltip>
+                  <a-tooltip title="剩余能量/总能量">
+                    {{ accountResouce.bandwidth?.energyRemaining || 0 }} /
+                    {{ accountResouce.bandwidth?.energyLimit || 0 }}
+                  </a-tooltip>
                 </span>
                 <ThunderboltOutlined />
               </a-space>
@@ -47,21 +47,32 @@
             <template #extra>
               <a-space align="center">
                 <span>
-                  <a-tooltip
-                    title="剩余带宽/总带宽"
-                  >{{ (accountResouce.bandwidth?.freeNetRemaining + accountResouce.bandwidth?.netRemaining) || 0 }} / {{ (accountResouce.bandwidth?.freeNetLimit + accountResouce.bandwidth?.netLimit) || 0 }}</a-tooltip>
+                  <a-tooltip title="剩余带宽/总带宽">
+                    {{
+                      accountResouce.bandwidth?.freeNetRemaining +
+                        accountResouce.bandwidth?.netRemaining || 0
+                    }}
+                    /
+                    {{
+                      accountResouce.bandwidth?.freeNetLimit +
+                        accountResouce.bandwidth?.netLimit || 0
+                    }}
+                  </a-tooltip>
                 </span>
                 <DeploymentUnitOutlined />
               </a-space>
             </template>
             <p>为自己冻结: {{ accountResouce.frozenForBandWidth || 0 }} TRX</p>
-            <p>为他人冻结: {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX</p>
+            <p>
+              为他人冻结:
+              {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX
+            </p>
           </a-card>
         </a-col>
         <a-col :xl="6">
-          <a-card title="每日出租情况" style="min-width: 350px">
-            <p>平台: {{ accountResouce.frozenForBandWidth || 0 }} TRX</p>
-            <p>商户: {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX</p>
+          <a-card title="今日出租情况" style="min-width: 350px">
+            <p>平台日总量: {{ accountResouce.frozenForBandWidth || 0 }} TRX</p>
+            <p>商户总收益: {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX</p>
           </a-card>
         </a-col>
       </a-row>
@@ -69,6 +80,12 @@
       <a-card class="card-box" size="small">
         <template #title>
           <BarsOutlined />当前订单
+        </template>
+        <template #extra>
+          <a-select style="width: 160px">
+            <a-select-option value="jack">单价最高</a-select-option>
+            <a-select-option value="lucy">总收益最高</a-select-option>
+          </a-select>
         </template>
         <a-table
           size="small"
@@ -211,14 +228,17 @@
       </a-form-item>
 
       <a-form-item label="冻结时间(天)" v-bind="validateInfos.duration">
-        <a-input-number
-          placeholder="至少冻结3天"
-          style="width: 200px"
-          :precision="0"
-          v-model:value="formState.duration"
-          :min="3"
-          :max="200"
-        />
+        <a-tooltip title="根据波场规则至少冻结三天，后期可调整">
+          <a-input-number
+            placeholder="至少冻结3天"
+            style="width: 200px"
+            :precision="0"
+            disabled
+            v-model:value="formState.duration"
+            :min="3"
+            :max="3"
+          />
+        </a-tooltip>
       </a-form-item>
 
       <div class="modal-info">
@@ -227,7 +247,47 @@
         <!-- <div>原本需要：{{ trxCount || 0 }} TRX</div> -->
         <div>相比较燃烧获得资源节省：{{ (trxCount - needTrxCount).toFixed(2) }} TRX</div>
         <!-- <div>折扣：{{ (100 - needTrxCount / trxCount * 100).toFixed(0) }}%</div> -->
-        <div>交易手续费：0 TRX (50 TRX) 永久免费！</div>
+        <!-- <div>交易手续费：0 TRX (50 TRX) 永久免费！</div> -->
+      </div>
+    </a-form>
+  </a-modal>
+
+  <a-modal
+    ref="soldFormRef"
+    v-model:visible="soldVisible"
+    :maskClosable="false"
+    okText="出售"
+    cancelText="取消"
+    title="出售资源"
+  >
+    <a-form
+      name="soldFormState"
+      :model="soldFormState"
+      :label-col="{ span: 6 }"
+      :wrapper-col="{ span: 16 }"
+    >
+      <a-form-item label="资源数量" v-bind="validateInfos.receiverAddress">
+        <a-input-number
+          style="width:100%"
+          v-model:value="soldFormState.receiverAddress"
+          :min="0"
+          allow-clear
+        />
+      </a-form-item>
+
+      <a-form-item label="收款地址" v-bind="validateInfos.receiverAddress">
+        <a-input
+          v-model:value="soldFormState.receiverAddress"
+          placeholder="请输入合法的波场钱包收款地址"
+          allow-clear
+        />
+      </a-form-item>
+
+      <div class="modal-info">
+        <div>冻结：{{ 0 }} TRX</div>
+        <div>您的余额：{{ 0 }} TRX</div>
+        <div>冻结时间： 3天</div>
+        <div>收入：{{ 0 }} TRX</div>
       </div>
     </a-form>
   </a-modal>
@@ -236,9 +296,9 @@
 <script setup>
 /* eslint-disable no-unused-vars */
 import { ref, reactive, h, onMounted, computed, watch } from "vue";
-import dayjs from 'dayjs'
+import dayjs from "dayjs";
 import { message, Form, Modal, Space, Divider } from "ant-design-vue";
-import { mergeEqual } from './utils/utils'
+import { mergeEqual } from "./utils/utils";
 const useForm = Form.useForm;
 
 import {
@@ -251,55 +311,68 @@ import {
   TransactionOutlined,
   BarsOutlined,
   ApiOutlined,
-  QuestionOutlined
+  QuestionOutlined,
 } from "@ant-design/icons-vue";
 
-import { getAccountv2 as getAccountApi, getAccountResource as getAccountResourceApi } from './api/http'
+import {
+  getAccountv2 as getAccountApi,
+  getAccountResource as getAccountResourceApi,
+} from "./api/http";
 
 const tronWeb = ref(null);
 const ownerAddress = ref();
 const formRef = ref();
 const activeKey = ref("1");
 const visible = ref(false);
+const soldVisible = ref(false);
 
 const formState = reactive({
-  resource: 'ENERGY',
+  resource: "ENERGY",
   amount: 100000,
   duration: 3,
   unitPrice: 30,
   ownerAddress: undefined,
-  receiverAddress: undefined
+  receiverAddress: undefined,
+});
+
+const soldFormState = reactive({
+  resource: "ENERGY",
+  amount: 100000,
+  duration: 3,
+  unitPrice: 30,
+  ownerAddress: undefined,
+  receiverAddress: undefined,
 });
 
 const rulesRef = reactive({
   receiverAddress: [
     {
       required: true,
-      message: '请输入接收能量地址',
+      message: "请输入接收能量地址",
     },
   ],
   resource: [
     {
       required: true,
-      message: '请选择资源类型',
+      message: "请选择资源类型",
     },
   ],
   amount: [
     {
       required: true,
-      message: '请输入质押TRX数量',
+      message: "请输入质押TRX数量",
     },
   ],
   unitPrice: [
     {
       required: true,
-      message: '请输入想要的单价',
+      message: "请输入想要的单价",
     },
   ],
   duration: [
     {
       required: true,
-      message: '请输入质押时长'
+      message: "请输入质押时长",
     },
   ],
 });
@@ -307,15 +380,41 @@ const rulesRef = reactive({
 const { resetFields, validate, validateInfos } = useForm(formState, rulesRef);
 
 const tableData = reactive({
-  currentOrderDataSource: [],
+  currentOrderDataSource: [{}],
   currentOrderCounmns: [
     {
-      title: "卖家",
-      dataIndex: "",
+      title: "买家",
+      customRender: ({ record }) => {
+        return <div>
+          <div>价格/天 : 500 sun</div>
+          <div>带宽 : 50,000</div>
+        </div>
+      }
     },
     {
-      title: "买家",
-      dataIndex: "",
+      title: "卖家",
+      customRender: ({ record }) => {
+        return <div>
+          <div>收入 : 24 ~ 60 TRX</div>
+          <div>冻结: 16,436 TRX  3天</div>
+        </div>
+      }
+    },
+    {
+      title: "操作",
+      align:'center',
+      customRender: ({ record }) => {
+        return <a-button
+          size="small"
+          type="primary"
+          shape="round"
+          onClick={() => {
+            soldVisible.value = true
+          }}
+        >
+          出售
+        </a-button>
+      }
     },
   ],
   recentDataSource: [],
@@ -346,57 +445,82 @@ const tableData = reactive({
     {
       title: "最后质押时间(本地)",
       width: 180,
-      align: 'center',
-      customRender: ({ record }) => timeFormat(record.timestamp)
+      align: "center",
+      customRender: ({ record }) => timeFormat(record.timestamp),
     },
     {
       title: "质押账户",
       minWidth: 250,
-      align: 'center',
-      customRender: ({ record }) => <a target="_blank" href={'https://tronscan.org/#/address/' + record.ownerAddress}>{record.ownerAddress}</a>
+      align: "center",
+      customRender: ({ record }) => (
+        <a
+          target="_blank"
+          href={"https://tronscan.org/#/address/" + record.ownerAddress}
+        >
+          {record.ownerAddress}
+        </a>
+      ),
     },
     {
       title: "接收账户",
       minWidth: 250,
-      align: 'center',
-      customRender: ({ record }) => (<a target="_blank" href={'https://tronscan.org/#/address/' + record.receiverAddress}>{record.receiverAddress}</a>)
+      align: "center",
+      customRender: ({ record }) => (
+        <a
+          target="_blank"
+          href={"https://tronscan.org/#/address/" + record.receiverAddress}
+        >
+          {record.receiverAddress}
+        </a>
+      ),
     },
     {
       title: "资源类型",
       width: 120,
-      align: 'center',
-      customRender: ({ record }) => record.resource === 'ENERGY' ? '能量' : '带宽'
+      align: "center",
+      customRender: ({ record }) =>
+        record.resource === "ENERGY" ? "能量" : "带宽",
     },
     {
       title: "资源数量",
       width: 200,
-      align: 'center',
-      customRender: ({ record }) => record.resourceValue
+      align: "center",
+      customRender: ({ record }) => record.resourceValue,
     },
     {
       title: "质押数量(TRX)",
       width: 200,
-      align: 'center',
-      customRender: ({ record }) => fromSun(record.frozenBalance)
+      align: "center",
+      customRender: ({ record }) => fromSun(record.frozenBalance),
     },
     {
       title: "到期时间",
       width: 180,
-      align: 'center',
-      customRender: ({ record }) => timeFormat(record.expireTime)
+      align: "center",
+      customRender: ({ record }) => timeFormat(record.expireTime),
     },
     {
       title: "操作",
-      align: 'center',
+      align: "center",
       width: 160,
-      fixed: 'right',
+      fixed: "right",
       customRender: ({ record }) => {
-        const disabled = +dayjs() < record.expireTime
-        return <a-space>
-          {/*<a target="_blank" href={'https://tronscan.org/#/transaction/' + record.hash}>交易哈希</a> */}
-          <a-button size="small" disabled={disabled} type="primary" shape="round" onClick={() => unfreeze(record)}>解锁</a-button>
-        </a-space>
-      }
+        const disabled = +dayjs() < record.expireTime;
+        return (
+          <a-space>
+            {/*<a target="_blank" href={'https://tronscan.org/#/transaction/' + record.hash}>交易哈希</a> */}
+            <a-button
+              size="small"
+              disabled={disabled}
+              type="primary"
+              shape="round"
+              onClick={() => unfreeze(record)}
+            >
+              解锁
+            </a-button>
+          </a-space>
+        );
+      },
     },
   ],
   buyDataSource: [],
@@ -421,54 +545,54 @@ const tableData = reactive({
 });
 
 // 账户资源
-const accountResouce = ref({})
+const accountResouce = ref({});
 
 const tabsChange = async (val) => {
-  if (!ownerAddress.value) return
-  if (val === '2') {
-    getAccountResource()
+  if (!ownerAddress.value) return;
+  if (val === "2") {
+    getAccountResource();
   }
-}
+};
 
 /**
  * 打开弹窗
  */
 const leaseModal = () => {
-  resetFields()
-  visible.value = true
-}
+  resetFields();
+  visible.value = true;
+};
 
 /**
  * trx转账接口
- * @param {*} receiveAddress 
- * @param {*} amount 
+ * @param {*} receiveAddress
+ * @param {*} amount
  */
 const transactionTrx = async (amount) => {
   const tx = await tronWeb.value.transactionBuilder.sendTrx(
-    'TKdQiH76JBQuUnhA8Ak8D8w2YWhR7xeWdj',
+    "TKdQiH76JBQuUnhA8Ak8D8w2YWhR7xeWdj",
     amount,
     ownerAddress.value
   );
   const signedTx = await tronWeb.value.trx.sign(tx);
   const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
-  return broastTx.result
+  return broastTx.result;
 };
 
 /**
  * 提交表单
  */
 const submitFreeze = async () => {
-  const values = await validate()
+  const values = await validate();
   if (!tronWeb.value.isAddress(values.receiverAddress)) {
-    message.warn('请输入合法的波场地址')
-    return
+    message.warn("请输入合法的波场地址");
+    return;
   }
 
   // 这边需要用户支付的trx
-  const res = await transactionTrx(toSun(needTrxCount.value))
-  console.log(res)
-  message.success('租赁成功')
-  visible.value = false
+  const res = await transactionTrx(toSun(needTrxCount.value));
+  console.log(res);
+  message.success("租赁成功");
+  visible.value = false;
   // 以下需要请求后端接口执行发送资源
   // const formData = {
   //   ...values,
@@ -490,57 +614,66 @@ const submitFreeze = async () => {
   //   getAccountResource()
   //   message.success('租赁成功')
   // }
-}
-
+};
 
 const sellTip = () => {
   Modal.info({
-    title: '出售提示',
-    okText: '知道了',
-    content: () => <div>
-      <p>您可以加入VIP卖家池，自动化出售能量以获得收入，详情请联系</p>
-      <Space>
-        <img src="/telegram.png" width="24" />
-        <a href="https://t.me/pangu_encrypt">@pangu_encrypt</a>
-      </Space>
-      <Divider />
-      <p>当有订单时您也可以手动出售能量以获得收入，要获得及时的订单推送，请关注如下电报(Telegram)</p>
-      <Space>
-        <img src="/telegram.png" width="24" />
-        <a href="https://t.me/pangu_encrypt">@pangu_encrypt</a>
-      </Space>
-    </div>
+    title: "出售提示",
+    okText: "知道了",
+    content: () => (
+      <div>
+        <p>您可以加入VIP卖家池，自动化出售能量以获得收入，详情请联系</p>
+        <Space>
+          <img src="/telegram.png" width="24" />
+          <a href="https://t.me/pangu_encrypt">@pangu_encrypt</a>
+        </Space>
+        <Divider />
+        <p>
+          当有订单时您也可以手动出售能量以获得收入，要获得及时的订单推送，请关注如下电报(Telegram)
+        </p>
+        <Space>
+          <img src="/telegram.png" width="24" />
+          <a href="https://t.me/pangu_encrypt">@pangu_encrypt</a>
+        </Space>
+      </div>
+    ),
   });
-}
+};
 
 /**
  * 解冻操作
- * @param {*} record 
+ * @param {*} record
  */
 const unfreeze = async (record) => {
   try {
-    const signedTransaction = await tronWeb.value.transactionBuilder.unfreezeBalance(record.resource, ownerAddress.value, record.receiverAddress, 1);
+    const signedTransaction =
+      await tronWeb.value.transactionBuilder.unfreezeBalance(
+        record.resource,
+        ownerAddress.value,
+        record.receiverAddress,
+        1
+      );
     const signedTx = await tronWeb.value.trx.sign(signedTransaction);
     const res = await tronWeb.value.trx.sendRawTransaction(signedTx);
     if (res.result) {
-      getAccount()
-      getAccountResource()
-      message.success('解冻中，请稍等3s')
+      getAccount();
+      getAccountResource();
+      message.success("解冻中，请稍等3s");
     }
   } catch (error) {
-    message.error(error)
+    message.error(error);
   }
-}
+};
 
 /**
  * 链接钱包
  */
 const linkWallet = async () => {
   if (window.tronWeb) {
-    if (window.tronWeb.fullNode.host !== 'https://api.trongrid.io') {
+    if (window.tronWeb.fullNode.host !== "https://api.trongrid.io") {
       tronWeb.value = window.tronWeb;
       ownerAddress.value = tronWeb.value.defaultAddress.base58;
-      getAccount()
+      getAccount();
     } else {
       message.warning("请切换到TRON主网使用");
     }
@@ -553,17 +686,23 @@ const linkWallet = async () => {
  * 获取地址资源
  */
 const getAccountResource = async () => {
-  const res = await getAccountResourceApi({ limit: 5000, type: 2, start: 0, address: ownerAddress.value })
-  tableData.freezeDataSource = res.data.map(v => ({ ...v, key: v.hash })) || []
-  console.log(JSON.stringify( tableData.freezeDataSource))
-  console.log(mergeEqual(tableData.freezeDataSource))
-}
+  const res = await getAccountResourceApi({
+    limit: 5000,
+    type: 2,
+    start: 0,
+    address: ownerAddress.value,
+  });
+  tableData.freezeDataSource =
+    res.data.map((v) => ({ ...v, key: v.hash })) || [];
+  console.log(JSON.stringify(tableData.freezeDataSource));
+  console.log(mergeEqual(tableData.freezeDataSource));
+};
 
 /**
  * 获取账户信息
  */
 const getAccount = async () => {
-  const res = await getAccountApi(ownerAddress.value)
+  const res = await getAccountApi(ownerAddress.value);
   accountResouce.value = {
     ...res,
     frozenForEnergy: fromSun(res.frozenForEnergy),
@@ -572,63 +711,76 @@ const getAccount = async () => {
     delegateFrozenForBandWidth: fromSun(res.delegateFrozenForBandWidth),
     totalFrozen: fromSun(res.totalFrozen), // 总的已质押
     balance: fromSun(res.balance), //可用trx
-  }
-}
+  };
+};
 
 // 计算 n TRX数量有多少资源
 const computedResouceCount = computed(() => {
-  if (formState.resource === 'ENERGY') {
-    return (formState.amount * resourceCount()).toFixed(2)
+  if (formState.resource === "ENERGY") {
+    return (formState.amount * resourceCount()).toFixed(2);
   }
-  return (formState.amount * resourceCount()).toFixed(2)
-})
+  return (formState.amount * resourceCount()).toFixed(2);
+});
 
 // 计算需要用户支付多少TRX
-const needTrxCount = computed(() => (formState.amount * formState.duration / resourceCount()).toFixed(2))
+const needTrxCount = computed(() =>
+  ((formState.amount * formState.duration) / resourceCount()).toFixed(2)
+);
 
 // 计算原价需要多少TRX
-const trxCount = computed(() => (formState.amount / resourceCount()).toFixed(2))
+const trxCount = computed(() =>
+  (formState.amount / resourceCount()).toFixed(2)
+);
 
 const resourceCount = () => {
-  if (formState.resource === 'ENERGY') {
-    return (accountResouce.value.bandwidth?.totalEnergyLimit / accountResouce.value.bandwidth?.totalEnergyWeight).toFixed(2)
+  if (formState.resource === "ENERGY") {
+    return (
+      accountResouce.value.bandwidth?.totalEnergyLimit /
+      accountResouce.value.bandwidth?.totalEnergyWeight
+    ).toFixed(2);
   }
-  return (accountResouce.value.bandwidth?.totalNetLimit / accountResouce.value.bandwidth?.totalNetWeight).toFixed(2)
-}
+  return (
+    accountResouce.value.bandwidth?.totalNetLimit /
+    accountResouce.value.bandwidth?.totalNetWeight
+  ).toFixed(2);
+};
 
 /**
  * 将sun转换成trx单位
  */
-const fromSun = (val) => tronWeb.value.fromSun(val)
+const fromSun = (val) => tronWeb.value.fromSun(val);
 
 /**
  * 将trx转换成sun单位
  */
-const toSun = (val) => tronWeb.value.toSun(val)
+const toSun = (val) => tronWeb.value.toSun(val);
 
 /**
  * 将时间戳转换
- * @param {*} timestamp 
+ * @param {*} timestamp
  */
-const timeFormat = (timestamp) => dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss')
+const timeFormat = (timestamp) =>
+  dayjs(timestamp).format("YYYY-MM-DD HH:mm:ss");
 
-watch(() => formState.resource, (val) => {
-  if (val === 'ENERGY') {
-    formState.amount = 100000
-  } else {
-    formState.amount = 100
+watch(
+  () => formState.resource,
+  (val) => {
+    if (val === "ENERGY") {
+      formState.amount = 100000;
+    } else {
+      formState.amount = 100;
+    }
   }
-})
+);
 
 onMounted(() => {
-  window.addEventListener('message', (e) => {
+  window.addEventListener("message", (e) => {
     if (e.data.message && e.data.message.action == "accountsChanged") {
-      linkWallet()
-      activeKey.value = '1'
+      linkWallet();
+      activeKey.value = "1";
     }
-  })
-})
-
+  });
+});
 </script>
 
 <style lang="less" scoped>
