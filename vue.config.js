@@ -1,20 +1,30 @@
+
 module.exports = {
   pluginOptions: {
-    'style-resources-loader': {
-      preProcessor: 'less',
-      patterns: []
-    }
+    "style-resources-loader": {
+      preProcessor: "less",
+      patterns: [],
+    },
+  },
+  css: {
+    loaderOptions: {
+      less: {
+        lessOptions: {
+          javascriptEnabled: true,
+        },
+      },
+    },
   },
   productionSourceMap: false,
   chainWebpack: (config) => {
-    if (process.env.NODE_ENV !== 'production') return
+    if (process.env.NODE_ENV !== "production") return;
     config.optimization.splitChunks({
-      chunks: 'all',
+      chunks: "all",
       maxSize: 1024 * 1024,
-      automaticNameDelimiter: '.'
-    })
+      automaticNameDelimiter: ".",
+    });
 
-    const chunkFilename = 'js/[name].js'
-    config.output.filename(chunkFilename).chunkFilename(chunkFilename).end()
-  }
-}
+    const chunkFilename = "js/[name].js";
+    config.output.filename(chunkFilename).chunkFilename(chunkFilename).end();
+  },
+};

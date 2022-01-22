@@ -174,7 +174,7 @@
       :label-col="{ span: 6 }"
       :wrapper-col="{ span: 16 }"
     >
-      <a-form-item label="接收能量地址" v-bind="validateInfos.receiverAddress">
+      <a-form-item label="接收资源地址" v-bind="validateInfos.receiverAddress">
         <a-input
           v-model:value="formState.receiverAddress"
           placeholder="请输入合法的波场钱包收款地址"
@@ -208,15 +208,6 @@
         />
       </a-form-item>
 
-      <!-- <a-form-item label="实时资源单价" v-bind="validateInfos.amount">
-        1TRX = {{ resourceCount() }} {{ formState.resource === 'ENERGY' ? '能量' : '带宽' }}
-        <a-tooltip title="获得资源 = 为获取资源质押的TRX / 整个网络当中为获取资源而质押的TRX总数*总资源限制">
-          <span>
-            <QuestionOutlined />
-          </span>
-        </a-tooltip>
-      </a-form-item>-->
-
       <a-form-item label="价格(sun)/天" v-bind="validateInfos.unitPrice">
         <a-input-number
           placeholder="至少质押100带宽"
@@ -244,48 +235,37 @@
       <div class="modal-info">
         <div>订单金额：{{ needTrxCount || 0 }} TRX</div>
         <div>您的余额：{{ accountResouce.balance || 0 }} TRX</div>
-        <!-- <div>原本需要：{{ trxCount || 0 }} TRX</div> -->
         <div>相比较燃烧获得资源节省：{{ (trxCount - needTrxCount).toFixed(2) }} TRX</div>
-        <!-- <div>折扣：{{ (100 - needTrxCount / trxCount * 100).toFixed(0) }}%</div> -->
-        <!-- <div>交易手续费：0 TRX (50 TRX) 永久免费！</div> -->
       </div>
     </a-form>
   </a-modal>
 
   <a-modal
-    ref="soldFormRef"
+    ref="formRef"
     v-model:visible="soldVisible"
     :maskClosable="false"
+    @ok="submitSoldForm"
     okText="出售"
     cancelText="取消"
     title="出售资源"
   >
     <a-form
-      name="soldFormState"
-      :model="soldFormState"
+      name="formState"
+      :model="formState"
       :label-col="{ span: 6 }"
       :wrapper-col="{ span: 16 }"
     >
-      <a-form-item label="资源数量" v-bind="validateInfos.receiverAddress">
-        <a-input-number
-          style="width:100%"
-          v-model:value="soldFormState.receiverAddress"
-          :min="0"
-          allow-clear
-        />
+      <a-form-item label="资源数量" v-bind="validateInfos.amount">
+        <a-input-number style="width:100%" v-model:value="formState.amount" :min="0" allow-clear />
       </a-form-item>
 
-      <a-form-item label="收款地址" v-bind="validateInfos.receiverAddress">
-        <a-input
-          v-model:value="soldFormState.receiverAddress"
-          placeholder="请输入合法的波场钱包收款地址"
-          allow-clear
-        />
+      <a-form-item label="你的收款地址" v-bind="validateInfos.ownerAddress">
+        <a-input v-model:value="formState.ownerAddress" placeholder="请输入合法的波场钱包收款地址" allow-clear />
       </a-form-item>
 
       <div class="modal-info">
         <div>冻结：{{ 0 }} TRX</div>
-        <div>您的余额：{{ 0 }} TRX</div>
+        <div>您的余额：{{ accountResouce.balance || 0 }} TRX</div>
         <div>冻结时间： 3天</div>
         <div>收入：{{ 0 }} TRX</div>
       </div>
@@ -326,25 +306,27 @@ const activeKey = ref("1");
 const visible = ref(false);
 const soldVisible = ref(false);
 
+// 账户资源
+const accountResouce = ref({});
+
+// 表单
 const formState = reactive({
   resource: "ENERGY",
   amount: 100000,
   duration: 3,
   unitPrice: 30,
-  ownerAddress: undefined,
-  receiverAddress: undefined,
+  ownerAddress: undefined,  // 代表当前地址或者自己的收款地址
+  receiverAddress: undefined, // 代表需要接收资源的地址
 });
 
-const soldFormState = reactive({
-  resource: "ENERGY",
-  amount: 100000,
-  duration: 3,
-  unitPrice: 30,
-  ownerAddress: undefined,
-  receiverAddress: undefined,
-});
-
+// 表单规则
 const rulesRef = reactive({
+  ownerAddress: [
+    {
+      required: true,
+      message: "请输入你的钱包地址",
+    },
+  ],
   receiverAddress: [
     {
       required: true,
@@ -360,7 +342,7 @@ const rulesRef = reactive({
   amount: [
     {
       required: true,
-      message: "请输入质押TRX数量",
+      message: "请输入资源数量",
     },
   ],
   unitPrice: [
@@ -377,8 +359,10 @@ const rulesRef = reactive({
   ],
 });
 
+// useForm
 const { resetFields, validate, validateInfos } = useForm(formState, rulesRef);
 
+// 表格数据
 const tableData = reactive({
   currentOrderDataSource: [{}],
   currentOrderCounmns: [
@@ -402,13 +386,16 @@ const tableData = reactive({
     },
     {
       title: "操作",
-      align:'center',
+      align: 'center',
       customRender: ({ record }) => {
         return <a-button
           size="small"
           type="primary"
           shape="round"
           onClick={() => {
+            resetFields();
+            formState.amount = 200000
+            formState.receiverAddress = 'TRJdsTW85FDRZnnd1H9BT6r6bYPp83os4w'
             soldVisible.value = true
           }}
         >
@@ -544,9 +531,7 @@ const tableData = reactive({
   ],
 });
 
-// 账户资源
-const accountResouce = ref({});
-
+// 切换tab
 const tabsChange = async (val) => {
   if (!ownerAddress.value) return;
   if (val === "2") {
@@ -554,19 +539,14 @@ const tabsChange = async (val) => {
   }
 };
 
-/**
- * 打开弹窗
- */
+// 打开租赁弹窗
 const leaseModal = () => {
   resetFields();
+  formState.ownerAddress = ownerAddress.value
   visible.value = true;
 };
 
-/**
- * trx转账接口
- * @param {*} receiveAddress
- * @param {*} amount
- */
+// trx转账接口
 const transactionTrx = async (amount) => {
   const tx = await tronWeb.value.transactionBuilder.sendTrx(
     "TKdQiH76JBQuUnhA8Ak8D8w2YWhR7xeWdj",
@@ -578,9 +558,7 @@ const transactionTrx = async (amount) => {
   return broastTx.result;
 };
 
-/**
- * 提交表单
- */
+// 提交租赁表单
 const submitFreeze = async () => {
   const values = await validate();
   if (!tronWeb.value.isAddress(values.receiverAddress)) {
@@ -588,34 +566,154 @@ const submitFreeze = async () => {
     return;
   }
 
-  // 这边需要用户支付的trx
   const res = await transactionTrx(toSun(needTrxCount.value));
-  console.log(res);
-  message.success("租赁成功");
-  visible.value = false;
-  // 以下需要请求后端接口执行发送资源
-  // const formData = {
-  //   ...values,
-  //   amount: toSun(trxCount.value),
-  //   ownerAddress: ownerAddress.value
-  // }
-  // const signedTransaction = await tronWeb.value.transactionBuilder.freezeBalance(
-  //   formData.amount,
-  //   formData.duration,
-  //   formData.resource,
-  //   formData.ownerAddress,
-  //   formData.receiverAddress,
-  //   1
-  // );
-  // const signedTx = await tronWeb.value.trx.sign(signedTransaction);
-  // const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
-  // if (broastTx.result) {
-  //   getAccount()
-  //   getAccountResource()
-  //   message.success('租赁成功')
-  // }
+  if (res) {
+    const formData = {
+      ...values,
+      amount: toSun(trxCount.value),
+      ownerAddress: ownerAddress.value
+    }
+
+    // 以下需要后端去执行冻结
+    const signedTransaction = await tronWeb.value.transactionBuilder.freezeBalance(
+      formData.amount,
+      formData.duration,
+      formData.resource,
+      formData.ownerAddress,
+      formData.receiverAddress,
+      1
+    );
+    const signedTx = await tronWeb.value.trx.sign(signedTransaction);
+    const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
+    if (broastTx.result) {
+      getAccount()
+      getAccountResource()
+      message.success('租赁成功')
+    }
+  } else {
+    message.success('租赁失败')
+  }
 };
 
+// 提交出售表单
+const submitSoldForm = async () => {
+  const values = await validate();
+  if (!tronWeb.value.isAddress(values.receiverAddress)) {
+    message.warn("请输入合法的波场地址");
+    return;
+  }
+  console.log(values)
+  console.log(trxCount.value)
+  const signedTransaction = await tronWeb.value.transactionBuilder.freezeBalance(
+    values.amount,
+    values.duration,
+    values.resource,
+    ownerAddress.value,
+    values.receiverAddress,
+    1
+  );
+  const signedTx = await tronWeb.value.trx.sign(signedTransaction);
+  const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
+  if (broastTx.result) {
+    // 出售后需要将收款地址和订单信息发送到后台给人家转钱
+    getAccount()
+    getAccountResource()
+    message.success('出售成功')
+    soldVisible.value = false
+  }
+}
+
+// 解冻操作
+const unfreeze = async (record) => {
+  try {
+    const signedTransaction =
+      await tronWeb.value.transactionBuilder.unfreezeBalance(
+        record.resource,
+        ownerAddress.value,
+        record.receiverAddress,
+        1
+      );
+    const signedTx = await tronWeb.value.trx.sign(signedTransaction);
+    const res = await tronWeb.value.trx.sendRawTransaction(signedTx);
+    if (res.result) {
+      getAccount();
+      getAccountResource();
+      message.success("解冻中，请稍等3s");
+    }
+  } catch (error) {
+    message.error(error);
+  }
+};
+
+// 获取地址资源
+const getAccountResource = async () => {
+  const res = await getAccountResourceApi({
+    limit: 5000,
+    type: 2,
+    start: 0,
+    address: ownerAddress.value,
+  });
+  tableData.freezeDataSource =
+    res.data.map((v) => ({ ...v, key: v.hash })) || [];
+  console.log(JSON.stringify(tableData.freezeDataSource));
+  console.log(mergeEqual(tableData.freezeDataSource));
+};
+
+// 获取账户信息
+const getAccount = async () => {
+  const res = await getAccountApi(ownerAddress.value);
+  accountResouce.value = {
+    ...res,
+    frozenForEnergy: fromSun(res.frozenForEnergy),
+    delegateFrozenForEnergy: fromSun(res.delegateFrozenForEnergy),
+    frozenForBandWidth: fromSun(res.frozenForBandWidth),
+    delegateFrozenForBandWidth: fromSun(res.delegateFrozenForBandWidth),
+    totalFrozen: fromSun(res.totalFrozen), // 总的已质押
+    balance: fromSun(res.balance), //可用trx
+  };
+};
+
+// 计算用户获取的能量
+const computedResouceCount = computed(() => {
+  if (formState.resource === "ENERGY") {
+    return (formState.amount * resourceCount()).toFixed(2);
+  }
+  return (formState.amount * resourceCount()).toFixed(2);
+});
+
+// 计算需要用户支付多少TRX
+const needTrxCount = computed(() => fromSun((formState.amount * formState.unitPrice).toFixed(2)));
+
+// 计算原价需要多少TRX
+const trxCount = computed(() =>
+  (formState.amount / resourceCount()).toFixed(2)
+);
+
+// 计算不同资源情况下用户能获得多少资源
+const resourceCount = () => {
+  if (formState.resource === "ENERGY") {
+    return (
+      accountResouce.value.bandwidth?.totalEnergyLimit /
+      accountResouce.value.bandwidth?.totalEnergyWeight
+    ).toFixed(2);
+  }
+  return (
+    accountResouce.value.bandwidth?.totalNetLimit /
+    accountResouce.value.bandwidth?.totalNetWeight
+  ).toFixed(2);
+};
+
+// 将sun转换成trx单位
+const fromSun = (val) => tronWeb.value.fromSun(val);
+
+// 将trx转换成sun单位
+const toSun = (val) => tronWeb.value.toSun(val);
+
+// 将时间戳转换
+const timeFormat = (timestamp) =>
+  dayjs(timestamp).format("YYYY-MM-DD HH:mm:ss");
+
+// 加盟提示
 const sellTip = () => {
   Modal.info({
     title: "出售提示",
@@ -640,34 +738,7 @@ const sellTip = () => {
   });
 };
 
-/**
- * 解冻操作
- * @param {*} record
- */
-const unfreeze = async (record) => {
-  try {
-    const signedTransaction =
-      await tronWeb.value.transactionBuilder.unfreezeBalance(
-        record.resource,
-        ownerAddress.value,
-        record.receiverAddress,
-        1
-      );
-    const signedTx = await tronWeb.value.trx.sign(signedTransaction);
-    const res = await tronWeb.value.trx.sendRawTransaction(signedTx);
-    if (res.result) {
-      getAccount();
-      getAccountResource();
-      message.success("解冻中，请稍等3s");
-    }
-  } catch (error) {
-    message.error(error);
-  }
-};
-
-/**
- * 链接钱包
- */
+// 链接钱包
 const linkWallet = async () => {
   if (window.tronWeb) {
     if (window.tronWeb.fullNode.host !== "https://api.trongrid.io") {
@@ -681,86 +752,6 @@ const linkWallet = async () => {
     message.warning("请下载波宝钱包浏览器插件 : https://www.tronlink.org/cn/");
   }
 };
-
-/**
- * 获取地址资源
- */
-const getAccountResource = async () => {
-  const res = await getAccountResourceApi({
-    limit: 5000,
-    type: 2,
-    start: 0,
-    address: ownerAddress.value,
-  });
-  tableData.freezeDataSource =
-    res.data.map((v) => ({ ...v, key: v.hash })) || [];
-  console.log(JSON.stringify(tableData.freezeDataSource));
-  console.log(mergeEqual(tableData.freezeDataSource));
-};
-
-/**
- * 获取账户信息
- */
-const getAccount = async () => {
-  const res = await getAccountApi(ownerAddress.value);
-  accountResouce.value = {
-    ...res,
-    frozenForEnergy: fromSun(res.frozenForEnergy),
-    delegateFrozenForEnergy: fromSun(res.delegateFrozenForEnergy),
-    frozenForBandWidth: fromSun(res.frozenForBandWidth),
-    delegateFrozenForBandWidth: fromSun(res.delegateFrozenForBandWidth),
-    totalFrozen: fromSun(res.totalFrozen), // 总的已质押
-    balance: fromSun(res.balance), //可用trx
-  };
-};
-
-// 计算 n TRX数量有多少资源
-const computedResouceCount = computed(() => {
-  if (formState.resource === "ENERGY") {
-    return (formState.amount * resourceCount()).toFixed(2);
-  }
-  return (formState.amount * resourceCount()).toFixed(2);
-});
-
-// 计算需要用户支付多少TRX
-const needTrxCount = computed(() =>
-  ((formState.amount * formState.duration) / resourceCount()).toFixed(2)
-);
-
-// 计算原价需要多少TRX
-const trxCount = computed(() =>
-  (formState.amount / resourceCount()).toFixed(2)
-);
-
-const resourceCount = () => {
-  if (formState.resource === "ENERGY") {
-    return (
-      accountResouce.value.bandwidth?.totalEnergyLimit /
-      accountResouce.value.bandwidth?.totalEnergyWeight
-    ).toFixed(2);
-  }
-  return (
-    accountResouce.value.bandwidth?.totalNetLimit /
-    accountResouce.value.bandwidth?.totalNetWeight
-  ).toFixed(2);
-};
-
-/**
- * 将sun转换成trx单位
- */
-const fromSun = (val) => tronWeb.value.fromSun(val);
-
-/**
- * 将trx转换成sun单位
- */
-const toSun = (val) => tronWeb.value.toSun(val);
-
-/**
- * 将时间戳转换
- * @param {*} timestamp
- */
-const timeFormat = (timestamp) =>
-  dayjs(timestamp).format("YYYY-MM-DD HH:mm:ss");
 
 watch(
   () => formState.resource,
