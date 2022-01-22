@@ -275,7 +275,7 @@
 
 <script setup>
 /* eslint-disable no-unused-vars */
-import { ref, reactive, h, onMounted, computed, watch } from "vue";
+import { ref, reactive,  onMounted, computed, watch } from "vue";
 import dayjs from "dayjs";
 import { message, Form, Modal, Space, Divider } from "ant-design-vue";
 import { mergeEqual } from "./utils/utils";
@@ -291,7 +291,6 @@ import {
   TransactionOutlined,
   BarsOutlined,
   ApiOutlined,
-  QuestionOutlined,
 } from "@ant-design/icons-vue";
 
 import {
@@ -672,14 +671,6 @@ const getAccount = async () => {
     balance: fromSun(res.balance), //可用trx
   };
 };
-
-// 计算用户获取的能量
-const computedResouceCount = computed(() => {
-  if (formState.resource === "ENERGY") {
-    return (formState.amount * resourceCount()).toFixed(2);
-  }
-  return (formState.amount * resourceCount()).toFixed(2);
-});
 
 // 计算需要用户支付多少TRX
 const needTrxCount = computed(() => fromSun((formState.amount * formState.unitPrice).toFixed(2)));
