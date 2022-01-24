@@ -278,7 +278,7 @@
 import { ref, reactive,  onMounted, computed, watch } from "vue";
 import dayjs from "dayjs";
 import { message, Form, Modal, Space, Divider } from "ant-design-vue";
-import { mergeEqual } from "./utils/utils";
+import { megeKeySame } from "./utils/utils";
 const useForm = Form.useForm;
 
 import {
@@ -652,10 +652,7 @@ const getAccountResource = async () => {
     start: 0,
     address: ownerAddress.value,
   });
-  tableData.freezeDataSource =
-    res.data.map((v) => ({ ...v, key: v.hash })) || [];
-  console.log(JSON.stringify(tableData.freezeDataSource));
-  console.log(mergeEqual(tableData.freezeDataSource));
+  tableData.freezeDataSource  = megeKeySame(res.data.map((v) => ({ ...v, key: v.hash })) || []);
 };
 
 // 获取账户信息

@@ -1,23 +1,35 @@
-export const mergeEqual = (arr) => {
-  var map = {},
-    dest = [];
-  for (var i = 0; i < arr.length; i++) {
-    var ai = arr[i];
-    if (!map[ai.receiverAddress]) {
-      dest.push({ ...ai });
-      map[ai.receiverAddress] = ai;
-    } else {
-      for (var j = 0; j < dest.length; j++) {
-        var dj = dest[j];
-        if (dj.receiverAddress === ai.receiverAddress) {
-          dj.resourceValue = (parseFloat(dj.resourceValue) + parseFloat(ai.resourceValue)).toString();
-          dj.frozenBalance = (parseFloat(dj.frozenBalance) + parseFloat(ai.frozenBalance)).toString();
-          // dj.expireTime = 
-          break;
-        }
+/**
+ * 合并同键值名
+ * @param {*} arr
+ * @param {*} key
+ * @param {*} key2
+ * @returns
+ */
+export const megeKeySame = (arr = []) => {
+  const key = "receiverAddress";
+  const key2 = "resource";
+  const energy = arr.filter((v) => v[key2] === "ENERGY");
+  const bindWidth = arr.filter((v) => v[key2] !== "ENERGY");
+
+  const classData = (array = []) => {
+    const map = new Map();
+    for (let entry of array) {
+      if (!map.has(entry[key])) {
+        map.set(entry[key], entry);
+      } else {
+        const currentValue = map.get(entry[key]);
+        map.set(entry[key], {
+          ...entry,
+          resourceValue:
+            parseFloat(currentValue.resourceValue) +
+            parseFloat(entry.resourceValue),
+          frozenBalance:
+            parseFloat(currentValue.frozenBalance) +
+            parseFloat(entry.frozenBalance),
+        });
       }
     }
-  }
-
-  return dest
+    return [...map.values()];
+  };
+  return [...classData(energy), ...classData(bindWidth)];
 };
