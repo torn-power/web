@@ -293,10 +293,14 @@ import {
   ApiOutlined,
 } from "@ant-design/icons-vue";
 
+import { useIntervalFn } from '@vueuse/core'
+
 import {
   getAccountv2 as getAccountApi,
   getAccountResource as getAccountResourceApi,
 } from "./api/http";
+
+import { freeze as freezeApi } from './api/server'
 
 const tronWeb = ref(null);
 const ownerAddress = ref();
@@ -548,7 +552,7 @@ const leaseModal = () => {
 // trx转账接口
 const transactionTrx = async (amount) => {
   const tx = await tronWeb.value.transactionBuilder.sendTrx(
-    "TKdQiH76JBQuUnhA8Ak8D8w2YWhR7xeWdj",
+    "TXCUc7Lmn8jEqUVEZZKdXm9jHgiEF7XQDW",
     amount,
     ownerAddress.value
   );
@@ -564,41 +568,24 @@ const submitFreeze = async () => {
     message.warn("请输入合法的波场地址");
     return;
   }
-
-  const formData = {
-    ownerAddress: ownerAddress.value,
-    receiverAddress: values.receiverAddress,
-    commission: toSun(needTrxCount.value),
-    frozenBalance: toSun(trxCount.value),
-    resource: values.resource,
-    resourceValue: values.amount,
-    unitPrice: values.unitPrice,
-    duration: values.duration
-  }
-  console.log(formData)
-
   const res = await transactionTrx(toSun(needTrxCount.value));
   if (res) {
     const formData = {
-      ...values,
-      amount: toSun(trxCount.value),
       ownerAddress: ownerAddress.value,
+      receiverAddress: values.receiverAddress,
+      commission: toSun(needTrxCount.value),
+      frozenBalance: toSun(trxCount.value),
+      resource: values.resource,
+      resourceValue: values.amount,
+      unitPrice: values.unitPrice,
+      duration: values.duration
     }
-
-    // 以下需要后端去执行冻结
-    const signedTransaction = await tronWeb.value.transactionBuilder.freezeBalance(
-      formData.amount,
-      formData.duration,
-      formData.resource,
-      formData.ownerAddress,
-      formData.receiverAddress,
-      1
-    );
-    const signedTx = await tronWeb.value.trx.sign(signedTransaction);
-    const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
-    if (broastTx.result) {
+    console.log(formData)
+    const result = await freezeApi(formData)
+    if (result) {
       getAccount()
       getAccountResource()
+      visible.value = false
       message.success('租赁成功')
     }
   } else {
@@ -771,6 +758,12 @@ onMounted(() => {
       activeKey.value = "1";
     }
   });
+
+
+  // useIntervalFn(() => {
+  //   console.log(1)
+  //   ownerAddress.value && getAccount()
+  // }, 5000)
 });
 </script>
 
