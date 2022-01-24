@@ -275,7 +275,7 @@
 
 <script setup>
 /* eslint-disable no-unused-vars */
-import { ref, reactive,  onMounted, computed, watch } from "vue";
+import { ref, reactive, onMounted, computed, watch } from "vue";
 import dayjs from "dayjs";
 import { message, Form, Modal, Space, Divider } from "ant-design-vue";
 import { megeKeySame } from "./utils/utils";
@@ -565,12 +565,24 @@ const submitFreeze = async () => {
     return;
   }
 
+  const formData = {
+    ownerAddress: ownerAddress.value,
+    receiverAddress: values.receiverAddress,
+    commission: toSun(needTrxCount.value),
+    frozenBalance: toSun(trxCount.value),
+    resource: values.resource,
+    resourceValue: values.amount,
+    unitPrice: values.unitPrice,
+    duration: values.duration
+  }
+  console.log(formData)
+
   const res = await transactionTrx(toSun(needTrxCount.value));
   if (res) {
     const formData = {
       ...values,
       amount: toSun(trxCount.value),
-      ownerAddress: ownerAddress.value
+      ownerAddress: ownerAddress.value,
     }
 
     // 以下需要后端去执行冻结
@@ -652,7 +664,7 @@ const getAccountResource = async () => {
     start: 0,
     address: ownerAddress.value,
   });
-  tableData.freezeDataSource  = megeKeySame(res.data.map((v) => ({ ...v, key: v.hash })) || []);
+  tableData.freezeDataSource = megeKeySame(res.data.map((v) => ({ ...v, key: v.hash })) || []);
 };
 
 // 获取账户信息
