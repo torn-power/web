@@ -4,7 +4,7 @@
       <div class="flex-wrap">
         <div class="title">
           <a-space>
-            <img width="32" src="/favicon.png" alt />
+            <img width="32" src="/favicon.jpg" alt />
             <span>波场能量市场</span>
           </a-space>
         </div>
