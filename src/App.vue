@@ -374,7 +374,7 @@ const tableData = reactive({
       customRender: ({ record }) => {
         return <div>
           <div>价格/天 : 500 sun</div>
-          <div>带宽 : 50,000</div>
+          <div>带宽 : 50000</div>
         </div>
       }
     },
@@ -382,8 +382,8 @@ const tableData = reactive({
       title: "卖家",
       customRender: ({ record }) => {
         return <div>
-          <div>收入 : 24 ~ 60 TRX</div>
-          <div>冻结: 16,436 TRX  3天</div>
+          <div>收入 : 60 TRX</div>
+          <div>冻结 : 16436 TRX  3天</div>
         </div>
       }
     },
@@ -733,7 +733,7 @@ const linkWallet = async () => {
       ownerAddress.value = tronWeb.value.defaultAddress.base58;
       getAccount();
     } else {
-      message.warning("请切换到TRON主网使用");
+      message.warning("请切换到TRON测试网使用");
     }
   } else {
     message.warning("请下载波宝钱包浏览器插件 : https://www.tronlink.org/cn/");
