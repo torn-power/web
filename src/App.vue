@@ -1,81 +1,34 @@
 <template>
   <a-layout>
-    <a-layout-header>
-      <div class="flex-wrap">
-        <div class="title">
+    <Header @change="linkWallet" />
+    <a-layout-content class="layout">
+      <TopCard :accountResouce="accountResouce" :ownerAddress="ownerAddress" :isMobile="isMobile" />
+
+      <a-card class="card-box" size="small" v-if="isMobile">
+        <div class="flex-wrap">
+          <a-select style="width: 90px" v-model="proxy.$i18n.locale" @change="changeLang">
+            <a-select-option
+              v-for="locale in $i18n.availableLocales"
+              :key="locale"
+              :value="locale"
+            >{{ locale }}</a-select-option>
+          </a-select>
           <a-space>
-            <img width="32" src="/favicon.jpg" alt />
-            <span>波场能量市场</span>
+            <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
+              <template #icon>
+                <ShoppingCartOutlined />
+              </template>
+              租赁
+            </a-button>
+            <a-button type="primary" @click="sellTip">
+              <template #icon>
+                <SendOutlined />
+              </template>
+              出售
+            </a-button>
           </a-space>
         </div>
-        <a-button shape="round" v-if="!ownerAddress" @click="linkWallet" type="primary">
-          <ApiOutlined />链接钱包
-        </a-button>
-      </div>
-    </a-layout-header>
-    <a-layout-content class="layout">
-      <a-row :gutter="[20, 20]" type="flex" justify="center" align="middle">
-        <a-col :xl="6">
-          <a-card style="min-width: 350px">
-            <template #title>地址：{{ ownerAddress || "请链接你的波场钱包" }}</template>
-            <template #extra>
-              <RedditOutlined />
-            </template>
-            <p>可用: {{ accountResouce.balance || 0 }} TRX</p>
-            <p>冻结: {{ accountResouce.totalFrozen || 0 }} TRX</p>
-          </a-card>
-        </a-col>
-        <a-col :xl="6">
-          <a-card title="能量" style="min-width: 350px">
-            <template #extra>
-              <a-space align="center">
-                <span>
-                  <a-tooltip title="剩余能量/总能量">
-                    {{ accountResouce.bandwidth?.energyRemaining || 0 }} /
-                    {{ accountResouce.bandwidth?.energyLimit || 0 }}
-                  </a-tooltip>
-                </span>
-                <ThunderboltOutlined />
-              </a-space>
-            </template>
-            <p>为自己冻结: {{ accountResouce.frozenForEnergy || 0 }} TRX</p>
-            <p>为他人冻结: {{ accountResouce.delegateFrozenForEnergy || 0 }} TRX</p>
-          </a-card>
-        </a-col>
-        <a-col :xl="6">
-          <a-card title="带宽" style="min-width: 350px">
-            <template #extra>
-              <a-space align="center">
-                <span>
-                  <a-tooltip title="剩余带宽/总带宽">
-                    {{
-                      accountResouce.bandwidth?.freeNetRemaining +
-                        accountResouce.bandwidth?.netRemaining || 0
-                    }}
-                    /
-                    {{
-                      accountResouce.bandwidth?.freeNetLimit +
-                        accountResouce.bandwidth?.netLimit || 0
-                    }}
-                  </a-tooltip>
-                </span>
-                <DeploymentUnitOutlined />
-              </a-space>
-            </template>
-            <p>为自己冻结: {{ accountResouce.frozenForBandWidth || 0 }} TRX</p>
-            <p>
-              为他人冻结:
-              {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX
-            </p>
-          </a-card>
-        </a-col>
-        <a-col :xl="6">
-          <a-card title="今日出租情况" style="min-width: 350px">
-            <p>平台日总量: {{ accountResouce.frozenForBandWidth || 0 }} TRX</p>
-            <p>商户总收益: {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX</p>
-          </a-card>
-        </a-col>
-      </a-row>
+      </a-card>
 
       <a-card class="card-box" size="small">
         <template #title>
@@ -137,7 +90,7 @@
               :columns="tableData.buyColumns"
             />
           </a-tab-pane>
-          <template #tabBarExtraContent>
+          <template #tabBarExtraContent v-if="!isMobile">
             <a-space>
               <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
                 <template #icon>
@@ -151,6 +104,13 @@
                 </template>
                 出售
               </a-button>
+              <a-select style="width: 90px" v-model="proxy.$i18n.locale" @change="changeLang">
+                <a-select-option
+                  v-for="locale in $i18n.availableLocales"
+                  :key="locale"
+                  :value="locale"
+                >{{ locale }}</a-select-option>
+              </a-select>
             </a-space>
           </template>
         </a-tabs>
@@ -163,6 +123,7 @@
     v-model:visible="visible"
     :maskClosable="false"
     width="600px"
+    :dialogStyle="{ top: '10px' }"
     @ok="submitFreeze"
     okText="下单"
     cancelText="取消"
@@ -256,11 +217,22 @@
       :wrapper-col="{ span: 16 }"
     >
       <a-form-item label="资源数量" v-bind="validateInfos.amount">
-        <a-input-number style="width:100%" v-model:value="formState.amount" :min="0" allow-clear />
+        <a-input-number
+          style="width:100%"
+          v-model:value="formState.amount"
+          :precision="0"
+          :min="0"
+          allow-clear
+        />
       </a-form-item>
 
       <a-form-item label="你的收款地址" v-bind="validateInfos.ownerAddress">
-        <a-input v-model:value="formState.ownerAddress" placeholder="请输入合法的波场钱包收款地址" allow-clear />
+        <a-input
+          disabled
+          v-model:value="formState.ownerAddress"
+          placeholder="请输入合法的波场钱包收款地址"
+          allow-clear
+        />
       </a-form-item>
 
       <div class="modal-info">
@@ -275,25 +247,26 @@
 
 <script setup>
 /* eslint-disable no-unused-vars */
-import { ref, reactive, onMounted, computed, watch } from "vue";
+import { ref, reactive, onMounted, computed, watch, getCurrentInstance } from "vue";
 import dayjs from "dayjs";
-import { message, Form, Modal, Space, Divider } from "ant-design-vue";
-import { megeKeySame } from "./utils/utils";
+import { message, Form } from "ant-design-vue";
+
+import TopCard from "./components/TopCard.vue";
+import Header from "./components/Header.vue";
+
+import { megeKeySame, sellTip } from "./utils/utils";
+
 const useForm = Form.useForm;
 
 import {
-  RedditOutlined,
-  DeploymentUnitOutlined,
-  ThunderboltOutlined,
   ShoppingCartOutlined,
   SendOutlined,
   FileSearchOutlined,
   TransactionOutlined,
-  BarsOutlined,
-  ApiOutlined,
+  BarsOutlined
 } from "@ant-design/icons-vue";
 
-import { useIntervalFn } from '@vueuse/core'
+import { useMediaQuery } from '@vueuse/core'
 
 import {
   getAccountv2 as getAccountApi,
@@ -302,6 +275,9 @@ import {
 
 import { freeze as freezeApi } from './api/server'
 
+const { proxy } = getCurrentInstance();
+
+const isMobile = useMediaQuery('(max-width: 750px)')
 const tronWeb = ref(null);
 const ownerAddress = ref();
 const formRef = ref();
@@ -399,6 +375,7 @@ const tableData = reactive({
             resetFields();
             formState.amount = 200000
             formState.receiverAddress = 'TRJdsTW85FDRZnnd1H9BT6r6bYPp83os4w'
+            formState.ownerAddress = ownerAddress.value
             soldVisible.value = true
           }}
         >
@@ -426,91 +403,31 @@ const tableData = reactive({
       dataIndex: "",
     },
     {
-      title: "操作",
+      title: "哈希",
       dataIndex: "",
     },
   ],
   freezeDataSource: [],
   freezeColumns: [
     {
-      title: "最后质押时间(本地)",
-      width: 180,
-      align: "center",
-      customRender: ({ record }) => timeFormat(record.timestamp),
-    },
-    {
-      title: "质押账户",
-      minWidth: 250,
-      align: "center",
-      customRender: ({ record }) => (
-        <a
-          target="_blank"
-          href={"https://tronscan.org/#/address/" + record.ownerAddress}
-        >
-          {record.ownerAddress}
-        </a>
-      ),
-    },
-    {
-      title: "接收账户",
-      minWidth: 250,
-      align: "center",
-      customRender: ({ record }) => (
-        <a
-          target="_blank"
-          href={"https://tronscan.org/#/address/" + record.receiverAddress}
-        >
-          {record.receiverAddress}
-        </a>
-      ),
-    },
-    {
-      title: "资源类型",
-      width: 120,
-      align: "center",
-      customRender: ({ record }) =>
-        record.resource === "ENERGY" ? "能量" : "带宽",
-    },
-    {
-      title: "资源数量",
-      width: 200,
-      align: "center",
-      customRender: ({ record }) => record.resourceValue,
-    },
-    {
-      title: "质押数量(TRX)",
-      width: 200,
-      align: "center",
-      customRender: ({ record }) => fromSun(record.frozenBalance),
-    },
-    {
-      title: "到期时间",
-      width: 180,
-      align: "center",
-      customRender: ({ record }) => timeFormat(record.expireTime),
-    },
-    {
-      title: "操作",
-      align: "center",
-      width: 160,
-      fixed: "right",
+      title: "冻结对象/数量",
+      width: '50%',
       customRender: ({ record }) => {
-        const disabled = +dayjs() < record.expireTime;
-        return (
-          <a-space>
-            {/*<a target="_blank" href={'https://tronscan.org/#/transaction/' + record.hash}>交易哈希</a> */}
-            <a-button
-              size="small"
-              disabled={disabled}
-              type="primary"
-              shape="round"
-              onClick={() => unfreeze(record)}
-            >
-              解锁
-            </a-button>
-          </a-space>
-        );
+        return <div>
+          <a
+            target="_blank"
+            href={"https://tronscan.org/#/address/" + record.receiverAddress}
+          >
+            {record.receiverAddress}
+          </a>
+          <div>{fromSun(record.frozenBalance)}</div>
+        </div>
       },
+    },
+    {
+      title: "过期时间",
+      width: '50%',
+      customRender: ({ record }) => timeFormat(record.expireTime),
     },
   ],
   buyDataSource: [],
@@ -521,10 +438,6 @@ const tableData = reactive({
     },
     {
       title: "剩余价值",
-      dataIndex: "",
-    },
-    {
-      title: "接收地址",
       dataIndex: "",
     },
     {
@@ -621,28 +534,6 @@ const submitSoldForm = async () => {
   }
 }
 
-// 解冻操作
-const unfreeze = async (record) => {
-  try {
-    const signedTransaction =
-      await tronWeb.value.transactionBuilder.unfreezeBalance(
-        record.resource,
-        ownerAddress.value,
-        record.receiverAddress,
-        1
-      );
-    const signedTx = await tronWeb.value.trx.sign(signedTransaction);
-    const res = await tronWeb.value.trx.sendRawTransaction(signedTx);
-    if (res.result) {
-      getAccount();
-      getAccountResource();
-      message.success("解冻中，请稍等3s");
-    }
-  } catch (error) {
-    message.error(error);
-  }
-};
-
 // 获取地址资源
 const getAccountResource = async () => {
   const res = await getAccountResourceApi({
@@ -700,45 +591,16 @@ const toSun = (val) => tronWeb.value.toSun(val);
 const timeFormat = (timestamp) =>
   dayjs(timestamp).format("YYYY-MM-DD HH:mm:ss");
 
-// 加盟提示
-const sellTip = () => {
-  Modal.info({
-    title: "出售提示",
-    okText: "知道了",
-    content: () => (
-      <div>
-        <p>您可以加入VIP卖家池，自动化出售能量以获得收入，详情请联系</p>
-        <Space>
-          <img src="/telegram.png" width="24" />
-          <a href="https://t.me/pangu_encrypt">@pangu_encrypt</a>
-        </Space>
-        <Divider />
-        <p>
-          当有订单时您也可以手动出售能量以获得收入，要获得及时的订单推送，请关注如下电报(Telegram)
-        </p>
-        <Space>
-          <img src="/telegram.png" width="24" />
-          <a href="https://t.me/pangu_encrypt">@pangu_encrypt</a>
-        </Space>
-      </div>
-    ),
-  });
+// 链接钱包
+const linkWallet = async (tronweb, address) => {
+  tronWeb.value = tronweb
+  ownerAddress.value = address
+  await getAccount()
 };
 
-// 链接钱包
-const linkWallet = async () => {
-  if (window.tronWeb) {
-    if (window.tronWeb.fullNode.host !== "https://api.trongrid.io") {
-      tronWeb.value = window.tronWeb;
-      ownerAddress.value = tronWeb.value.defaultAddress.base58;
-      getAccount();
-    } else {
-      message.warning("请切换到TRON测试网使用");
-    }
-  } else {
-    message.warning("请下载波宝钱包浏览器插件 : https://www.tronlink.org/cn/");
-  }
-};
+const changeLang = (type) => {
+  proxy.$i18n.locale = type;
+}
 
 watch(
   () => formState.resource,
@@ -758,12 +620,6 @@ onMounted(() => {
       activeKey.value = "1";
     }
   });
-
-
-  // useIntervalFn(() => {
-  //   console.log(1)
-  //   ownerAddress.value && getAccount()
-  // }, 5000)
 });
 </script>
 
@@ -783,15 +639,15 @@ span {
 }
 
 .ant-layout-header {
-  padding: 0 20px;
+  padding: 0 10px;
   // background-color: white;
 }
 .layout {
-  padding: 20px;
+  padding: 10px;
   // background: white;
   min-height: 93vh;
   .card-box {
-    margin: 20px auto;
+    margin: 10px auto;
   }
 }
 
