@@ -4,11 +4,11 @@
             <div class="title">
                 <a-space>
                     <!-- <img width="32" src="/favicon.jpg" alt /> -->
-                    <span>波场能量共享</span>
+                    <span>{{$t('global.title')}}</span>
                 </a-space>
             </div>
             <a-button shape="round" v-if="!ownerAddress" @click="linkWallet" type="primary">
-                <ApiOutlined />链接钱包
+                <ApiOutlined />{{$t('global.LinkWallet')}}
             </a-button>
         </div>
     </a-layout-header>

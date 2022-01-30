@@ -6,25 +6,22 @@
 
       <a-card class="card-box" size="small" v-if="isMobile">
         <div class="flex-wrap">
-          <a-select style="width: 90px" v-model="proxy.$i18n.locale" @change="changeLang">
-            <a-select-option
-              v-for="locale in $i18n.availableLocales"
-              :key="locale"
-              :value="locale"
-            >{{ locale }}</a-select-option>
+          <a-select style="width: 90px" v-model:value="lang" @change="changeLang">
+            <a-select-option value="zh">中文</a-select-option>
+            <a-select-option value="en">En</a-select-option>
           </a-select>
           <a-space>
             <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
               <template #icon>
                 <ShoppingCartOutlined />
               </template>
-              租赁
+              {{ $t('global.rent') }}
             </a-button>
             <a-button type="primary" @click="sellTip">
               <template #icon>
                 <SendOutlined />
               </template>
-              出售
+              {{ $t('global.sell') }}
             </a-button>
           </a-space>
         </div>
@@ -32,12 +29,13 @@
 
       <a-card class="card-box" size="small">
         <template #title>
-          <BarsOutlined />当前订单
+          <BarsOutlined />
+          {{ $t('global.currentOrder') }}
         </template>
         <template #extra>
           <a-select style="width: 160px">
-            <a-select-option value="jack">单价最高</a-select-option>
-            <a-select-option value="lucy">总收益最高</a-select-option>
+            <a-select-option value="jack">{{ $t('global.highestPrice') }}</a-select-option>
+            <a-select-option value="lucy">{{ $t('global.earnings') }}</a-select-option>
           </a-select>
         </template>
         <a-table
@@ -53,7 +51,8 @@
           <a-tab-pane key="1">
             <template #tab>
               <span>
-                <TransactionOutlined />近期完成交易
+                <TransactionOutlined />
+                {{ $t('global.recentTrade') }}
               </span>
             </template>
             <a-table
@@ -66,7 +65,8 @@
           <a-tab-pane key="2">
             <template #tab>
               <span>
-                <FileSearchOutlined />我的冻结列表
+                <FileSearchOutlined />
+                {{ $t('global.myFreezeList') }}
               </span>
             </template>
             <a-table
@@ -80,7 +80,8 @@
           <a-tab-pane key="3">
             <template #tab>
               <span>
-                <BarsOutlined />我的买单
+                <BarsOutlined />
+                {{ $t('global.myOrder') }}
               </span>
             </template>
             <a-table
@@ -96,20 +97,17 @@
                 <template #icon>
                   <ShoppingCartOutlined />
                 </template>
-                租赁
+                {{ $t('global.rent') }}
               </a-button>
               <a-button type="primary" @click="sellTip">
                 <template #icon>
                   <SendOutlined />
                 </template>
-                出售
+                {{ $t('global.sell') }}
               </a-button>
-              <a-select style="width: 90px" v-model="proxy.$i18n.locale" @change="changeLang">
-                <a-select-option
-                  v-for="locale in $i18n.availableLocales"
-                  :key="locale"
-                  :value="locale"
-                >{{ locale }}</a-select-option>
+              <a-select style="width: 90px" v-model:value="lang" @change="changeLang">
+                <a-select-option value="zh">中文</a-select-option>
+                <a-select-option value="en">En</a-select-option>
               </a-select>
             </a-space>
           </template>
@@ -125,9 +123,9 @@
     width="600px"
     :dialogStyle="{ top: '10px' }"
     @ok="submitFreeze"
-    okText="下单"
-    cancelText="取消"
-    title="租赁资源"
+    :okText="$t('global.placeOrder')"
+    :cancelText="$t('global.cancel')"
+    :title="$t('global.rent') + $t('global.resource')"
   >
     <a-form
       name="formState"
@@ -135,25 +133,34 @@
       :label-col="{ span: 6 }"
       :wrapper-col="{ span: 16 }"
     >
-      <a-form-item label="接收资源地址" v-bind="validateInfos.receiverAddress">
+      <a-form-item
+        :label="$t('global.receive') + $t('global.resource') + $t('global.address')"
+        v-bind="validateInfos.receiverAddress"
+      >
         <a-input
           v-model:value="formState.receiverAddress"
-          placeholder="请输入合法的波场钱包收款地址"
+          :placeholder="$t('tip.tronAddress')"
           allow-clear
         />
       </a-form-item>
 
-      <a-form-item label="资源类型" v-bind="validateInfos.resource">
+      <a-form-item
+        :label="$t('global.resource') + $t('global.type')"
+        v-bind="validateInfos.resource"
+      >
         <a-radio-group v-model:value="formState.resource">
-          <a-radio value="ENERGY">能量</a-radio>
-          <a-radio value="BANDWIDTH">带宽</a-radio>
+          <a-radio value="ENERGY">{{ $t('global.energy') }}</a-radio>
+          <a-radio value="BANDWIDTH">{{ $t('global.bandwidth') }}</a-radio>
         </a-radio-group>
       </a-form-item>
 
-      <a-form-item label="选购资源数量" v-bind="validateInfos.amount">
+      <a-form-item
+        :label="$t('global.chooseBuy') + $t('global.resource') + $t('global.count')"
+        v-bind="validateInfos.amount"
+      >
         <a-input-number
           v-if="formState.resource === 'ENERGY'"
-          placeholder="至少质押100000能量"
+          :placeholder="$t('tip.pledgeEnergy', { amount: 1000000 })"
           style="width: 300px"
           :precision="0"
           v-model:value="formState.amount"
@@ -161,7 +168,7 @@
         />
         <a-input-number
           v-else
-          placeholder="至少质押100带宽"
+          :placeholder="$t('tip.pledegBandWidth', { amount: 100 })"
           style="width: 300px"
           :precision="0"
           v-model:value="formState.amount"
@@ -169,9 +176,11 @@
         />
       </a-form-item>
 
-      <a-form-item label="价格(sun)/天" v-bind="validateInfos.unitPrice">
+      <a-form-item
+        :label="$t('global.priceDay', { way: '(sun)' })"
+        v-bind="validateInfos.unitPrice"
+      >
         <a-input-number
-          placeholder="至少质押100带宽"
           style="width: 300px"
           :precision="0"
           v-model:value="formState.unitPrice"
@@ -179,10 +188,10 @@
         />
       </a-form-item>
 
-      <a-form-item label="冻结时间(天)" v-bind="validateInfos.duration">
-        <a-tooltip title="根据波场规则至少冻结三天，后期可调整">
+      <a-form-item :label="$t('global.freeze') + t('global.time')" v-bind="validateInfos.duration">
+        <a-tooltip :title="$t('tip.freezeToolTip')">
           <a-input-number
-            placeholder="至少冻结3天"
+            :placeholder="$t('tip.freezeTip')"
             style="width: 200px"
             :precision="0"
             disabled
@@ -194,9 +203,9 @@
       </a-form-item>
 
       <div class="modal-info">
-        <div>订单金额：{{ needTrxCount || 0 }} TRX</div>
-        <div>您的余额：{{ accountResouce.balance || 0 }} TRX</div>
-        <div>相比较燃烧获得资源节省：{{ (trxCount - needTrxCount).toFixed(2) }} TRX</div>
+        <div>{{ $t('global.orderAmount') }}：{{ needTrxCount || 0 }} TRX</div>
+        <div>{{ $t('global.yourBlance') }}：{{ accountResouce.balance || 0 }} TRX</div>
+        <div>{{ $t('tip.tip1') }}：{{ (trxCount - needTrxCount).toFixed(2) }} TRX</div>
       </div>
     </a-form>
   </a-modal>
@@ -206,9 +215,9 @@
     v-model:visible="soldVisible"
     :maskClosable="false"
     @ok="submitSoldForm"
-    okText="出售"
-    cancelText="取消"
-    title="出售资源"
+    :okText="$t('global.sell')"
+    :cancelText="$t('global.cancel')"
+    :title="$t('global.sellResource')"
   >
     <a-form
       name="formState"
@@ -216,7 +225,10 @@
       :label-col="{ span: 6 }"
       :wrapper-col="{ span: 16 }"
     >
-      <a-form-item label="资源数量" v-bind="validateInfos.amount">
+      <a-form-item
+        :label="$t('global.resource') + $t('global.count')"
+        v-bind="validateInfos.amount"
+      >
         <a-input-number
           style="width:100%"
           v-model:value="formState.amount"
@@ -226,20 +238,20 @@
         />
       </a-form-item>
 
-      <a-form-item label="你的收款地址" v-bind="validateInfos.ownerAddress">
+      <a-form-item :label="$t('global.yourAddress')" v-bind="validateInfos.ownerAddress">
         <a-input
           disabled
           v-model:value="formState.ownerAddress"
-          placeholder="请输入合法的波场钱包收款地址"
+          :placeholder="$t('tip.tip2')"
           allow-clear
         />
       </a-form-item>
 
       <div class="modal-info">
-        <div>冻结：{{ 0 }} TRX</div>
-        <div>您的余额：{{ accountResouce.balance || 0 }} TRX</div>
-        <div>冻结时间： 3天</div>
-        <div>收入：{{ 0 }} TRX</div>
+        <div>{{ $t('global.freeze') }}：{{ 0 }} TRX</div>
+        <div>{{ $t('global.yourBlance') }}：{{ accountResouce.balance || 0 }} TRX</div>
+        <div>{{ $t('global.freeze') + $t('global.time') }}： 3{{ $t('global.days') }}</div>
+        <div>{{ $t('global.income') }}：{{ 0 }} TRX</div>
       </div>
     </a-form>
   </a-modal>
@@ -265,6 +277,8 @@ import {
   TransactionOutlined,
   BarsOutlined
 } from "@ant-design/icons-vue";
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 import { useMediaQuery } from '@vueuse/core'
 
@@ -303,37 +317,37 @@ const rulesRef = reactive({
   ownerAddress: [
     {
       required: true,
-      message: "请输入你的钱包地址",
+      message: t('tip.ownerAddress'),
     },
   ],
   receiverAddress: [
     {
       required: true,
-      message: "请输入接收能量地址",
+      message: t('tip.receiverAddress'),
     },
   ],
   resource: [
     {
       required: true,
-      message: "请选择资源类型",
+      message: t('tip.resource'),
     },
   ],
   amount: [
     {
       required: true,
-      message: "请输入资源数量",
+      message: t('tip.amount'),
     },
   ],
   unitPrice: [
     {
       required: true,
-      message: "请输入想要的单价",
+      message: t('tip.unitPrice'),
     },
   ],
   duration: [
     {
       required: true,
-      message: "请输入质押时长",
+      message: t('tip.duration'),
     },
   ],
 });
@@ -343,28 +357,28 @@ const { resetFields, validate, validateInfos } = useForm(formState, rulesRef);
 
 // 表格数据
 const tableData = reactive({
-  currentOrderDataSource: [{}],
+  currentOrderDataSource: [{ key: 1 }],
   currentOrderCounmns: [
     {
-      title: "买家",
+      title: () => t('global.buyer'),
       customRender: ({ record }) => {
         return <div>
-          <div>价格/天 : 500 sun</div>
-          <div>带宽 : 50000</div>
+          <div>{t('global.priceDay')} : 500 sun</div>
+          <div>{t('global.bandwidth')} : 50000</div>
         </div>
       }
     },
     {
-      title: "卖家",
+      title: () => t('global.seller'),
       customRender: ({ record }) => {
         return <div>
-          <div>收入 : 60 TRX</div>
-          <div>冻结 : 16436 TRX  3天</div>
+          <div>{t('global.income')} : 60 TRX</div>
+          <div>{t('global.freeze')} : 16436 TRX  3{t('global.days')}</div>
         </div>
       }
     },
     {
-      title: "操作",
+      title: () => t('global.operation'),
       align: 'center',
       customRender: ({ record }) => {
         return <a-button
@@ -379,7 +393,7 @@ const tableData = reactive({
             soldVisible.value = true
           }}
         >
-          出售
+          {t('global.sell')}
         </a-button>
       }
     },
@@ -387,30 +401,30 @@ const tableData = reactive({
   recentDataSource: [],
   recentColumns: [
     {
-      title: "资源",
+      title: () => t('global.resource'),
       dataIndex: "",
     },
     {
-      title: "价格/天",
+      title: () => t('global.priceDay'),
       dataIndex: "",
     },
     {
-      title: "收入",
+      title: () => t('global.income'),
       dataIndex: "",
     },
     {
-      title: "日期",
+      title: () => t('global.Date'),
       dataIndex: "",
     },
     {
-      title: "哈希",
+      title: () => t('global.hash'),
       dataIndex: "",
     },
   ],
   freezeDataSource: [],
   freezeColumns: [
     {
-      title: "冻结对象/数量",
+      title: () => t('global.freezeObject'),
       width: '50%',
       customRender: ({ record }) => {
         return <div>
@@ -425,7 +439,7 @@ const tableData = reactive({
       },
     },
     {
-      title: "过期时间",
+      title: () => t('global.expireTime'),
       width: '50%',
       customRender: ({ record }) => timeFormat(record.expireTime),
     },
@@ -433,15 +447,15 @@ const tableData = reactive({
   buyDataSource: [],
   buyColumns: [
     {
-      title: "订单",
+      title: () => t('global.order'),
       dataIndex: "",
     },
     {
-      title: "剩余价值",
+      title: () => t('global.remainingAmount'),
       dataIndex: "",
     },
     {
-      title: "操作",
+      title: () => t('global.operation'),
       dataIndex: "",
     },
   ],
@@ -478,7 +492,7 @@ const transactionTrx = async (amount) => {
 const submitFreeze = async () => {
   const values = await validate();
   if (!tronWeb.value.isAddress(values.receiverAddress)) {
-    message.warn("请输入合法的波场地址");
+    message.warn(t('global.tronAddress'));
     return;
   }
   const res = await transactionTrx(toSun(needTrxCount.value));
@@ -499,10 +513,10 @@ const submitFreeze = async () => {
       getAccount()
       getAccountResource()
       visible.value = false
-      message.success('租赁成功')
+      message.success(t('global.rent') + t('global.success'))
     }
   } else {
-    message.success('租赁失败')
+    message.warning(t('global.rent') + t('global.fail'))
   }
 };
 
@@ -510,7 +524,7 @@ const submitFreeze = async () => {
 const submitSoldForm = async () => {
   const values = await validate();
   if (!tronWeb.value.isAddress(values.receiverAddress)) {
-    message.warn("请输入合法的波场地址");
+    message.warn(t('global.tronAddress'));
     return;
   }
   console.log(values)
@@ -529,7 +543,7 @@ const submitSoldForm = async () => {
     // 出售后需要将收款地址和订单信息发送到后台给人家转钱
     getAccount()
     getAccountResource()
-    message.success('出售成功')
+    message.success(t('global.sell') + t('global.success'))
     soldVisible.value = false
   }
 }
@@ -598,8 +612,13 @@ const linkWallet = async (tronweb, address) => {
   await getAccount()
 };
 
+const lang = computed(() => {
+  return localStorage.getItem('language') || 'en'
+})
+
 const changeLang = (type) => {
-  proxy.$i18n.locale = type;
+  localStorage.setItem('language', type)
+  location.reload()
 }
 
 watch(

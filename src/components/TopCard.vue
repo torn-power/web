@@ -1,35 +1,37 @@
 <template>
-    <a-carousel v-if="isMobile">
+    <a-carousel v-if="isMobile" dotsClass="dotsClass">
         <a-card style="min-width: 350px">
-            <template #title>地址：{{ ownerAddress || "请链接你的波场钱包" }}</template>
+            <template #title>{{ $t('global.address') }}：{{ ownerAddress || $t('global.linkTip') }}</template>
             <template #extra>
                 <RedditOutlined />
             </template>
-            <p>可用: {{ accountResouce.balance || 0 }} TRX</p>
-            <p>冻结: {{ accountResouce.totalFrozen || 0 }} TRX</p>
+            <p>{{ $t('global.available') }}: {{ accountResouce.balance || 0 }} TRX</p>
+            <p>{{$t('global.freeze')}}: {{ accountResouce.totalFrozen || 0 }} TRX</p>
         </a-card>
-        <a-card title="今日出租情况" style="min-width: 350px">
-            <p>平台日总量: {{ accountResouce.frozenForBandWidth || 0 }} TRX</p>
-            <p>商户总收益: {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX</p>
+        <a-card :title="$t('global.dailyRental')" style="min-width: 350px">
+            <p>{{$t('global.totalVolume') }}: {{ accountResouce.frozenForBandWidth || 0 }} TRX</p>
+            <p>{{$t('global.totalSellersIncome')}}: {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX</p>
         </a-card>
     </a-carousel>
     <a-row v-else :gutter="[20, 20]" type="flex" justify="center" align="middle">
         <a-col :xl="6">
             <a-card style="min-width: 350px">
-                <template #title>地址：{{ ownerAddress || "请链接你的波场钱包" }}</template>
+                <template
+                    #title
+                >{{ $t('global.address') }}：{{ ownerAddress || $t('global.linkTip') }}</template>
                 <template #extra>
                     <RedditOutlined />
                 </template>
-                <p>可用: {{ accountResouce.balance || 0 }} TRX</p>
-                <p>冻结: {{ accountResouce.totalFrozen || 0 }} TRX</p>
+                <p>{{ $t('global.available') }}: {{ accountResouce.balance || 0 }} TRX</p>
+                <p>{{ $t('global.freeze') }}: {{ accountResouce.totalFrozen || 0 }} TRX</p>
             </a-card>
         </a-col>
         <a-col :xl="6">
-            <a-card title="能量" style="min-width: 350px">
+            <a-card :title="$t('global.energy')" style="min-width: 350px">
                 <template #extra>
                     <a-space align="center">
                         <span>
-                            <a-tooltip title="剩余能量/总能量">
+                            <a-tooltip :title="$t('global.residualE')">
                                 {{ accountResouce.bandwidth?.energyRemaining || 0 }} /
                                 {{ accountResouce.bandwidth?.energyLimit || 0 }}
                             </a-tooltip>
@@ -37,16 +39,16 @@
                         <ThunderboltOutlined />
                     </a-space>
                 </template>
-                <p>为自己冻结: {{ accountResouce.frozenForEnergy || 0 }} TRX</p>
-                <p>为他人冻结: {{ accountResouce.delegateFrozenForEnergy || 0 }} TRX</p>
+                <p>{{ $t('global.freezeForMyself') }}: {{ accountResouce.frozenForEnergy || 0 }} TRX</p>
+                <p>{{ $t('global.freezeForOthers') }}: {{ accountResouce.delegateFrozenForEnergy || 0 }} TRX</p>
             </a-card>
         </a-col>
         <a-col :xl="6">
-            <a-card title="带宽" style="min-width: 350px">
+            <a-card :title="$t('global.bandwidth')" style="min-width: 350px">
                 <template #extra>
                     <a-space align="center">
                         <span>
-                            <a-tooltip title="剩余带宽/总带宽">
+                            <a-tooltip :title="$t('global.residualB')">
                                 {{
                                     accountResouce.bandwidth?.freeNetRemaining +
                                         accountResouce.bandwidth?.netRemaining || 0
@@ -61,17 +63,17 @@
                         <DeploymentUnitOutlined />
                     </a-space>
                 </template>
-                <p>为自己冻结: {{ accountResouce.frozenForBandWidth || 0 }} TRX</p>
+                <p>{{ $t('global.freezeForMyself') }}: {{ accountResouce.frozenForBandWidth || 0 }} TRX</p>
                 <p>
-                    为他人冻结:
+                    {{ $t('global.freezeForOthers') }}:
                     {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX
                 </p>
             </a-card>
         </a-col>
         <a-col :xl="6">
-            <a-card title="今日出租情况" style="min-width: 350px">
-                <p>平台日总量: {{ accountResouce.frozenForBandWidth || 0 }} TRX</p>
-                <p>商户总收益: {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX</p>
+            <a-card :title="$t('global.dailyRental')" style="min-width: 350px">
+                <p>{{ $t('global.totalVolume') }}: {{ accountResouce.frozenForBandWidth || 0 }} TRX</p>
+                <p>{{ $t('global.totalSellersIncome') }}: {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX</p>
             </a-card>
         </a-col>
     </a-row>
@@ -110,3 +112,14 @@ export default defineComponent({
 })
 
 </script>
+
+<style lang="less">
+.dotsClass {
+    button {
+        background-color: rgb(116, 109, 109) !important;
+    }
+    .slick-active > button {
+        background-color: #f38031 !important;
+    }
+}
+</style>
