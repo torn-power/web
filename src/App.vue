@@ -280,7 +280,7 @@ import {
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
-import { useMediaQuery } from '@vueuse/core'
+import { useMediaQuery,useTitle } from '@vueuse/core'
 
 import {
   getAccountv2 as getAccountApi,
@@ -613,7 +613,7 @@ const linkWallet = async (tronweb, address) => {
 };
 
 const lang = computed(() => {
-  return localStorage.getItem('language') || 'en'
+  return localStorage.getItem('language') || 'zh'
 })
 
 const changeLang = (type) => {
@@ -639,6 +639,7 @@ onMounted(() => {
       activeKey.value = "1";
     }
   });
+  useTitle(t('global.title'))
 });
 </script>
 

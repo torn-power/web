@@ -4,11 +4,12 @@
             <div class="title">
                 <a-space>
                     <!-- <img width="32" src="/favicon.jpg" alt /> -->
-                    <span>{{$t('global.title')}}</span>
+                    <span>{{ $t('global.title') }}</span>
                 </a-space>
             </div>
             <a-button shape="round" v-if="!ownerAddress" @click="linkWallet" type="primary">
-                <ApiOutlined />{{$t('global.LinkWallet')}}
+                <ApiOutlined />
+                {{ $t('global.LinkWallet') }}
             </a-button>
         </div>
     </a-layout-header>
@@ -17,6 +18,8 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { message } from "ant-design-vue";
+import { useI18n } from 'vue-i18n'
+
 import {
     ApiOutlined,
 } from "@ant-design/icons-vue";
@@ -25,17 +28,22 @@ export default defineComponent({
     emits: ['change'],
     setup(_props, { emit }) {
         const ownerAddress = ref()
+        const { t } = useI18n()
 
         const linkWallet = async () => {
             if (window.tronWeb) {
-                if (window.tronWeb.fullNode.host !== "https://api.trongrid.io") {
-                    ownerAddress.value = window.tronWeb.defaultAddress.base58;
-                    emit('change', window.tronWeb, ownerAddress.value)
+                if (window.tronLink.ready) {
+                    if (window.tronWeb.fullNode.host !== "https://api.trongrid.io") {
+                        ownerAddress.value = window.tronWeb.defaultAddress.base58;
+                        emit('change', window.tronWeb, ownerAddress.value)
+                    } else {
+                        message.warning("请切换到TRON测试网使用");
+                    }
                 } else {
-                    message.warning("请切换到TRON测试网使用");
+                    message.warning(t('tip.tip5'));
                 }
             } else {
-                message.warning("请下载波宝钱包浏览器插件 : https://www.tronlink.org/cn/");
+                message.warning(t('tip.tip6')+": https://www.tronlink.org/cn/");
             }
         };
 
