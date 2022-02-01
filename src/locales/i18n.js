@@ -71,7 +71,7 @@ const messages = {
             tip3: 'You can join the VIP seller pool to automatically sell energy for income, please contact',
             tip4: 'You can also manually sell energy to earn income when there are orders. To get timely order notifications, please follow the following Telegram.',
             tip5:'Your wallet is currently locked',
-            tip6:'Please download the Popo Wallet browser plug-in',
+            tip6:'Please download bo Bo wallet browser plug-in or use in tron chain',
             sell: 'Selling tips',
             knowThe: 'I Know'
         }
@@ -146,7 +146,7 @@ const messages = {
             tip3: '您可以加入VIP卖家池，自动化出售能量以获得收入，详情请联系',
             tip4: '当有订单时您也可以手动出售能量以获得收入，要获得及时的订单推送，请关注如下电报(Telegram)',
             tip5: '当前你的钱包锁定中',
-            tip6:'请下载波宝钱包浏览器插件',
+            tip6:'请下载波宝钱包浏览器插件或在波场链使用',
             sell: '出售提示',
             knowThe: "知道了"
         }
