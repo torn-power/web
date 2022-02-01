@@ -32,16 +32,16 @@ export default defineComponent({
 
         const linkWallet = async () => {
             if (window.tronWeb) {
-                if (window.tronLink.ready) {
+                // if (window.tronLink.ready) {
                     if (window.tronWeb.fullNode.host !== "https://api.trongrid.io") {
                         ownerAddress.value = window.tronWeb.defaultAddress.base58;
                         emit('change', window.tronWeb, ownerAddress.value)
                     } else {
                         message.warning("请切换到TRON测试网使用");
                     }
-                } else {
-                    message.warning(t('tip.tip5'));
-                }
+                // } else {
+                //     message.warning(t('tip.tip5'));
+                // }
             } else {
                 message.warning(t('tip.tip6')+": https://www.tronlink.org/cn/");
             }

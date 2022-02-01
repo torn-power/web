@@ -280,7 +280,7 @@ import {
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
-import { useMediaQuery,useTitle } from '@vueuse/core'
+import { useMediaQuery, useTitle } from '@vueuse/core'
 
 import {
   getAccountv2 as getAccountApi,
@@ -607,6 +607,10 @@ const timeFormat = (timestamp) =>
 
 // 链接钱包
 const linkWallet = async (tronweb, address) => {
+  if (!tronweb || !address) {
+    message.warning(t('tip.tip5'));
+    return
+  }
   tronWeb.value = tronweb
   ownerAddress.value = address
   await getAccount()
