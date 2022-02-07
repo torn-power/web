@@ -529,6 +529,9 @@ const submitSoldForm = async () => {
   }
   console.log(values)
   console.log(trxCount.value)
+  //此处需要调用查询订单接口确保数量
+  // ...
+  
   const signedTransaction = await tronWeb.value.transactionBuilder.freezeBalance(
     values.amount,
     values.duration,
