@@ -14,6 +14,19 @@ export const freeze = (data) => {
 };
 
 /**
+ * 出售
+ * @param {*} data
+ * @returns
+ */
+ export const sellApi = (data) => {
+  return service({
+    url: `/order/sell`,
+    method: "POST",
+    data,
+  });
+};
+
+/**
  * 获取基本信息
  * @returns
  */
@@ -30,6 +43,18 @@ export const getConfig = () => {
 export const getOrderList = (params) => {
   return service({
     url: "/order/lists",
+    params,
+  });
+};
+
+
+/**
+ * 获取订单详情
+ * @returns
+ */
+ export const getOrderApi = (params) => {
+  return service({
+    url: "/order/order",
     params,
   });
 };

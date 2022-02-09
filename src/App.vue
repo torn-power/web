@@ -15,13 +15,13 @@
               <template #icon>
                 <ShoppingCartOutlined />
               </template>
-              {{ $t('global.rent') }}
+              {{ $t("global.rent") }}
             </a-button>
             <a-button type="primary" @click="sellTip">
               <template #icon>
                 <SendOutlined />
               </template>
-              {{ $t('global.sell') }}
+              {{ $t("global.sell") }}
             </a-button>
           </a-space>
         </div>
@@ -30,17 +30,18 @@
       <a-card class="card-box" size="small">
         <template #title>
           <BarsOutlined />
-          {{ $t('global.currentOrder') }}
+          {{ $t("global.currentOrder") }}
         </template>
         <template #extra>
           <a-select style="width: 160px">
-            <a-select-option value="jack">{{ $t('global.highestPrice') }}</a-select-option>
-            <a-select-option value="lucy">{{ $t('global.earnings') }}</a-select-option>
+            <a-select-option value="jack">{{ $t("global.highestPrice") }}</a-select-option>
+            <a-select-option value="lucy">{{ $t("global.earnings") }}</a-select-option>
           </a-select>
         </template>
         <a-table
           size="small"
           bordered
+          rowKey="_id"
           :dataSource="tableData.currentOrderDataSource"
           :columns="tableData.currentOrderCounmns"
         />
@@ -52,7 +53,7 @@
             <template #tab>
               <span>
                 <TransactionOutlined />
-                {{ $t('global.recentTrade') }}
+                {{ $t("global.recentTrade") }}
               </span>
             </template>
             <a-table
@@ -67,7 +68,7 @@
             <template #tab>
               <span>
                 <FileSearchOutlined />
-                {{ $t('global.myFreezeList') }}
+                {{ $t("global.myFreezeList") }}
               </span>
             </template>
             <a-table
@@ -83,7 +84,7 @@
             <template #tab>
               <span>
                 <BarsOutlined />
-                {{ $t('global.myOrder') }}
+                {{ $t("global.myOrder") }}
               </span>
             </template>
             <a-table
@@ -100,13 +101,13 @@
                 <template #icon>
                   <ShoppingCartOutlined />
                 </template>
-                {{ $t('global.rent') }}
+                {{ $t("global.rent") }}
               </a-button>
               <a-button type="primary" @click="sellTip">
                 <template #icon>
                   <SendOutlined />
                 </template>
-                {{ $t('global.sell') }}
+                {{ $t("global.sell") }}
               </a-button>
               <a-select style="width: 90px" v-model:value="lang" @change="changeLang">
                 <a-select-option value="zh">中文</a-select-option>
@@ -137,7 +138,9 @@
       :wrapper-col="{ span: 16 }"
     >
       <a-form-item
-        :label="$t('global.receive') + $t('global.resource') + $t('global.address')"
+        :label="
+          $t('global.receive') + $t('global.resource') + $t('global.address')
+        "
         v-bind="validateInfos.receiverAddress"
       >
         <a-input
@@ -152,18 +155,22 @@
         v-bind="validateInfos.resource"
       >
         <a-radio-group v-model:value="formState.resource">
-          <a-radio value="ENERGY">{{ $t('global.energy') }}</a-radio>
-          <a-radio value="BANDWIDTH">{{ $t('global.bandwidth') }}</a-radio>
+          <a-radio value="ENERGY">{{ $t("global.energy") }}</a-radio>
+          <a-radio value="BANDWIDTH">{{ $t("global.bandwidth") }}</a-radio>
         </a-radio-group>
       </a-form-item>
 
       <a-form-item
-        :label="$t('global.chooseBuy') + $t('global.resource') + $t('global.count')"
+        :label="
+          $t('global.chooseBuy') + $t('global.resource') + $t('global.count')
+        "
         v-bind="validateInfos.amount"
       >
         <a-input-number
           v-if="formState.resource === 'ENERGY'"
-          :placeholder="$t('tip.pledgeEnergy', { amount: config.minEnergyNumber })"
+          :placeholder="
+            $t('tip.pledgeEnergy', { amount: config.minEnergyNumber })
+          "
           style="width: 300px"
           :precision="0"
           v-model:value="formState.amount"
@@ -171,7 +178,9 @@
         />
         <a-input-number
           v-else
-          :placeholder="$t('tip.pledegBandWidth', { amount: config.minBandwidthNumber })"
+          :placeholder="
+            $t('tip.pledegBandWidth', { amount: config.minBandwidthNumber })
+          "
           style="width: 300px"
           :precision="0"
           v-model:value="formState.amount"
@@ -187,7 +196,11 @@
           style="width: 300px"
           :precision="0"
           v-model:value="formState.unitPrice"
-          :min="formState.resource === 'ENERGY' ? config.energyPrice : config.bandwidthPrice"
+          :min="
+            formState.resource === 'ENERGY'
+              ? config.energyPrice
+              : config.bandwidthPrice
+          "
         />
       </a-form-item>
 
@@ -206,9 +219,9 @@
       </a-form-item>
 
       <div class="modal-info">
-        <div>{{ $t('global.orderAmount') }}：{{ needTrxCount || 0 }} TRX</div>
-        <div>{{ $t('global.yourBlance') }}：{{ accountResouce.balance || 0 }} TRX</div>
-        <div>{{ $t('tip.tip1') }}：{{ (trxCount - needTrxCount).toFixed(2) }} TRX</div>
+        <div>{{ $t("global.orderAmount") }}：{{ needTrxCount || 0 }} TRX</div>
+        <div>{{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX</div>
+        <div>{{ $t("tip.tip1") }}：{{ (trxCount - needTrxCount).toFixed(2) }} TRX</div>
       </div>
     </a-form>
   </a-modal>
@@ -233,7 +246,7 @@
         v-bind="validateInfos.amount"
       >
         <a-input-number
-          style="width:100%"
+          style="width: 100%"
           v-model:value="formState.amount"
           :precision="0"
           :min="0"
@@ -251,10 +264,14 @@
       </a-form-item>
 
       <div class="modal-info">
-        <div>{{ $t('global.freeze') }}：{{ 0 }} TRX</div>
-        <div>{{ $t('global.yourBlance') }}：{{ accountResouce.balance || 0 }} TRX</div>
-        <div>{{ $t('global.freeze') + $t('global.time') }}： 3{{ $t('global.days') }}</div>
-        <div>{{ $t('global.income') }}：{{ 0 }} TRX</div>
+        <div>{{ $t("global.freeze") }}：{{ parseInt(tableInfo.frozenBalance) / 1000000 }} TRX</div>
+        <div>{{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX</div>
+        <div>
+          {{ $t("global.freeze") + $t("global.time") }}： 3{{
+            $t("global.days")
+          }}
+        </div>
+        <div>{{ $t("global.income") }}：{{ tableInfo.aCommission / 1000000 }} TRX</div>
       </div>
     </a-form>
   </a-modal>
@@ -262,7 +279,14 @@
 
 <script setup>
 /* eslint-disable no-unused-vars */
-import { ref, reactive, onMounted, computed, watch, getCurrentInstance } from "vue";
+import {
+  ref,
+  reactive,
+  onMounted,
+  computed,
+  watch,
+  getCurrentInstance,
+} from "vue";
 import dayjs from "dayjs";
 import { message, Form } from "ant-design-vue";
 
@@ -278,12 +302,12 @@ import {
   SendOutlined,
   FileSearchOutlined,
   TransactionOutlined,
-  BarsOutlined
+  BarsOutlined,
 } from "@ant-design/icons-vue";
-import { useI18n } from 'vue-i18n'
-const { t } = useI18n()
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
-import { useMediaQuery, useTitle } from '@vueuse/core'
+import { useMediaQuery, useTitle } from "@vueuse/core";
 
 import {
   getAccountv2 as getAccountApi,
@@ -293,10 +317,12 @@ import {
 import {
   freeze as freezeApi,
   getConfig as getConfigApi,
-  getOrderList
-} from './api/server'
+  getOrderList,
+  sellApi,
+  getOrderApi
+} from "./api/server";
 
-const isMobile = useMediaQuery('(max-width: 750px)')
+const isMobile = useMediaQuery("(max-width: 750px)");
 const tronWeb = ref(null);
 const ownerAddress = ref();
 const formRef = ref();
@@ -304,7 +330,8 @@ const activeKey = ref("1");
 const visible = ref(false);
 const soldVisible = ref(false);
 
-const config = ref({})
+const config = ref({});
+const tableInfo = ref({});
 
 // 账户资源
 const accountResouce = ref({});
@@ -315,7 +342,7 @@ const formState = reactive({
   amount: 100000,
   duration: 3,
   unitPrice: 30,
-  ownerAddress: undefined,  // 代表当前地址或者自己的收款地址
+  ownerAddress: undefined, // 代表当前地址或者自己的收款地址
   receiverAddress: undefined, // 代表需要接收资源的地址
 });
 
@@ -324,37 +351,37 @@ const rulesRef = reactive({
   ownerAddress: [
     {
       required: true,
-      message: t('tip.ownerAddress'),
+      message: t("tip.ownerAddress"),
     },
   ],
   receiverAddress: [
     {
       required: true,
-      message: t('tip.receiverAddress'),
+      message: t("tip.receiverAddress"),
     },
   ],
   resource: [
     {
       required: true,
-      message: t('tip.resource'),
+      message: t("tip.resource"),
     },
   ],
   amount: [
     {
       required: true,
-      message: t('tip.amount'),
+      message: t("tip.amount"),
     },
   ],
   unitPrice: [
     {
       required: true,
-      message: t('tip.unitPrice'),
+      message: t("tip.unitPrice"),
     },
   ],
   duration: [
     {
       required: true,
-      message: t('tip.duration'),
+      message: t("tip.duration"),
     },
   ],
 });
@@ -364,122 +391,142 @@ const { resetFields, validate, validateInfos } = useForm(formState, rulesRef);
 
 // 表格数据
 const tableData = reactive({
-  currentOrderDataSource: [{ key: 1 }],
+  currentOrderDataSource: [],
   currentOrderCounmns: [
     {
-      title: () => t('global.buyer'),
+      title: () => t("global.buyer"),
       customRender: ({ record }) => {
-        return <div>
-          <div>{t('global.priceDay')} : {record.unitPrice} sun</div>
-          <div>{t('global.bandwidth')} : {record.resourceValue}</div>
-        </div>
-      }
+        return (
+          <div>
+            <div>
+              {t("global.priceDay")} : {record.unitPrice} sun
+            </div>
+            <div>
+              {t("global.bandwidth")} : {record.resourceValue}
+            </div>
+          </div>
+        );
+      },
     },
     {
-      title: () => t('global.seller'),
+      title: () => t("global.seller"),
       customRender: ({ record }) => {
-        return <div>
-          <div>{t('global.income')} : 60 TRX</div>
-          <div>{t('global.freeze')} : { record.frozenBalance / 1000000 } TRX  3{t('global.days')}</div>
-        </div>
-      }
+        return (
+          <div>
+            <div>
+              {t("global.income")} : {record.aCommission / 1000000} TRX
+            </div>
+            <div>
+              {t("global.freeze")} : {parseInt(record.frozenBalance) / 1000000}{" "}
+              TRX 3{t("global.days")}
+            </div>
+          </div>
+        );
+      },
     },
     {
-      title: () => t('global.operation'),
-      align: 'center',
+      title: () => t("global.operation"),
+      align: "center",
       customRender: ({ record }) => {
-        return <a-button
-          size="small"
-          type="primary"
-          shape="round"
-          onClick={() => {
-            resetFields();
-            formState.amount = 200000
-            formState.receiverAddress = 'TRJdsTW85FDRZnnd1H9BT6r6bYPp83os4w'
-            formState.ownerAddress = ownerAddress.value
-            soldVisible.value = true
-          }}
-        >
-          {t('global.sell')}
-        </a-button>
-      }
+        return (
+          <a-button
+            size="small"
+            type="primary"
+            shape="round"
+            onClick={() => {
+              resetFields();
+              tableInfo.value = record;
+              formState.amount = record.resourceValue;
+              formState.receiverAddress = record.receiverAddress;
+              formState.ownerAddress = ownerAddress.value;
+              formState.resource = record.resource
+              soldVisible.value = true;
+            }}
+          >
+            {t("global.sell")}
+          </a-button>
+        );
+      },
     },
   ],
   recentDataSource: [],
   recentColumns: [
     {
-      title: () => t('global.resource'),
+      title: () => t("global.resource"),
       customRender: ({ record }) => {
-        return record.resourceValue + ' ' + record.resource
-      }
+        return record.resourceValue + " " + record.resource;
+      },
     },
     {
-      title: () => t('global.priceDay'),
+      title: () => t("global.priceDay"),
       customRender: ({ record }) => {
-        return record.unitPrice + ' sun'
-      }
+        return record.unitPrice + " sun";
+      },
     },
     {
-      title: () => t('global.income'),
+      title: () => t("global.income"),
       customRender: ({ record }) => {
-        return record.commission / 1000000 + 'TRX'
-      }
+        return record.commission / 1000000 + "TRX";
+      },
     },
     {
-      title: () => t('global.Date'),
+      title: () => t("global.Date"),
       customRender: ({ record }) => {
-        return timeFormat(record.updatedAt)
-      }
+        return timeFormat(record.updatedAt);
+      },
     },
     {
-      title: () => t('global.hash'),
+      title: () => t("global.hash"),
       customRender: ({ record }) => {
-        return <a href={'https://tronscan.org/#/transaction/' + record.hash} target="_blank">详情</a>
-      }
+        return (
+          <a
+            href={"https://tronscan.org/#/transaction/" + record.hash}
+            target="_blank"
+          >
+            详情
+          </a>
+        );
+      },
     },
   ],
   freezeDataSource: [],
   freezeColumns: [
     {
-      title: () => t('global.freezeObject'),
-      width: '50%',
+      title: () => t("global.freezeObject"),
+      width: "50%",
       customRender: ({ record }) => {
-        return <div>
-          <a
-            target="_blank"
-            href={"https://tronscan.org/#/address/" + record.receiverAddress}
-          >
-            {record.receiverAddress}
-          </a>
-          <div>{fromSun(record.frozenBalance)}</div>
-        </div>
+        return (
+          <div>
+            <a
+              target="_blank"
+              href={"https://tronscan.org/#/address/" + record.receiverAddress}
+            >
+              {record.receiverAddress}
+            </a>
+            <div>{fromSun(record.frozenBalance)}</div>
+          </div>
+        );
       },
     },
     {
-      title: () => t('global.expireTime'),
-      width: '50%',
+      title: () => t("global.expireTime"),
+      width: "50%",
       customRender: ({ record }) => timeFormat(record.expireTime),
     },
   ],
   buyDataSource: [],
   buyColumns: [
     {
-      title: () => t('global.order'),
-      customRender: ({ record }) => {
-
-      }
+      title: () => t("global.order"),
+      customRender: ({ record }) => { },
     },
     {
-      title: () => t('global.remainingAmount'),
-      customRender: ({ record }) => {
-
-      }
+      title: () => t("global.remainingAmount"),
+      customRender: ({ record }) => { },
     },
     {
-      title: () => t('global.operation'),
-      customRender: ({ record }) => {
-
-      }
+      title: () => t("global.operation"),
+      customRender: ({ record }) => { },
     },
   ],
 });
@@ -490,15 +537,15 @@ const tabsChange = async (val) => {
   if (val === "2") {
     getAccountResource();
   }
-  if (val === '3') {
-    getOrderLists(activeKey.value, { receiverAddress: ownerAddress.value, status: 1 })
+  if (val === "3") {
+    getBuyOrders();
   }
 };
 
 // 打开租赁弹窗
 const leaseModal = () => {
   resetFields();
-  formState.ownerAddress = ownerAddress.value
+  formState.ownerAddress = ownerAddress.value;
   visible.value = true;
 };
 
@@ -518,7 +565,7 @@ const transactionTrx = async (amount) => {
 const submitFreeze = async () => {
   const values = await validate();
   if (!tronWeb.value.isAddress(values.receiverAddress)) {
-    message.warn(t('global.tronAddress'));
+    message.warn(t("global.tronAddress"));
     return;
   }
   const res = await transactionTrx(toSun(needTrxCount.value));
@@ -531,18 +578,18 @@ const submitFreeze = async () => {
       resource: values.resource,
       resourceValue: values.amount,
       unitPrice: values.unitPrice,
-      duration: values.duration
-    }
-    console.log(formData)
-    const result = await freezeApi(formData)
+      duration: values.duration,
+    };
+    console.log(formData);
+    const result = await freezeApi(formData);
     if (result) {
-      getAccount()
-      getAccountResource()
-      visible.value = false
-      message.success(t('global.rent') + t('global.success'))
+      getAccount();
+      getAccountResource();
+      visible.value = false;
+      message.success(t("global.rent") + t("global.success"));
     }
   } else {
-    message.warning(t('global.rent') + t('global.fail'))
+    message.warning(t("global.rent") + t("global.fail"));
   }
 };
 
@@ -550,32 +597,42 @@ const submitFreeze = async () => {
 const submitSoldForm = async () => {
   const values = await validate();
   if (!tronWeb.value.isAddress(values.receiverAddress)) {
-    message.warn(t('global.tronAddress'));
+    message.warn(t("global.tronAddress"));
     return;
   }
-  console.log(values)
-  console.log(trxCount.value)
+  console.log(values);
+  console.log(trxCount.value);
   //此处需要调用查询订单接口确保数量
   // ...
-
-  const signedTransaction = await tronWeb.value.transactionBuilder.freezeBalance(
-    values.amount,
-    values.duration,
-    values.resource,
-    ownerAddress.value,
-    values.receiverAddress,
-    1
-  );
-  const signedTx = await tronWeb.value.trx.sign(signedTransaction);
-  const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
-  if (broastTx.result) {
-    // 出售后需要将收款地址和订单信息发送到后台给人家转钱
-    getAccount()
-    getAccountResource()
-    message.success(t('global.sell') + t('global.success'))
-    soldVisible.value = false
-  }
-}
+  const orderInfo = await getOrderApi({ _id: tableInfo.value._id.toString() })
+  console.log(orderInfo)
+  // const signedTransaction =
+  //   await tronWeb.value.transactionBuilder.freezeBalance(
+  //     values.amount,
+  //     values.duration,
+  //     values.resource,
+  //     ownerAddress.value,
+  //     values.receiverAddress,
+  //     1
+  //   );
+  // const signedTx = await tronWeb.value.trx.sign(signedTransaction);
+  // const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
+  // if (broastTx.result) {
+  //   // 出售后需要将收款地址和订单信息发送到后台给人家转钱
+  //   const res = await sellApi({
+  //     _id: tableInfo.value._id,
+  //     amount: values.amount,
+  //     hash: broastTx.txid,
+  //     ownerAddress: ownerAddress.value,
+  //     receiverAddress: tableInfo.value.receiverAddress
+  //   })
+  //   console.log(res)
+  //   getAccount();
+  //   getAccountResource();
+  //   message.success(t("global.sell") + t("global.success"));
+  //   soldVisible.value = false;
+  // }
+};
 
 // 获取地址资源
 const getAccountResource = async () => {
@@ -585,7 +642,9 @@ const getAccountResource = async () => {
     start: 0,
     address: ownerAddress.value,
   });
-  tableData.freezeDataSource = megeKeySame(res.data.map((v) => ({ ...v, key: v.hash })) || []);
+  tableData.freezeDataSource = megeKeySame(
+    res.data.map((v) => ({ ...v, key: v.hash })) || []
+  );
 };
 
 // 获取账户信息
@@ -603,7 +662,9 @@ const getAccount = async () => {
 };
 
 // 计算需要用户支付多少TRX
-const needTrxCount = computed(() => fromSun((formState.amount * formState.unitPrice).toFixed(2)));
+const needTrxCount = computed(() =>
+  fromSun((formState.amount * formState.unitPrice).toFixed(2))
+);
 
 // 计算原价需要多少TRX
 const trxCount = computed(() =>
@@ -625,7 +686,7 @@ const resourceCount = () => {
 };
 
 // 将sun转换成trx单位
-const fromSun = (val) => val ? tronWeb.value.fromSun(val) : 0;
+const fromSun = (val) => (val ? tronWeb.value.fromSun(val) : 0);
 
 // 将trx转换成sun单位
 const toSun = (val) => tronWeb.value.toSun(val);
@@ -637,43 +698,46 @@ const timeFormat = (timestamp) =>
 // 链接钱包
 const linkWallet = async (tronweb, address) => {
   if (!tronweb || !address) {
-    message.warning(t('tip.tip5'));
-    return
+    message.warning(t("tip.tip5"));
+    return;
   }
-  tronWeb.value = tronweb
-  ownerAddress.value = address
-  await getAccount()
+  tronWeb.value = tronweb;
+  ownerAddress.value = address;
+  await getAccount();
 };
 
 const lang = computed(() => {
-  return localStorage.getItem('language') || 'zh'
-})
+  return localStorage.getItem("language") || "zh";
+});
 
 const changeLang = (type) => {
-  localStorage.setItem('language', type)
-  location.reload()
-}
+  localStorage.setItem("language", type);
+  location.reload();
+};
 
-// 获取订单
-const getOrderLists = async (val, params) => {
-  const { data } = await getOrderList(params)
-  if (val === '1') {
-    tableData.recentDataSource = data.results
-  }
-  if (val === '3') {
-    tableData.buyDataSource = data.results
-  }
-  if (val === -1) {
-    tableData.currentOrderDataSource = data.result
-  }
-}
+// 获取当前订单
+const getCurrentOrders = async () => {
+  const { data } = await getOrderList({ status: 0, orderType: 0 });
+  tableData.currentOrderDataSource = data.results;
+};
+
+// 我的买单
+const getBuyOrders = async () => {
+  const { data } = await getOrderList({ receiverAddress: ownerAddress.value });
+  tableData.buyDataSource = data.results;
+};
+
+// 获取近期完成交易
+const getRecentOrders = async () => {
+  const { data } = await getOrderList({ status: 1 });
+  tableData.recentDataSource = data.results;
+};
 
 // 获取配置
 const getConfig = async () => {
-  const { data } = await getConfigApi()
-  config.value = { ...data.config, address: data.address }
-  console.log(config.value)
-}
+  const { data } = await getConfigApi();
+  config.value = { ...data.config, address: data.address };
+};
 
 watch(
   () => formState.resource,
@@ -687,17 +751,17 @@ watch(
 );
 
 onMounted(() => {
-  linkWallet();
+  getRecentOrders();
+  getCurrentOrders();
   window.addEventListener("message", (e) => {
     if (e.data.message && e.data.message.action == "accountsChanged") {
       linkWallet();
       activeKey.value = "1";
     }
   });
-  getConfig()
-  getOrderLists(activeKey.value, { receiverAddress: ownerAddress.value, status: 1 })
-  getOrderLists(-1, { status: 0, orderType: 0 })
-  useTitle(t('global.title'))
+
+  getConfig();
+  useTitle(t("global.title"));
 });
 </script>
 
