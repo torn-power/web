@@ -58,6 +58,7 @@
             <a-table
               size="small"
               bordered
+              rowKey="_id"
               :dataSource="tableData.recentDataSource"
               :columns="tableData.recentColumns"
             />
@@ -72,6 +73,7 @@
             <a-table
               size="small"
               bordered
+              rowKey="_id"
               :dataSource="tableData.freezeDataSource"
               :columns="tableData.freezeColumns"
               :scroll="{ x: true }"
@@ -87,6 +89,7 @@
             <a-table
               size="small"
               bordered
+              rowKey="_id"
               :dataSource="tableData.buyDataSource"
               :columns="tableData.buyColumns"
             />
@@ -160,19 +163,19 @@
       >
         <a-input-number
           v-if="formState.resource === 'ENERGY'"
-          :placeholder="$t('tip.pledgeEnergy', { amount: 1000000 })"
+          :placeholder="$t('tip.pledgeEnergy', { amount: config.minEnergyNumber })"
           style="width: 300px"
           :precision="0"
           v-model:value="formState.amount"
-          :min="100000"
+          :min="config.minEnergyNumber"
         />
         <a-input-number
           v-else
-          :placeholder="$t('tip.pledegBandWidth', { amount: 100 })"
+          :placeholder="$t('tip.pledegBandWidth', { amount: config.minBandwidthNumber })"
           style="width: 300px"
           :precision="0"
           v-model:value="formState.amount"
-          :min="100"
+          :min="config.minBandwidthNumber"
         />
       </a-form-item>
 
@@ -184,7 +187,7 @@
           style="width: 300px"
           :precision="0"
           v-model:value="formState.unitPrice"
-          :min="30"
+          :min="formState.resource === 'ENERGY' ? config.energyPrice : config.bandwidthPrice"
         />
       </a-form-item>
 
@@ -287,9 +290,11 @@ import {
   getAccountResource as getAccountResourceApi,
 } from "./api/http";
 
-import { freeze as freezeApi } from './api/server'
-
-const { proxy } = getCurrentInstance();
+import {
+  freeze as freezeApi,
+  getConfig as getConfigApi,
+  getOrderList
+} from './api/server'
 
 const isMobile = useMediaQuery('(max-width: 750px)')
 const tronWeb = ref(null);
@@ -298,6 +303,8 @@ const formRef = ref();
 const activeKey = ref("1");
 const visible = ref(false);
 const soldVisible = ref(false);
+
+const config = ref({})
 
 // 账户资源
 const accountResouce = ref({});
@@ -363,8 +370,8 @@ const tableData = reactive({
       title: () => t('global.buyer'),
       customRender: ({ record }) => {
         return <div>
-          <div>{t('global.priceDay')} : 500 sun</div>
-          <div>{t('global.bandwidth')} : 50000</div>
+          <div>{t('global.priceDay')} : {record.unitPrice} sun</div>
+          <div>{t('global.bandwidth')} : {record.resourceValue}</div>
         </div>
       }
     },
@@ -373,7 +380,7 @@ const tableData = reactive({
       customRender: ({ record }) => {
         return <div>
           <div>{t('global.income')} : 60 TRX</div>
-          <div>{t('global.freeze')} : 16436 TRX  3{t('global.days')}</div>
+          <div>{t('global.freeze')} : { record.frozenBalance / 1000000 } TRX  3{t('global.days')}</div>
         </div>
       }
     },
@@ -402,23 +409,33 @@ const tableData = reactive({
   recentColumns: [
     {
       title: () => t('global.resource'),
-      dataIndex: "",
+      customRender: ({ record }) => {
+        return record.resourceValue + ' ' + record.resource
+      }
     },
     {
       title: () => t('global.priceDay'),
-      dataIndex: "",
+      customRender: ({ record }) => {
+        return record.unitPrice + ' sun'
+      }
     },
     {
       title: () => t('global.income'),
-      dataIndex: "",
+      customRender: ({ record }) => {
+        return record.commission / 1000000 + 'TRX'
+      }
     },
     {
       title: () => t('global.Date'),
-      dataIndex: "",
+      customRender: ({ record }) => {
+        return timeFormat(record.updatedAt)
+      }
     },
     {
       title: () => t('global.hash'),
-      dataIndex: "",
+      customRender: ({ record }) => {
+        return <a href={'https://tronscan.org/#/transaction/' + record.hash} target="_blank">详情</a>
+      }
     },
   ],
   freezeDataSource: [],
@@ -448,15 +465,21 @@ const tableData = reactive({
   buyColumns: [
     {
       title: () => t('global.order'),
-      dataIndex: "",
+      customRender: ({ record }) => {
+
+      }
     },
     {
       title: () => t('global.remainingAmount'),
-      dataIndex: "",
+      customRender: ({ record }) => {
+
+      }
     },
     {
       title: () => t('global.operation'),
-      dataIndex: "",
+      customRender: ({ record }) => {
+
+      }
     },
   ],
 });
@@ -466,6 +489,9 @@ const tabsChange = async (val) => {
   if (!ownerAddress.value) return;
   if (val === "2") {
     getAccountResource();
+  }
+  if (val === '3') {
+    getOrderLists(activeKey.value, { receiverAddress: ownerAddress.value, status: 1 })
   }
 };
 
@@ -479,7 +505,7 @@ const leaseModal = () => {
 // trx转账接口
 const transactionTrx = async (amount) => {
   const tx = await tronWeb.value.transactionBuilder.sendTrx(
-    "TXCUc7Lmn8jEqUVEZZKdXm9jHgiEF7XQDW",
+    config.value.address,
     amount,
     ownerAddress.value
   );
@@ -531,7 +557,7 @@ const submitSoldForm = async () => {
   console.log(trxCount.value)
   //此处需要调用查询订单接口确保数量
   // ...
-  
+
   const signedTransaction = await tronWeb.value.transactionBuilder.freezeBalance(
     values.amount,
     values.duration,
@@ -599,7 +625,7 @@ const resourceCount = () => {
 };
 
 // 将sun转换成trx单位
-const fromSun = (val) => tronWeb.value.fromSun(val);
+const fromSun = (val) => val ? tronWeb.value.fromSun(val) : 0;
 
 // 将trx转换成sun单位
 const toSun = (val) => tronWeb.value.toSun(val);
@@ -628,6 +654,27 @@ const changeLang = (type) => {
   location.reload()
 }
 
+// 获取订单
+const getOrderLists = async (val, params) => {
+  const { data } = await getOrderList(params)
+  if (val === '1') {
+    tableData.recentDataSource = data.results
+  }
+  if (val === '3') {
+    tableData.buyDataSource = data.results
+  }
+  if (val === -1) {
+    tableData.currentOrderDataSource = data.result
+  }
+}
+
+// 获取配置
+const getConfig = async () => {
+  const { data } = await getConfigApi()
+  config.value = { ...data.config, address: data.address }
+  console.log(config.value)
+}
+
 watch(
   () => formState.resource,
   (val) => {
@@ -640,12 +687,16 @@ watch(
 );
 
 onMounted(() => {
+  linkWallet();
   window.addEventListener("message", (e) => {
     if (e.data.message && e.data.message.action == "accountsChanged") {
       linkWallet();
       activeKey.value = "1";
     }
   });
+  getConfig()
+  getOrderLists(activeKey.value, { receiverAddress: ownerAddress.value, status: 1 })
+  getOrderLists(-1, { status: 0, orderType: 0 })
   useTitle(t('global.title'))
 });
 </script>
