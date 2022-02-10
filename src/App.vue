@@ -2,16 +2,28 @@
   <a-layout>
     <Header @change="linkWallet" />
     <a-layout-content class="layout">
-      <TopCard :accountResouce="accountResouce" :ownerAddress="ownerAddress" :isMobile="isMobile" />
+      <TopCard
+        :accountResouce="accountResouce"
+        :ownerAddress="ownerAddress"
+        :isMobile="isMobile"
+      />
 
       <a-card class="card-box" size="small" v-if="isMobile">
         <div class="flex-wrap">
-          <a-select style="width: 90px" v-model:value="lang" @change="changeLang">
+          <a-select
+            style="width: 90px"
+            v-model:value="lang"
+            @change="changeLang"
+          >
             <a-select-option value="zh">中文</a-select-option>
             <a-select-option value="en">En</a-select-option>
           </a-select>
           <a-space>
-            <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
+            <a-button
+              type="primary"
+              :disabled="!ownerAddress"
+              @click="leaseModal"
+            >
               <template #icon>
                 <ShoppingCartOutlined />
               </template>
@@ -34,8 +46,12 @@
         </template>
         <template #extra>
           <a-select style="width: 160px">
-            <a-select-option value="jack">{{ $t("global.highestPrice") }}</a-select-option>
-            <a-select-option value="lucy">{{ $t("global.earnings") }}</a-select-option>
+            <a-select-option value="jack">{{
+              $t("global.highestPrice")
+            }}</a-select-option>
+            <a-select-option value="lucy">{{
+              $t("global.earnings")
+            }}</a-select-option>
           </a-select>
         </template>
         <a-table
@@ -97,7 +113,11 @@
           </a-tab-pane>
           <template #tabBarExtraContent v-if="!isMobile">
             <a-space>
-              <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
+              <a-button
+                type="primary"
+                :disabled="!ownerAddress"
+                @click="leaseModal"
+              >
                 <template #icon>
                   <ShoppingCartOutlined />
                 </template>
@@ -109,7 +129,11 @@
                 </template>
                 {{ $t("global.sell") }}
               </a-button>
-              <a-select style="width: 90px" v-model:value="lang" @change="changeLang">
+              <a-select
+                style="width: 90px"
+                v-model:value="lang"
+                @change="changeLang"
+              >
                 <a-select-option value="zh">中文</a-select-option>
                 <a-select-option value="en">En</a-select-option>
               </a-select>
@@ -204,7 +228,10 @@
         />
       </a-form-item>
 
-      <a-form-item :label="$t('global.freeze') + t('global.time')" v-bind="validateInfos.duration">
+      <a-form-item
+        :label="$t('global.freeze') + t('global.time')"
+        v-bind="validateInfos.duration"
+      >
         <a-tooltip :title="$t('tip.freezeToolTip')">
           <a-input-number
             :placeholder="$t('tip.freezeTip')"
@@ -220,8 +247,12 @@
 
       <div class="modal-info">
         <div>{{ $t("global.orderAmount") }}：{{ needTrxCount || 0 }} TRX</div>
-        <div>{{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX</div>
-        <div>{{ $t("tip.tip1") }}：{{ (trxCount - needTrxCount).toFixed(2) }} TRX</div>
+        <div>
+          {{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX
+        </div>
+        <div>
+          {{ $t("tip.tip1") }}：{{ (trxCount - needTrxCount).toFixed(2) }} TRX
+        </div>
       </div>
     </a-form>
   </a-modal>
@@ -254,9 +285,11 @@
         />
       </a-form-item>
 
-      <a-form-item :label="$t('global.yourAddress')" v-bind="validateInfos.ownerAddress">
+      <a-form-item
+        :label="$t('global.yourAddress')"
+        v-bind="validateInfos.ownerAddress"
+      >
         <a-input
-          disabled
           v-model:value="formState.ownerAddress"
           :placeholder="$t('tip.tip2')"
           allow-clear
@@ -264,14 +297,23 @@
       </a-form-item>
 
       <div class="modal-info">
-        <div>{{ $t("global.freeze") }}：{{ parseInt(tableInfo.frozenBalance) / 1000000 }} TRX</div>
-        <div>{{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX</div>
+        <div>
+          {{ $t("global.freeze") }}：{{
+            parseInt(tableInfo.frozenBalance) / 1000000
+          }}
+          TRX
+        </div>
+        <div>
+          {{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX
+        </div>
         <div>
           {{ $t("global.freeze") + $t("global.time") }}： 3{{
             $t("global.days")
           }}
         </div>
-        <div>{{ $t("global.income") }}：{{ tableInfo.aCommission / 1000000 }} TRX</div>
+        <div>
+          {{ $t("global.income") }}：{{ tableInfo.aCommission / 1000000 }} TRX
+        </div>
       </div>
     </a-form>
   </a-modal>
@@ -288,7 +330,7 @@ import {
   getCurrentInstance,
 } from "vue";
 import dayjs from "dayjs";
-import { message, Form } from "ant-design-vue";
+import { message, Form, Modal } from "ant-design-vue";
 
 import TopCard from "./components/TopCard.vue";
 import Header from "./components/Header.vue";
@@ -319,7 +361,8 @@ import {
   getConfig as getConfigApi,
   getOrderList,
   sellApi,
-  getOrderApi
+  getOrderApi,
+  undoApi,
 } from "./api/server";
 
 const isMobile = useMediaQuery("(max-width: 750px)");
@@ -402,7 +445,10 @@ const tableData = reactive({
               {t("global.priceDay")} : {record.unitPrice} sun
             </div>
             <div>
-              {t("global.bandwidth")} : {record.resourceValue}
+              {record.resource !== "ENERGY"
+                ? t("global.bandwidth")
+                : t("global.energy")}{" "}
+              : {record.resourceValue}
             </div>
           </div>
         );
@@ -439,7 +485,7 @@ const tableData = reactive({
               formState.amount = record.resourceValue;
               formState.receiverAddress = record.receiverAddress;
               formState.ownerAddress = ownerAddress.value;
-              formState.resource = record.resource
+              formState.resource = record.resource;
               soldVisible.value = true;
             }}
           >
@@ -518,15 +564,48 @@ const tableData = reactive({
   buyColumns: [
     {
       title: () => t("global.order"),
-      customRender: ({ record }) => { },
+      customRender: ({ record }) => {
+        return (
+          <div>
+            <div>
+              {t("global.priceDay")} : {record.unitPrice} sun
+            </div>
+            <div>
+              {record.resource !== "ENERGY"
+                ? t("global.bandwidth")
+                : t("global.energy")}{" "}
+              : {record.resourceValue}
+            </div>
+          </div>
+        );
+      },
     },
     {
       title: () => t("global.remainingAmount"),
-      customRender: ({ record }) => { },
+      customRender: ({ record }) => {
+        return record.aCommission / 1000000 || 0 + "TRX";
+      },
     },
     {
       title: () => t("global.operation"),
-      customRender: ({ record }) => { },
+      customRender: ({ record }) => {
+        return record.status === 3 ? (
+          <AButton
+            type="primary"
+            onClick={() => {
+              Modal.confirm({
+                title: () => "确定撤销？",
+                onOk: async () => {
+                  const res = await undoApi({ _id: record._id });
+                  message.info(res.message);
+                },
+              });
+            }}
+          >
+            撤单
+          </AButton>
+        ) : null;
+      },
     },
   ],
 });
@@ -534,6 +613,9 @@ const tableData = reactive({
 // 切换tab
 const tabsChange = async (val) => {
   if (!ownerAddress.value) return;
+  if (val === "1") {
+    getRecentOrders();
+  }
   if (val === "2") {
     getAccountResource();
   }
@@ -596,42 +678,39 @@ const submitFreeze = async () => {
 // 提交出售表单
 const submitSoldForm = async () => {
   const values = await validate();
-  if (!tronWeb.value.isAddress(values.receiverAddress)) {
-    message.warn(t("global.tronAddress"));
-    return;
-  }
   console.log(values);
   console.log(trxCount.value);
   //此处需要调用查询订单接口确保数量
-  // ...
-  const orderInfo = await getOrderApi({ _id: tableInfo.value._id.toString() })
-  console.log(orderInfo)
-  // const signedTransaction =
-  //   await tronWeb.value.transactionBuilder.freezeBalance(
-  //     values.amount,
-  //     values.duration,
-  //     values.resource,
-  //     ownerAddress.value,
-  //     values.receiverAddress,
-  //     1
-  //   );
-  // const signedTx = await tronWeb.value.trx.sign(signedTransaction);
-  // const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
-  // if (broastTx.result) {
-  //   // 出售后需要将收款地址和订单信息发送到后台给人家转钱
-  //   const res = await sellApi({
-  //     _id: tableInfo.value._id,
-  //     amount: values.amount,
-  //     hash: broastTx.txid,
-  //     ownerAddress: ownerAddress.value,
-  //     receiverAddress: tableInfo.value.receiverAddress
-  //   })
-  //   console.log(res)
-  //   getAccount();
-  //   getAccountResource();
-  //   message.success(t("global.sell") + t("global.success"));
-  //   soldVisible.value = false;
-  // }
+  const { data } = await getOrderApi({ _id: tableInfo.value._id });
+  if (data.status > 0) {
+    message.warning("订单已被出售");
+  } else {
+    const signedTransaction =
+      await tronWeb.value.transactionBuilder.freezeBalance(
+        data.frozenBalance,
+        values.duration,
+        values.resource,
+        ownerAddress.value,
+        values.receiverAddress,
+        1
+      );
+    const signedTx = await tronWeb.value.trx.sign(signedTransaction);
+    const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
+    if (broastTx.result) {
+      // 出售后需要将收款地址和订单信息发送到后台给人家转钱
+      await sellApi({
+        _id: data._id,
+        commission: data.aCommission,
+        hash: broastTx.txid,
+        ownerAddress: ownerAddress.value,
+      });
+      message.success(t("global.sell") + t("global.success"));
+    }
+  }
+  getAccount();
+  getAccountResource();
+  getCurrentOrders();
+  soldVisible.value = false;
 };
 
 // 获取地址资源
