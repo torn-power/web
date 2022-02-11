@@ -31,7 +31,7 @@ export const sellApi = (data) => {
  * @param {*} data
  * @returns
  */
- export const undoApi = (data) => {
+export const undoApi = (data) => {
   return service({
     url: `/order/undo`,
     method: "POST",
@@ -60,7 +60,6 @@ export const getOrderList = (params) => {
   });
 };
 
-
 /**
  * 获取订单详情
  * @returns
@@ -69,5 +68,15 @@ export const getOrderApi = (params) => {
   return service({
     url: "/order/info",
     params,
+  });
+};
+
+/**
+ * 获取收益情况
+ * @returns
+ */
+export const getRentInfoApi = () => {
+  return service({
+    url: "/order/rent_info",
   });
 };

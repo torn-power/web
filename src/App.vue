@@ -45,13 +45,18 @@
           {{ $t("global.currentOrder") }}
         </template>
         <template #extra>
-          <a-select style="width: 160px">
-            <a-select-option value="jack">{{
-              $t("global.highestPrice")
-            }}</a-select-option>
-            <a-select-option value="lucy">{{
-              $t("global.earnings")
-            }}</a-select-option>
+          <a-select
+            v-model:value="currentType"
+            @change="getCurrentOrders"
+            allow-clear
+            style="width: 160px"
+          >
+            <a-select-option value="unitPrice">
+              {{ $t("global.highestPrice") }}
+            </a-select-option>
+            <a-select-option value="earnings">
+              {{ $t("global.earnings") }}
+            </a-select-option>
           </a-select>
         </template>
         <a-table
@@ -90,7 +95,7 @@
             <a-table
               size="small"
               bordered
-              rowKey="_id"
+              rowKey="receiverAddress"
               :dataSource="tableData.freezeDataSource"
               :columns="tableData.freezeColumns"
               :scroll="{ x: true }"
@@ -328,6 +333,7 @@ import {
   computed,
   watch,
   getCurrentInstance,
+  onUnmounted,
 } from "vue";
 import dayjs from "dayjs";
 import { message, Form, Modal } from "ant-design-vue";
@@ -372,6 +378,7 @@ const formRef = ref();
 const activeKey = ref("1");
 const visible = ref(false);
 const soldVisible = ref(false);
+const currentType = ref();
 
 const config = ref({});
 const tableInfo = ref({});
@@ -583,11 +590,14 @@ const tableData = reactive({
     {
       title: () => t("global.remainingAmount"),
       customRender: ({ record }) => {
-        return record.aCommission / 1000000 || 0 + "TRX";
+        return record.settlement === 0
+          ? record.aCommission / 1000000 || 0 + "TRX"
+          : 0;
       },
     },
     {
       title: () => t("global.operation"),
+      align: "center",
       customRender: ({ record }) => {
         return record.status === 3 ? (
           <AButton
@@ -776,7 +786,7 @@ const timeFormat = (timestamp) =>
 
 // 链接钱包
 const linkWallet = async (tronweb, address) => {
-  if (!tronweb || !address) {
+  if (!tronweb && !address) {
     message.warning(t("tip.tip5"));
     return;
   }
@@ -796,7 +806,12 @@ const changeLang = (type) => {
 
 // 获取当前订单
 const getCurrentOrders = async () => {
-  const { data } = await getOrderList({ status: 0, orderType: 0 });
+  soldVisible.value = false;
+  const { data } = await getOrderList({
+    status: 0,
+    orderType: 0,
+    currentType: currentType.value,
+  });
   tableData.currentOrderDataSource = data.results;
 };
 
@@ -829,6 +844,7 @@ watch(
   }
 );
 
+let timer = null;
 onMounted(() => {
   getRecentOrders();
   getCurrentOrders();
@@ -836,11 +852,20 @@ onMounted(() => {
     if (e.data.message && e.data.message.action == "accountsChanged") {
       linkWallet();
       activeKey.value = "1";
+      visible.value = false;
+      soldVisible.value = false;
     }
   });
-
   getConfig();
   useTitle(t("global.title"));
+  timer = setInterval(() => {
+    getRecentOrders();
+    getCurrentOrders();
+  }, 3 * 60 * 1000);
+});
+
+onUnmounted(() => {
+  clearInterval(timer);
 });
 </script>
 
