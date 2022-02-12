@@ -639,6 +639,8 @@ const submitFreeze = async () => {
     if (result.data) {
       getAccount();
       getAccountResource();
+      getCurrentOrders();
+      getRecentOrders();
       visible.value = false;
       message.success(t("global.rent") + t("global.success"));
     }
@@ -682,6 +684,7 @@ const submitSoldForm = async () => {
   getAccount();
   getAccountResource();
   getCurrentOrders();
+  getRecentOrders();
   soldVisible.value = false;
 };
 
