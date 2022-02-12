@@ -1,3 +1,5 @@
+console.log(process.env.VUE_APP_BASE_URL)
+
 module.exports = {
   publicPath: '/',
   pluginOptions: {

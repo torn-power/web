@@ -807,6 +807,7 @@ const changeLang = (type) => {
 // 获取当前订单
 const getCurrentOrders = async () => {
   soldVisible.value = false;
+  tableData.currentOrderDataSource = []
   const { data } = await getOrderList({
     status: 0,
     orderType: 0,
@@ -817,12 +818,14 @@ const getCurrentOrders = async () => {
 
 // 我的买单
 const getBuyOrders = async () => {
+  tableData.buyDataSource = []
   const { data } = await getOrderList({ receiverAddress: ownerAddress.value });
   tableData.buyDataSource = data.results;
 };
 
 // 获取近期完成交易
 const getRecentOrders = async () => {
+  tableData.recentDataSource = []
   const { data } = await getOrderList({ status: 1 });
   tableData.recentDataSource = data.results;
 };
