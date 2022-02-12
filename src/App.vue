@@ -2,28 +2,16 @@
   <a-layout>
     <Header @change="linkWallet" />
     <a-layout-content class="layout">
-      <TopCard
-        :accountResouce="accountResouce"
-        :ownerAddress="ownerAddress"
-        :isMobile="isMobile"
-      />
+      <TopCard :accountResouce="accountResouce" :ownerAddress="ownerAddress" :isMobile="isMobile" />
 
       <a-card class="card-box" size="small" v-if="isMobile">
         <div class="flex-wrap">
-          <a-select
-            style="width: 90px"
-            v-model:value="lang"
-            @change="changeLang"
-          >
+          <a-select style="width: 90px" v-model:value="lang" @change="changeLang">
             <a-select-option value="zh">中文</a-select-option>
             <a-select-option value="en">En</a-select-option>
           </a-select>
           <a-space>
-            <a-button
-              type="primary"
-              :disabled="!ownerAddress"
-              @click="leaseModal"
-            >
+            <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
               <template #icon>
                 <ShoppingCartOutlined />
               </template>
@@ -51,12 +39,8 @@
             allow-clear
             style="width: 160px"
           >
-            <a-select-option value="unitPrice">
-              {{ $t("global.highestPrice") }}
-            </a-select-option>
-            <a-select-option value="earnings">
-              {{ $t("global.earnings") }}
-            </a-select-option>
+            <a-select-option value="unitPrice">{{ $t("global.highestPrice") }}</a-select-option>
+            <a-select-option value="earnings">{{ $t("global.earnings") }}</a-select-option>
           </a-select>
         </template>
         <a-table
@@ -118,11 +102,7 @@
           </a-tab-pane>
           <template #tabBarExtraContent v-if="!isMobile">
             <a-space>
-              <a-button
-                type="primary"
-                :disabled="!ownerAddress"
-                @click="leaseModal"
-              >
+              <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
                 <template #icon>
                   <ShoppingCartOutlined />
                 </template>
@@ -134,11 +114,7 @@
                 </template>
                 {{ $t("global.sell") }}
               </a-button>
-              <a-select
-                style="width: 90px"
-                v-model:value="lang"
-                @change="changeLang"
-              >
+              <a-select style="width: 90px" v-model:value="lang" @change="changeLang">
                 <a-select-option value="zh">中文</a-select-option>
                 <a-select-option value="en">En</a-select-option>
               </a-select>
@@ -233,10 +209,7 @@
         />
       </a-form-item>
 
-      <a-form-item
-        :label="$t('global.freeze') + t('global.time')"
-        v-bind="validateInfos.duration"
-      >
+      <a-form-item :label="$t('global.freeze') + t('global.time')" v-bind="validateInfos.duration">
         <a-tooltip :title="$t('tip.freezeToolTip')">
           <a-input-number
             :placeholder="$t('tip.freezeTip')"
@@ -252,12 +225,8 @@
 
       <div class="modal-info">
         <div>{{ $t("global.orderAmount") }}：{{ needTrxCount || 0 }} TRX</div>
-        <div>
-          {{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX
-        </div>
-        <div>
-          {{ $t("tip.tip1") }}：{{ (trxCount - needTrxCount).toFixed(2) }} TRX
-        </div>
+        <div>{{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX</div>
+        <div>{{ $t("tip.tip1") }}：{{ (trxCount - needTrxCount).toFixed(2) }} TRX</div>
       </div>
     </a-form>
   </a-modal>
@@ -290,15 +259,8 @@
         />
       </a-form-item>
 
-      <a-form-item
-        :label="$t('global.yourAddress')"
-        v-bind="validateInfos.ownerAddress"
-      >
-        <a-input
-          v-model:value="formState.ownerAddress"
-          :placeholder="$t('tip.tip2')"
-          allow-clear
-        />
+      <a-form-item :label="$t('global.yourAddress')" v-bind="validateInfos.ownerAddress">
+        <a-input v-model:value="formState.ownerAddress" :placeholder="$t('tip.tip2')" allow-clear />
       </a-form-item>
 
       <div class="modal-info">
@@ -308,17 +270,13 @@
           }}
           TRX
         </div>
-        <div>
-          {{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX
-        </div>
+        <div>{{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX</div>
         <div>
           {{ $t("global.freeze") + $t("global.time") }}： 3{{
             $t("global.days")
           }}
         </div>
-        <div>
-          {{ $t("global.income") }}：{{ tableInfo.aCommission / 1000000 }} TRX
-        </div>
+        <div>{{ $t("global.income") }}：{{ tableInfo.aCommission / 1000000 }} TRX</div>
       </div>
     </a-form>
   </a-modal>
@@ -643,14 +601,18 @@ const leaseModal = () => {
 
 // trx转账接口
 const transactionTrx = async (amount) => {
-  const tx = await tronWeb.value.transactionBuilder.sendTrx(
-    config.value.address,
-    amount,
-    ownerAddress.value
-  );
-  const signedTx = await tronWeb.value.trx.sign(tx);
-  const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
-  return broastTx.result;
+  try {
+    const tx = await tronWeb.value.transactionBuilder.sendTrx(
+      config.value.address,
+      amount,
+      ownerAddress.value
+    );
+    const signedTx = await tronWeb.value.trx.sign(tx);
+    const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
+    return broastTx.result;
+  } catch (error) {
+    message.error(error)
+  }
 };
 
 // 提交租赁表单
@@ -674,7 +636,7 @@ const submitFreeze = async () => {
     };
     console.log(formData);
     const result = await freezeApi(formData);
-    if (result) {
+    if (result.data) {
       getAccount();
       getAccountResource();
       visible.value = false;
@@ -786,7 +748,7 @@ const timeFormat = (timestamp) =>
 
 // 链接钱包
 const linkWallet = async (tronweb, address) => {
-  if (!tronweb && !address) {
+  if (!tronweb || !address) {
     message.warning(t("tip.tip5"));
     return;
   }
@@ -853,7 +815,6 @@ onMounted(() => {
   getCurrentOrders();
   window.addEventListener("message", (e) => {
     if (e.data.message && e.data.message.action == "accountsChanged") {
-      linkWallet();
       activeKey.value = "1";
       visible.value = false;
       soldVisible.value = false;
