@@ -562,7 +562,7 @@ const tableData = reactive({
       title: () => t("global.operation"),
       align: "center",
       customRender: ({ record }) => {
-        return record.status === 3 ? (
+        return record.status === 0 ? (
           <AButton
             type="primary"
             onClick={() => {
