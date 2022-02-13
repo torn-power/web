@@ -205,7 +205,7 @@
           :min="config.energyPrice"
         />
         <a-input-number
-        v-else
+          v-else
           style="width: 300px"
           :precision="0"
           v-model:value="formState.unitPrice"
@@ -571,6 +571,9 @@ const tableData = reactive({
                 onOk: async () => {
                   const res = await undoApi({ _id: record._id });
                   message.info(res.message);
+                  getRecentOrders();
+                  getCurrentOrders();
+                  getBuyOrders();
                 },
               });
             }}
