@@ -256,6 +256,7 @@
           :precision="0"
           :min="0"
           allow-clear
+          disabled
         />
       </a-form-item>
 
