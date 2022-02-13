@@ -604,6 +604,7 @@ const tabsChange = async (val) => {
 const leaseModal = () => {
   resetFields();
   formState.ownerAddress = ownerAddress.value;
+  formState.receiverAddress = ownerAddress.value;
   visible.value = true;
 };
 
@@ -629,6 +630,10 @@ const submitFreeze = async () => {
   if (!tronWeb.value.isAddress(values.receiverAddress)) {
     message.warn(t("global.tronAddress"));
     return;
+  }
+  if(needTrxCount.value > accountResouce.value.balance) {
+    message.warn(t("你的金额不足"));
+    return
   }
   const res = await transactionTrx(toSun(needTrxCount.value));
   if (res) {
@@ -813,9 +818,9 @@ watch(
   () => formState.resource,
   (val) => {
     if (val === "ENERGY") {
-      formState.amount = 100000;
+      formState.amount = config.value.minEnergyNumber;
     } else {
-      formState.amount = 100;
+      formState.amount = config.value.minBandwidthNumber;
     }
   }
 );
