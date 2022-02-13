@@ -200,12 +200,16 @@
         <a-input-number
           style="width: 300px"
           :precision="0"
+          v-if="formState.resource === 'ENERGY'"
           v-model:value="formState.unitPrice"
-          :min="
-            formState.resource === 'ENERGY'
-              ? config.energyPrice
-              : config.bandwidthPrice
-          "
+          :min="config.energyPrice"
+        />
+        <a-input-number
+        v-else
+          style="width: 300px"
+          :precision="0"
+          v-model:value="formState.unitPrice"
+          :min="config.bandwidthPrice"
         />
       </a-form-item>
 

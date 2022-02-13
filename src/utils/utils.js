@@ -57,7 +57,7 @@ export const sellTip = () => {
         </p>
         <Space>
           <img src="/telegram.png" width="24" />
-          <a href="https://t.me/pangu_encrypt">@pangu_encrypt</a>
+          <a href="https://t.me/Tron energy-sharing">@Tron energy-sharing</a>
         </Space>
       </div>
     ),
