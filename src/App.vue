@@ -449,6 +449,7 @@ const tableData = reactive({
             size="small"
             type="primary"
             shape="round"
+            disabled={!ownerAddress.value}
             onClick={() => {
               resetFields();
               tableInfo.value = record;
@@ -562,26 +563,25 @@ const tableData = reactive({
       title: () => t("global.operation"),
       align: "center",
       customRender: ({ record }) => {
-        return record.status === 0 ? (
-          <AButton
-            type="primary"
-            onClick={() => {
-              Modal.confirm({
-                title: () => "确定撤销？",
-                content: '此操作将扣除1TRX手续费',
-                onOk: async () => {
-                  const res = await undoApi({ _id: record._id });
-                  message.info(res.message);
-                  getRecentOrders();
-                  getCurrentOrders();
-                  getBuyOrders();
-                },
-              });
-            }}
-          >
-            撤单
-          </AButton>
-        ) : null;
+        return <AButton
+          type="primary"
+          disabled={record.status !== 0}
+          onClick={() => {
+            Modal.confirm({
+              title: () => "确定撤销？",
+              content: '此操作将扣除1TRX手续费',
+              onOk: async () => {
+                const res = await undoApi({ _id: record._id });
+                message.info(res.message);
+                getRecentOrders();
+                getCurrentOrders();
+                getBuyOrders();
+              },
+            });
+          }}
+        >
+          撤单
+        </AButton>
       },
     },
   ],
@@ -635,7 +635,7 @@ const submitFreeze = async () => {
   }
   console.log(needTrxCount.value, accountResouce.value.balance)
   if (+needTrxCount.value > +accountResouce.value.balance) {
-    message.warn(t("你的金额不足"));
+    message.warn(t("账户余额不足"));
     return
   }
   try {
@@ -653,7 +653,7 @@ const submitFreeze = async () => {
       };
       console.log(formData);
       const result = await freezeApi(formData);
-      if (result.data) {
+      if (result.status === 200) {
         message.success(t("global.rent") + t("global.success"));
       } else {
         message.warning(t("global.rent") + t("global.fail"));
@@ -677,6 +677,10 @@ const submitSoldForm = async () => {
   const values = await validate();
   console.log(values);
   console.log(trxCount.value);
+  if(parseInt(tableInfo.value.frozenBalance) / 1000000 > accountResouce.value.balance){
+    message.warning("账户余额不足");
+    return
+  }
   //此处需要调用查询订单接口确保数量
   try {
     const { data } = await getOrderApi({ _id: tableInfo.value._id });
@@ -743,17 +747,19 @@ const getAccount = async () => {
 };
 
 // 计算需要用户支付多少TRX
-const needTrxCount = computed(() =>
-  fromSun((formState.amount * formState.unitPrice).toFixed(2))
-);
+const needTrxCount = computed(() => {
+  const res = +fromSun((formState.amount * formState.unitPrice).toFixed(2))
+  return res > 1 ? res : 1
+});
 
 // 计算原价需要多少TRX
 const trxCount = computed(() =>
-  (formState.amount / resourceCount()).toFixed(2)
+  +(formState.amount / resourceCount()).toFixed(2)
 );
 
 // 计算不同资源情况下用户能获得多少资源
 const resourceCount = () => {
+  // console.log(accountResouce.value.bandwidth)
   if (formState.resource === "ENERGY") {
     return +(
       accountResouce.value.bandwidth?.totalEnergyLimit /
@@ -833,8 +839,10 @@ watch(
   (val) => {
     if (val === "ENERGY") {
       formState.amount = config.value.minEnergyNumber;
+      formState.unitPrice = config.value.energyPrice;
     } else {
       formState.amount = config.value.minBandwidthNumber;
+      formState.unitPrice = config.value.bandwidthPrice;
     }
   }
 );
