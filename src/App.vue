@@ -662,7 +662,7 @@ const submitFreeze = async () => {
       message.warning(t("global.rent") + t("global.fail"));
     }
   } catch (error) {
-    message.warning(error);
+    message.warning(error || '冻结有误，请联系客服');
   } finally {
     getAccount();
     getAccountResource();
