@@ -568,6 +568,7 @@ const tableData = reactive({
             onClick={() => {
               Modal.confirm({
                 title: () => "确定撤销？",
+                content: '此操作将扣除1TRX手续费',
                 onOk: async () => {
                   const res = await undoApi({ _id: record._id });
                   message.info(res.message);
@@ -621,6 +622,7 @@ const transactionTrx = async (amount) => {
     return broastTx.result;
   } catch (error) {
     message.error(error)
+    return false
   }
 };
 
@@ -631,34 +633,42 @@ const submitFreeze = async () => {
     message.warn(t("global.tronAddress"));
     return;
   }
-  if(needTrxCount.value > accountResouce.value.balance) {
+  console.log(needTrxCount.value, accountResouce.value.balance)
+  if (+needTrxCount.value > +accountResouce.value.balance) {
     message.warn(t("你的金额不足"));
     return
   }
-  const res = await transactionTrx(toSun(needTrxCount.value));
-  if (res) {
-    const formData = {
-      ownerAddress: ownerAddress.value,
-      receiverAddress: values.receiverAddress,
-      commission: toSun(needTrxCount.value),
-      frozenBalance: toSun(trxCount.value),
-      resource: values.resource,
-      resourceValue: values.amount,
-      unitPrice: values.unitPrice,
-      duration: values.duration,
-    };
-    console.log(formData);
-    const result = await freezeApi(formData);
-    if (result.data) {
-      getAccount();
-      getAccountResource();
-      getCurrentOrders();
-      getRecentOrders();
-      visible.value = false;
-      message.success(t("global.rent") + t("global.success"));
+  try {
+    const res = await transactionTrx(toSun(needTrxCount.value));
+    if (res) {
+      const formData = {
+        ownerAddress: ownerAddress.value,
+        receiverAddress: values.receiverAddress,
+        commission: toSun(needTrxCount.value),
+        frozenBalance: toSun(trxCount.value),
+        resource: values.resource,
+        resourceValue: values.amount,
+        unitPrice: values.unitPrice,
+        duration: values.duration,
+      };
+      console.log(formData);
+      const result = await freezeApi(formData);
+      if (result.data) {
+        message.success(t("global.rent") + t("global.success"));
+      } else {
+        message.warning(t("global.rent") + t("global.fail"));
+      }
+    } else {
+      message.warning(t("global.rent") + t("global.fail"));
     }
-  } else {
-    message.warning(t("global.rent") + t("global.fail"));
+  } catch (error) {
+    message.warning(error);
+  } finally {
+    getAccount();
+    getAccountResource();
+    getCurrentOrders();
+    getRecentOrders();
+    visible.value = false;
   }
 };
 
@@ -668,31 +678,35 @@ const submitSoldForm = async () => {
   console.log(values);
   console.log(trxCount.value);
   //此处需要调用查询订单接口确保数量
-  const { data } = await getOrderApi({ _id: tableInfo.value._id });
-  if (data.status > 0) {
-    message.warning("订单已被出售");
-  } else {
-    const signedTransaction =
-      await tronWeb.value.transactionBuilder.freezeBalance(
-        data.frozenBalance,
-        values.duration,
-        values.resource,
-        ownerAddress.value,
-        values.receiverAddress,
-        1
-      );
-    const signedTx = await tronWeb.value.trx.sign(signedTransaction);
-    const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
-    if (broastTx.result) {
-      // 出售后需要将收款地址和订单信息发送到后台给人家转钱
-      await sellApi({
-        _id: data._id,
-        commission: data.aCommission,
-        hash: broastTx.txid,
-        ownerAddress: ownerAddress.value,
-      });
-      message.success(t("global.sell") + t("global.success"));
+  try {
+    const { data } = await getOrderApi({ _id: tableInfo.value._id });
+    if (data.status > 0) {
+      message.warning("订单已被出售");
+    } else {
+      const signedTransaction =
+        await tronWeb.value.transactionBuilder.freezeBalance(
+          data.frozenBalance,
+          values.duration,
+          values.resource,
+          ownerAddress.value,
+          values.receiverAddress,
+          1
+        );
+      const signedTx = await tronWeb.value.trx.sign(signedTransaction);
+      const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
+      if (broastTx.result) {
+        // 出售后需要将收款地址和订单信息发送到后台给人家转钱
+        await sellApi({
+          _id: data._id,
+          commission: data.aCommission,
+          hash: broastTx.txid,
+          ownerAddress: ownerAddress.value,
+        });
+        message.success(t("global.sell") + t("global.success"));
+      }
     }
+  } catch (error) {
+    message.success(error);
   }
   getAccount();
   getAccountResource();
@@ -741,12 +755,12 @@ const trxCount = computed(() =>
 // 计算不同资源情况下用户能获得多少资源
 const resourceCount = () => {
   if (formState.resource === "ENERGY") {
-    return (
+    return +(
       accountResouce.value.bandwidth?.totalEnergyLimit /
       accountResouce.value.bandwidth?.totalEnergyWeight
     ).toFixed(2);
   }
-  return (
+  return +(
     accountResouce.value.bandwidth?.totalNetLimit /
     accountResouce.value.bandwidth?.totalNetWeight
   ).toFixed(2);
