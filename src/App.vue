@@ -619,7 +619,9 @@ const transactionTrx = async (amount) => {
     );
     const signedTx = await tronWeb.value.trx.sign(tx);
     const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
-    return broastTx.result;
+    if (broastTx.result) return true
+    message.warning(broastTx.code);
+    return false;
   } catch (error) {
     message.error(error)
     return false
@@ -677,7 +679,7 @@ const submitSoldForm = async () => {
   const values = await validate();
   console.log(values);
   console.log(trxCount.value);
-  if(parseInt(tableInfo.value.frozenBalance) / 1000000 > accountResouce.value.balance){
+  if (parseInt(tableInfo.value.frozenBalance) / 1000000 > accountResouce.value.balance) {
     message.warning("账户余额不足");
     return
   }
@@ -707,10 +709,13 @@ const submitSoldForm = async () => {
           ownerAddress: ownerAddress.value,
         });
         message.success(t("global.sell") + t("global.success"));
+      } else {
+        message.warning(broastTx.code);
       }
     }
   } catch (error) {
-    message.success(error);
+    console.log(error)
+    message.warning(error);
   }
   getAccount();
   getAccountResource();
