@@ -53,10 +53,11 @@ export const getConfig = () => {
  * 订单列表
  * @returns
  */
-export const getOrderList = (params) => {
+export const getOrderList = (data) => {
   return service({
     url: "/order/lists",
-    params,
+    method:'POST',
+    data,
   });
 };
 
