@@ -1,43 +1,33 @@
 <template>
   <a-carousel v-if="isMobile" dotsClass="dotsClass">
     <a-card style="min-width: 350px">
-      <template #title>
-        {{ $t("global.address") }}：{{ ownerAddress || $t("global.linkTip") }}
-      </template>
+      <template #title>{{ $t("global.address") }}：{{ ownerAddress || $t("global.linkTip") }}</template>
       <template #extra>
         <RedditOutlined />
       </template>
       <p>{{ $t("global.available") }}: {{ accountResouce.balance || 0 }} TRX</p>
-      <p>
-        {{ $t("global.freeze") }}: {{ accountResouce.totalFrozen || 0 }} TRX
-      </p>
+      <p>{{ $t("global.freeze") }}: {{ accountResouce.totalFrozen || 0 }} TRX</p>
     </a-card>
     <a-card :title="$t('global.dailyRental')" style="min-width: 350px">
       <p>
         {{ $t("global.totalVolume") }}:
-        {{ accountResouce.frozenForBandWidth || 0 }} TRX
+        {{ rent.platformSum / 1000000 || 0 }} TRX
       </p>
       <p>
         {{ $t("global.totalSellersIncome") }}:
-        {{ accountResouce.delegateFrozenForBandWidth || 0 }} TRX
+        {{ rent.sellerEarnings / 1000000 || 0 }} TRX
       </p>
     </a-card>
   </a-carousel>
   <a-row v-else :gutter="[20, 20]" type="flex" justify="center" align="middle">
     <a-col :xl="6">
       <a-card style="min-width: 350px">
-        <template #title>
-          {{ $t("global.address") }}：{{ ownerAddress || $t("global.linkTip") }}
-        </template>
+        <template #title>{{ $t("global.address") }}：{{ ownerAddress || $t("global.linkTip") }}</template>
         <template #extra>
           <RedditOutlined />
         </template>
-        <p>
-          {{ $t("global.available") }}: {{ accountResouce.balance || 0 }} TRX
-        </p>
-        <p>
-          {{ $t("global.freeze") }}: {{ accountResouce.totalFrozen || 0 }} TRX
-        </p>
+        <p>{{ $t("global.available") }}: {{ accountResouce.balance || 0 }} TRX</p>
+        <p>{{ $t("global.freeze") }}: {{ accountResouce.totalFrozen || 0 }} TRX</p>
       </a-card>
     </a-col>
     <a-col :xl="6">
