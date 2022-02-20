@@ -49,7 +49,7 @@ export const sellTip = () => {
         <p>{i18n.global.t('tip.tip3')}</p>
         <Space>
           <img src="/telegram.png" width="24" />
-          <a href="https://t.me/pangu_encrypt">@pangu_encrypt</a>
+          <a href="https://t.me/Tron_energysharing" target='_blank'>@Tron_energysharing</a>
         </Space>
         <Divider />
         <p>
@@ -57,7 +57,7 @@ export const sellTip = () => {
         </p>
         <Space>
           <img src="/telegram.png" width="24" />
-          <a href="https://t.me/tronenergysharing" _target='blank'>@Tron energy-sharing</a>
+          <a href="https://t.me/tronenergysharing" target='_blank'>@Tron energy-sharing</a>
         </Space>
       </div>
     ),

@@ -240,7 +240,7 @@
           <div class="modal-info">
             <div>{{ $t("global.orderAmount") }}：{{ needTrxCount || 0 }} TRX</div>
             <div>{{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX</div>
-            <div>{{ $t("tip.tip1") }}：{{ (trxCount - needTrxCount).toFixed(2) }} TRX</div>
+            <div>{{ $t("tip.tip1") }}：{{ (trxCount - needTrxCount).toFixed(2) || 0 }} TRX</div>
           </div>
         </a-form>
       </a-modal>
@@ -576,7 +576,7 @@ const tableData = reactive({
       title: () => t("global.remainingAmount"),
       customRender: ({ record }) => {
         return record.settlement === 0
-          ? record.aCommission / 1000000 || 0 + "TRX"
+          ? (record.commission / 1000000) - 1 || 0 + "TRX"
           : 0;
       },
     },
@@ -753,7 +753,7 @@ const submitSoldForm = async () => {
 // 获取地址资源
 const getAccountResource = async () => {
   const res = await getAccountResourceApi({
-    limit: 5000,
+    limit: 20,
     type: 2,
     start: 0,
     address: ownerAddress.value,
@@ -779,18 +779,17 @@ const getAccount = async () => {
 
 // 计算需要用户支付多少TRX
 const needTrxCount = computed(() => {
-  const res = +fromSun((formState.amount * formState.unitPrice).toFixed(2))
+  const res = +fromSun((formState.amount * formState.unitPrice * formState.duration).toFixed(2)) || 0
   return res > 1 ? res : 1
 });
 
 // 计算原价需要多少TRX
 const trxCount = computed(() =>
-  +(formState.amount / resourceCount()).toFixed(2)
+  +(formState.amount / resourceCount.value).toFixed(2)
 );
 
 // 计算不同资源情况下用户能获得多少资源
-const resourceCount = () => {
-  // console.log(accountResouce.value.bandwidth)
+const resourceCount = computed(() => {
   if (formState.resource === "ENERGY") {
     return +(
       accountResouce.value.bandwidth?.totalEnergyLimit /
@@ -801,7 +800,7 @@ const resourceCount = () => {
     accountResouce.value.bandwidth?.totalNetLimit /
     accountResouce.value.bandwidth?.totalNetWeight
   ).toFixed(2);
-};
+})
 
 // 将sun转换成trx单位
 const fromSun = (val) => (val ? tronWeb.value.fromSun(val) : 0);
