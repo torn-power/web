@@ -240,7 +240,7 @@
           <div class="modal-info">
             <div>{{ $t("global.orderAmount") }}：{{ needTrxCount || 0 }} TRX</div>
             <div>{{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX</div>
-            <div>{{ $t("tip.tip1") }}：{{ (trxCount - needTrxCount).toFixed(2) || 0 }} TRX</div>
+            <div>{{ $t("tip.tip1") }}：{{ ((trxCount - needTrxCount)* formState.duration).toFixed(2) || 0 }} TRX</div>
           </div>
         </a-form>
       </a-modal>
