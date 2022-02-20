@@ -8,7 +8,7 @@ const PROD_URL = "https://apilist.tronscan.org/api";
 
 const flag = 2;
 
-const URL = 1 === flag ? PROD_URL : TEST_URL;
+const URL = 2 === flag ? PROD_URL : TEST_URL;
 
 /**
  * 获取钱包地址信息
