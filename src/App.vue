@@ -451,7 +451,7 @@ const tableData = reactive({
         return (
           <div>
             <div>
-              {t("global.income")} : {record.aCommission / 1000000} TRX
+              {t("global.income")} : {parseInt(record.aCommission / 1000000)} TRX
             </div>
             <div>
               {t("global.freeze")} : {parseInt(record.frozenBalance) / 1000000}{" "}
@@ -504,7 +504,7 @@ const tableData = reactive({
     {
       title: () => t("global.income"),
       customRender: ({ record }) => {
-        return record.commission / 1000000 + "TRX";
+        return parseInt(record.commission / 1000000) + "TRX";
       },
     },
     {
@@ -576,7 +576,7 @@ const tableData = reactive({
       title: () => t("global.remainingAmount"),
       customRender: ({ record }) => {
         return record.settlement === 0
-          ? (record.commission / 1000000) - 1 || 0 + "TRX"
+          ? parseInt(record.commission / 1000000) - 1 || 0 + "TRX"
           : 0;
       },
     },
