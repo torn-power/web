@@ -240,12 +240,7 @@
           <div class="modal-info">
             <div>{{ $t("global.orderAmount") }}：{{ needTrxCount || 0 }} TRX</div>
             <div>{{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX</div>
-            <div
-              v-if="formState.resource === 'ENERGY'"
-            >{{ $t("tip.tip1") }}：{{ ((trxCount - needTrxCount) * formState.duration).toFixed(2) || 0 }} TRX</div>
-            <div
-              v-else
-            >{{ $t("tip.tip1") }}：{{ ((trxCount - needTrxCount)).toFixed(2) || 0 }} TRX</div>
+            <div>{{ $t("tip.tip1") }}：{{ saveTrx || 0 }} TRX</div>
           </div>
         </a-form>
       </a-modal>
@@ -456,7 +451,7 @@ const tableData = reactive({
         return (
           <div>
             <div>
-              {t("global.income")} : {record.aCommission / 1000000} TRX
+              {t("global.income")} : {parseInt(record.aCommission / 1000000)} TRX
             </div>
             <div>
               {t("global.freeze")} : {parseInt(record.frozenBalance) / 1000000}{" "}
@@ -509,7 +504,7 @@ const tableData = reactive({
     {
       title: () => t("global.income"),
       customRender: ({ record }) => {
-        return record.commission / 1000000 + "TRX";
+        return parseInt(record.commission / 1000000) + "TRX";
       },
     },
     {
@@ -581,7 +576,7 @@ const tableData = reactive({
       title: () => t("global.remainingAmount"),
       customRender: ({ record }) => {
         return record.settlement === 0
-          ? (record.commission / 1000000) - 1 || 0 + "TRX"
+          ? parseInt(record.commission / 1000000) - 1 || 0 + "TRX"
           : 0;
       },
     },
@@ -778,23 +773,35 @@ const getAccount = async () => {
     frozenForBandWidth: fromSun(res.frozenForBandWidth),
     delegateFrozenForBandWidth: fromSun(res.delegateFrozenForBandWidth),
     totalFrozen: fromSun(res.totalFrozen), // 总的已质押
-    balance: fromSun(res.balance), //可用trx
+    balance: parseInt(fromSun(res.balance)), //可用trx
   };
 };
 
 // 计算需要用户支付多少TRX
 const needTrxCount = computed(() => {
-  const res = +fromSun((formState.amount * formState.unitPrice * formState.duration).toFixed(2)) || 0
-  return res > 1 ? res : 1
+  const res = +fromSun(formState.amount * formState.unitPrice * formState.duration) || 0
+  return res > 1 ? Math.ceil(res) : 1
 });
 
 // 计算原价需要多少TRX
 const trxCount = computed(() =>
-  +(formState.amount / resourceCount.value).toFixed(2)
+  +(formState.amount / resourceCount()).toFixed(2)
 );
 
+// 节约
+const saveTrx = computed(() => {
+  if (formState.resource === "ENERGY") {
+    return +(
+      (formState.amount / 100000) * 84 - (formState.amount * (9 / 100000)) * (formState.unitPrice / 30)
+    ).toFixed(2);
+  }
+  return +(
+    (3 * formState.amount / 1000) - ((15 * formState.amount / 10000) * (formState.unitPrice / 500))
+  ).toFixed(2);
+})
+
 // 计算不同资源情况下用户能获得多少资源
-const resourceCount = computed(() => {
+const resourceCount = () => {
   if (formState.resource === "ENERGY") {
     return +(
       accountResouce.value.bandwidth?.totalEnergyLimit /
@@ -805,7 +812,7 @@ const resourceCount = computed(() => {
     accountResouce.value.bandwidth?.totalNetLimit /
     accountResouce.value.bandwidth?.totalNetWeight
   ).toFixed(2);
-})
+}
 
 // 将sun转换成trx单位
 const fromSun = (val) => (val ? tronWeb.value.fromSun(val) : 0);
