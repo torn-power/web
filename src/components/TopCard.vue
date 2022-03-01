@@ -1,5 +1,20 @@
 <template>
   <a-carousel v-if="isMobile" dotsClass="dotsClass">
+    <a-card
+      :title="$t('global.game1')"
+      class="game-card"
+      @click="goGame"
+      style="min-width: 350px"
+    >
+      <!-- <p>
+          {{ $t("global.totalVolume") }}:
+          {{ rent.platformSum / 1000000 || 0 }} TRX
+        </p>
+        <p>
+          {{ $t("global.totalSellersIncome") }}:
+          {{ rent.sellerEarnings / 1000000 || 0 }} TRX
+      </p>-->
+    </a-card>
     <a-card style="min-width: 350px">
       <template #title>{{ $t("global.address") }}：{{ ownerAddress || $t("global.linkTip") }}</template>
       <template #extra>
@@ -8,7 +23,7 @@
       <p>{{ $t("global.available") }}: {{ accountResouce.balance || 0 }} TRX</p>
       <p>{{ $t("global.freeze") }}: {{ accountResouce.totalFrozen || 0 }} TRX</p>
     </a-card>
-    <a-card :title="$t('global.dailyRental')" style="min-width: 350px">
+    <!-- <a-card :title="$t('global.dailyRental')" style="min-width: 350px">
       <p>
         {{ $t("global.totalVolume") }}:
         {{ rent.platformSum / 1000000 || 0 }} TRX
@@ -17,7 +32,7 @@
         {{ $t("global.totalSellersIncome") }}:
         {{ rent.sellerEarnings / 1000000 || 0 }} TRX
       </p>
-    </a-card>
+    </a-card>-->
   </a-carousel>
   <a-row v-else :gutter="[20, 20]" type="flex" justify="center" align="middle">
     <a-col :xl="6">
@@ -84,29 +99,29 @@
       </a-card>
     </a-col>
     <a-col :xl="6">
-      <a-card :title="$t('global.dailyRental')" style="min-width: 350px">
-        <p>
+      <a-card :title="$t('global.game1')" class="game-card" style="min-width: 350px">
+        <!-- <p>
           {{ $t("global.totalVolume") }}:
           {{ rent.platformSum / 1000000 || 0 }} TRX
         </p>
         <p>
           {{ $t("global.totalSellersIncome") }}:
           {{ rent.sellerEarnings / 1000000 || 0 }} TRX
-        </p>
+        </p>-->
       </a-card>
     </a-col>
   </a-row>
 </template>
 
 <script>
-import { defineComponent, onMounted, onUnmounted, ref } from "vue";
+import { defineComponent } from "vue";
 import {
   RedditOutlined,
   DeploymentUnitOutlined,
   ThunderboltOutlined,
 } from "@ant-design/icons-vue";
-import * as orderApi from "../api/server";
-let timer = null;
+// import * as orderApi from "../api/server";
+// let timer = null;
 export default defineComponent({
   components: {
     RedditOutlined,
@@ -128,26 +143,31 @@ export default defineComponent({
     },
   },
   setup() {
-    const rent = ref({ platformSum: 0, sellerEarnings: 0 });
+    // const rent = ref({ platformSum: 0, sellerEarnings: 0 });
 
-    const getRentInfo = async () => {
-      const { data } = await orderApi.getRentInfoApi();
-      rent.value = data;
-    };
+    // const getRentInfo = async () => {
+    //   const { data } = await orderApi.getRentInfoApi();
+    //   rent.value = data;
+    // };
 
-    onMounted(() => {
-      getRentInfo();
-      timer = setInterval(() => {
-        getRentInfo();
-      }, 5 * 60 * 1000);
-    });
+    // onMounted(() => {
+    //   getRentInfo();
+    //   timer = setInterval(() => {
+    //     getRentInfo();
+    //   }, 5 * 60 * 1000);
+    // });
 
-    onUnmounted(() => {
-      clearInterval(timer);
-    });
+    // onUnmounted(() => {
+    //   clearInterval(timer);
+    // });
+
+    const goGame = () => {
+      // window.open('/', '_blank')
+    }
 
     return {
-      rent,
+      goGame
+      // rent,
     };
   },
 });
@@ -160,6 +180,18 @@ export default defineComponent({
   }
   .slick-active > button {
     background-color: #f38031 !important;
+  }
+}
+
+.game-card {
+  .ant-card-body {
+    padding: 0;
+    width: 100%;
+    height: 120px;
+    background-image: url("/game1.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
   }
 }
 </style>
