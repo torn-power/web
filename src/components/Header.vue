@@ -22,8 +22,8 @@
 
 <script>
 import { defineComponent, onMounted, ref } from "vue";
-import { message } from "ant-design-vue";
-import { useI18n } from "vue-i18n";
+// import { message } from "ant-design-vue";
+// import { useI18n } from "vue-i18n";
 
 import { ApiOutlined } from "@ant-design/icons-vue";
 export default defineComponent({
@@ -31,22 +31,24 @@ export default defineComponent({
   emits: ["change"],
   setup(_props, { emit }) {
     const ownerAddress = ref();
-    const { t } = useI18n();
+    // const { t } = useI18n();
 
     const linkWallet = async () => {
       if (window.tronWeb) {
+        console.log(window.tronWeb)
         // if (window.tronLink.ready) {
-        if (window.tronWeb.fullNode.host === "https://api.trongrid.io") {
+        // if (window.tronWeb.fullNode.host === "https://api.trongrid.io") {
           ownerAddress.value = window.tronWeb.defaultAddress.base58;
           emit("change", window.tronWeb, ownerAddress.value);
-        } else {
-          message.warning("请切换到TRON正式网使用");
-        }
+        // } else {
+        //   message.warning("请切换到TRON正式网使用");
+        // }
         // } else {
         //     message.warning(t('tip.tip5'));
         // }
-      } else {
-        message.warning(t("tip.tip6") + ": https://www.tronlink.org/cn/");
+      // } else {
+      //   message.warning(t("tip.tip6") + ": https://www.tronlink.org/cn/");
+      // }
       }
     };
 
