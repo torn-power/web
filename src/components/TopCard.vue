@@ -1,11 +1,9 @@
 <template>
   <a-carousel v-if="isMobile" dotsClass="dotsClass">
-    <a-card
-      :title="$t('global.game1')"
-      class="game-card"
-      @click="goGame"
-      style="min-width: 350px"
-    >
+    <a-card :title="$t('global.game1')" class="game-card" @click="goGame" style="min-width: 350px">
+      <template v-slot:extra>
+        <img src="/telegram.png" width="24" @click="openTelegram" />
+      </template>
       <!-- <p>
           {{ $t("global.totalVolume") }}:
           {{ rent.platformSum / 1000000 || 0 }} TRX
@@ -100,6 +98,9 @@
     </a-col>
     <a-col :xl="6">
       <a-card :title="$t('global.game1')" class="game-card" style="min-width: 350px">
+        <template v-slot:extra>
+          <img src="/telegram.png" width="24" @click="openTelegram" />
+        </template>
         <!-- <p>
           {{ $t("global.totalVolume") }}:
           {{ rent.platformSum / 1000000 || 0 }} TRX
@@ -165,8 +166,13 @@ export default defineComponent({
       // window.open('/', '_blank')
     }
 
+    const openTelegram = () => {
+      window.open('https://t.me/wdccn', '_blank')
+    }
+
     return {
-      goGame
+      goGame,
+      openTelegram
       // rent,
     };
   },
