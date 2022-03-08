@@ -52,7 +52,8 @@ const messages = {
             pledge: 'Pledge',
             orderAmount: 'Order Amount',
             yourBlance: 'Your Balance',
-            yourAddress: 'Your payment address'
+            yourAddress: 'Your payment address',
+            game1:'Wild Continent https://jxgamefi.com/'
         },
         tip: {
             ownerAddress: 'Please enter your wallet address',
@@ -127,7 +128,8 @@ const messages = {
             pledge: '质押',
             orderAmount: '订单金额',
             yourBlance: '你的余额',
-            yourAddress: '你的收款地址'
+            yourAddress: '你的收款地址',
+            game1:'蛮荒大陆链游 https://jxgamefi.com/'
         },
         tip: {
             ownerAddress: '请输入你的钱包地址',
