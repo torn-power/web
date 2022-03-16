@@ -56,7 +56,7 @@ export const getConfig = () => {
 export const getOrderList = (data) => {
   return service({
     url: "/order/lists",
-    method:'POST',
+    method: "POST",
     data,
   });
 };
@@ -68,6 +68,13 @@ export const getOrderList = (data) => {
 export const getOrderApi = (params) => {
   return service({
     url: "/order/info",
+    params,
+  });
+};
+
+export const getOrderByIdWriting = (params) => {
+  return service({
+    url: "/order/writing",
     params,
   });
 };

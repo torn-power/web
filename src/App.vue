@@ -351,6 +351,7 @@ import {
   sellApi,
   getOrderApi,
   undoApi,
+  getOrderByIdWriting
 } from "./api/server";
 
 const isMobile = useMediaQuery("(max-width: 750px)");
@@ -709,8 +710,8 @@ const submitSoldForm = async () => {
   //此处需要调用查询订单接口确保数量
   try {
     spinning.value = true
-    const { data } = await getOrderApi({ _id: tableInfo.value._id });
-    if (data.status > 0) {
+    const { data } = await getOrderByIdWriting({ _id: tableInfo.value._id });
+    if (!data) {
       message.warning("订单已被出售");
     } else {
       const signedTransaction =
