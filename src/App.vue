@@ -710,10 +710,15 @@ const submitSoldForm = async () => {
   //此处需要调用查询订单接口确保数量
   try {
     spinning.value = true
-    const { data } = await getOrderByIdWriting({ _id: tableInfo.value._id });
-    if (!data) {
+    const { status } = await getOrderByIdWriting({ _id: tableInfo.value._id });
+    if (status === 500) {
       message.warning("订单已被出售");
     } else {
+      const { data } = await getOrderApi({ _id: tableInfo.value._id });
+      if (data.status > 0) {
+        message.warning("订单已被出售");
+        return
+      }
       const signedTransaction =
         await tronWeb.value.transactionBuilder.freezeBalance(
           data.frozenBalance,
