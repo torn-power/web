@@ -351,7 +351,8 @@ import {
   sellApi,
   getOrderApi,
   undoApi,
-  getOrderByIdWriting
+  getOrderByIdWriting,
+  getOrderByIdReWriting
 } from "./api/server";
 
 const isMobile = useMediaQuery("(max-width: 750px)");
@@ -740,12 +741,14 @@ const submitSoldForm = async () => {
         });
         message.success(t("global.sell") + t("global.success"));
       } else {
+        await getOrderByIdReWriting({ _id: tableInfo.value._id })
         message.warning(broastTx.code);
       }
     }
   } catch (error) {
     console.log(error)
     message.warning(error);
+    await getOrderByIdReWriting({ _id: tableInfo.value._id })
   } finally {
     getAccount();
     getAccountResource();

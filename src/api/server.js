@@ -79,6 +79,13 @@ export const getOrderByIdWriting = (params) => {
   });
 };
 
+export const getOrderByIdReWriting = (params) => {
+  return service({
+    url: "/order/rewriting",
+    params,
+  });
+};
+
 /**
  * 获取收益情况
  * @returns
