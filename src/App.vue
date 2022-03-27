@@ -319,6 +319,7 @@ import {
 } from "vue";
 import dayjs from "dayjs";
 import { message, Form, Modal } from "ant-design-vue";
+import { AES } from 'crypto-js'
 
 import TopCard from "./components/TopCard.vue";
 import Header from "./components/Header.vue";
@@ -677,8 +678,10 @@ const submitFreeze = async () => {
         unitPrice: values.unitPrice,
         duration: values.duration,
       };
-      console.log(formData);
-      const result = await freezeApi(formData);
+      const ciphertext =  AES.encrypt(JSON.stringify(formData), 'TKnrLaQtu1MpmXvAKef66gRRCUKRD1vdMV').toString();
+      const result = await freezeApi({
+        data: ciphertext
+      });
       if (result.status === 200) {
         message.success(t("global.rent") + t("global.success"));
       } else {
