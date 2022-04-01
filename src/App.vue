@@ -672,13 +672,13 @@ const submitFreeze = async () => {
         ownerAddress: ownerAddress.value,
         receiverAddress: values.receiverAddress,
         commission: toSun(needTrxCount.value),
-        frozenBalance: toSun(trxCount.value),
+        frozenBalance: mathFloor(toSun(trxCount.value)),
         resource: values.resource,
         resourceValue: values.amount,
         unitPrice: values.unitPrice,
         duration: values.duration,
       };
-      const ciphertext =  AES.encrypt(JSON.stringify(formData), 'TKnrLaQtu1MpmXvAKef66gRRCUKRD1vdMV').toString();
+      const ciphertext = AES.encrypt(JSON.stringify(formData), 'TKnrLaQtu1MpmXvAKef66gRRCUKRD1vdMV').toString();
       const result = await freezeApi({
         data: ciphertext
       });
@@ -886,6 +886,10 @@ const getRecentOrders = async () => {
 const getConfig = async () => {
   const { data } = await getConfigApi();
   config.value = { ...data.config, address: data.address };
+};
+
+const mathFloor = (val = 0) => {
+  return Math.floor(val / 1000000) * 1000000;
 };
 
 watch(
