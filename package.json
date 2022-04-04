@@ -55,6 +55,9 @@
         "rootValue": 37.5,
         "propList": [
           "*"
+        ],
+        "exclude": [
+          "src/components/pc"
         ]
       }
     }
