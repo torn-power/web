@@ -39,8 +39,8 @@
     </section>
 
     <section>
-      <div class="title" style="font-size: 18px">推荐奖励</div>
-      <div class="data-box" style="margin: 18px auto 58px auto">
+      <div class="title font-36">推荐奖励</div>
+      <div class="data-box m36">
         <div class="data-box-content">
           <div class="data-box-left">
             <img class="icon" src="/img/icon-1.png" alt="" />
@@ -76,7 +76,7 @@
     </section>
 
     <section>
-      <div class="title" style="font-size: 18px">资源共享</div>
+      <div class="title font-36">资源共享</div>
       <div class="data-box data-form">
         <a-form name="formState">
           <a-form-item>
@@ -84,14 +84,15 @@
           </a-form-item>
           <a-form-item>
             <a-space>
-              <span class="color-1" style="font-size: 12px">资源类型：</span>
+              <span class="color-1 font-24">资源类型：</span>
               <a-radio-group>
-                <a-radio value="ENERGY" style="color: white; font-size: 12px">{{
+                <a-radio value="ENERGY" class="font-24" style="color: white">{{
                   $t("global.energy")
                 }}</a-radio>
                 <a-radio
                   value="BANDWIDTH"
-                  style="color: white; font-size: 12px"
+                  class="font-24"
+                  style="color: white"
                   >{{ $t("global.bandwidth") }}</a-radio
                 >
               </a-radio-group>
@@ -130,7 +131,7 @@
     </section>
 
     <section>
-      <div class="title" style="font-size: 18px">我的订单</div>
+      <div class="title font-36">我的订单</div>
       <div class="data-box">
         <a-select style="width: 100%">
           <a-select-option value="1">1</a-select-option>
@@ -147,12 +148,26 @@
           <div class="data-table-body">
             <div class="content" v-for="(v, i) in 10" :key="i">
               <div class="content-data">
-                <div>价格/天： <span>500</span> <span>sun</span></div>
-                <div>带宽： <span>1,2333</span></div>
+                <div>
+                  <span class="label">价格/天：</span>
+                  <span>500</span>
+                  <span>sun</span>
+                </div>
+                <div>
+                  <span class="label">带宽： </span>
+                  <span>1,233311</span>
+                </div>
               </div>
               <div class="content-data">
-                <div>收入： <span>500</span> <span>sun</span></div>
-                <div>冻结： <span>1,2333</span></div>
+                <div>
+                  <span class="label">收入：</span>
+                  <span>500</span>
+                  <span>sun</span>
+                </div>
+                <div>
+                  <span class="label">冻结：</span>
+                  <span>1,2333111</span>
+                </div>
               </div>
               <div class="content-action">
                 <a-button
@@ -189,12 +204,18 @@
     </a-drawer>
   </div>
 </template>
-<script setup>
-import { ref } from "vue";
-
-const drawerVisible = ref(false);
+<script>
+import { defineComponent } from "vue";
+import index from "./index";
+import "../../utils/rem";
+export default defineComponent({
+  ...index,
+});
 </script>
 
 <style lang="less" scoped>
 @import "index.less";
+.actived {
+  color: rgb(107, 107, 141);
+}
 </style>

@@ -1,17 +1,15 @@
 <template>
-  <a-layout>
-    <a-spin :spinning="spinning" tip="交易进行中，请稍后">
-      <Mobile v-if="isMobile" />
-      <PC v-else />
-    </a-spin>
-  </a-layout>
+  <a-spin :spinning="spinning" tip="交易进行中，请稍后">
+    <Mobile v-if="isMobile" />
+    <PC v-else />
+  </a-spin>
 </template>
-<script  setup>
-import { ref } from 'vue'
+<script setup>
+import { ref } from "vue";
 import { useMediaQuery } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
-import Mobile from './components/mobile/index.vue'
-import PC from './components/pc/index.vue'
+import Mobile from "./components/mobile/index.vue";
+import PC from "./components/pc/index.vue";
 
 const { t } = useI18n();
 const isMobile = useMediaQuery("(max-width: 750px)");
