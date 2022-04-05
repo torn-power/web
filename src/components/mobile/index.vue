@@ -195,7 +195,7 @@
       :closable="false"
       v-model:visible="drawerVisible"
     >
-      <p>地址：</p>
+      <div>地址：</div>
       <a-space>
         <div class="actived">中文</div>
         /
