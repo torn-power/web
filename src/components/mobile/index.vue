@@ -219,9 +219,8 @@ export default defineComponent({
   background-color: #2e3057 !important;
   border: none;
   color: white;
-  height: 35px;
-  padding: 3px 20px;
-  font-size: 14px;
+  height: 36px;
+  padding-top: 3px;
 }
 .ant-select-dropdown {
   background-color: #2e3057;
@@ -229,9 +228,7 @@ export default defineComponent({
 }
 .ant-select-item-option {
   color: white;
-  height: 35px;
-  padding: 10px 20px;
-  font-size: 14px;
+  height: 36px;
 }
 .ant-select-item-option-active {
   color: white;
@@ -239,10 +236,7 @@ export default defineComponent({
 }
 
 .ant-select-arrow {
-  // font-size: 12px;
   color: white;
-  // top: 44%;
-  // right: 18px;
 }
 
 .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
