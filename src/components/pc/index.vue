@@ -1,10 +1,11 @@
 <template>
-  <p>pc</p>
+  <div class="pc-wrap">pc page</div>
 </template>
 <script setup></script>
 
-<style>
-p {
-  font-size: 24px;
+<style lang="less" scoped>
+@import "index.less";
+.actived {
+  color: rgb(107, 107, 141);
 }
 </style>
