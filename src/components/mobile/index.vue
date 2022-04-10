@@ -239,10 +239,10 @@ export default defineComponent({
 }
 
 .ant-select-arrow {
-  font-size: 12px;
+  // font-size: 12px;
   color: white;
-  top: 44%;
-  right: 18px;
+  // top: 44%;
+  // right: 18px;
 }
 
 .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
