@@ -1,5 +1,5 @@
 <template>
-  <p>2</p>
+  <p>pc</p>
 </template>
 <script setup></script>
 

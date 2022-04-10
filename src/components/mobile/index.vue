@@ -67,7 +67,7 @@
 
         <div class="copy-text">复制您的推荐链接，邀请并获得海量奖励</div>
 
-        <div class="copy-box">
+        <div class="copy-box" @click="copyText">
           <div class="copy-url">https://www.figma.com/id=0%3A11111111111</div>
           <div class="copy-line"></div>
           <img class="copy-img" src="/img/copy.png" alt="" />
@@ -116,7 +116,7 @@
               <span class="form-tip-num">75.00</span><span> TRX</span>
             </div>
           </a-form-item>
-          <a-form-item>
+          <a-form-item style="margin-bottom: 0">
             <a-button
               class="place-order-button"
               type="primary"
@@ -185,10 +185,6 @@
       </div>
     </section>
 
-    <footer>
-      <img class="logo" src="/img/logo.png" alt="logo" srcset="" />
-    </footer>
-
     <a-drawer
       title="更多"
       placement="right"
@@ -207,7 +203,6 @@
 <script>
 import { defineComponent } from "vue";
 import index from "./index";
-import "../../utils/rem";
 export default defineComponent({
   ...index,
 });
@@ -217,5 +212,40 @@ export default defineComponent({
 @import "index.less";
 .actived {
   color: rgb(107, 107, 141);
+}
+</style>
+<style lang="less">
+.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  background-color: #2e3057 !important;
+  border: none;
+  color: white;
+  height: 35px;
+  padding: 3px 20px;
+  font-size: 14px;
+}
+.ant-select-dropdown {
+  background-color: #2e3057;
+  color: white;
+}
+.ant-select-item-option {
+  color: white;
+  height: 35px;
+  padding: 10px 20px;
+  font-size: 14px;
+}
+.ant-select-item-option-active {
+  color: white;
+  background-color: #1d1e3b !important;
+}
+
+.ant-select-arrow {
+  font-size: 12px;
+  color: white;
+  top: 44%;
+  right: 18px;
+}
+
+.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  color: rgb(255, 255, 255);
 }
 </style>
