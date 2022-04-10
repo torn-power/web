@@ -99,11 +99,24 @@
             </a-space>
           </a-form-item>
           <a-form-item>
-            <a-input placeholder="资源数量"></a-input>
+            <a-input-number
+              v-if="1"
+              :placeholder="$t('tip.pledgeEnergy', { amount: 300 })"
+              :precision="0"
+            />
+            <a-input-number
+              v-else
+              :placeholder="$t('tip.pledegBandWidth', { amount: 500 })"
+              :precision="0"
+            />
           </a-form-item>
           <a-form-item>
             <div style="display: flex">
-              <a-input class="input-search" placeholder="单价"></a-input>
+              <a-input-number
+                :min="0"
+                class="input-search"
+                placeholder="单价"
+              ></a-input-number>
               <div class="block">sun/天</div>
             </div>
           </a-form-item>
