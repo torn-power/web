@@ -1,2 +1,59 @@
 .pc-wrap {
+  min-height: 200px;
+  background-image: url(/img/pc.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  .header {
+    height: 100px;
+    color: #fff;
+    margin-bottom: 91px;
+  }
+  .content {
+    display: flex;
+    justify-content: space-around;
+    .share-data-wrap {
+      width: 804px;
+      .title {
+        font-family: 'PingFang SC';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 56px;
+        line-height: 64px;
+        text-align: center;
+        color: #FFFFFF;
+        margin-bottom: 48px;
+      }
+      .share-data-content-wrap {
+        background: rgba(36, 50, 100, 0.6);
+        backdrop-filter: blur(12px);
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        padding: 26.5px 0;
+        .content-item-wrap {
+          width: 262px;
+          height: 73px;
+          .num {
+            font-weight: 600;
+            font-size: 32px;
+            line-height: 40px;
+            text-align: center;
+            color: #FFCC17;
+          }
+          .name {
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 24px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.65);
+            margin-bottom: 9px;
+          }
+          .sign-name {
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
 }
