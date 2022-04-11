@@ -9,8 +9,58 @@
   background-repeat: no-repeat;
   .header {
     height: 100px;
-    color: #fff;
     margin-bottom: 91px;
+    padding: 0 120px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      height: 100px;
+      .logo{
+        height: 49px;
+        width: 46px;
+        margin-right: 10px;
+      }
+      .logo-name {
+        font-style: normal;
+        font-weight: 400;
+        font-size: 34.777px;
+        color: #fff;
+      }
+    }
+    .left {
+      width: 207px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .wallte {
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 36px;
+        color: #FFFFFF;
+        cursor: pointer;
+      }
+      .header-line {
+        height: 12px;
+        width: 0;
+        border: 1px solid #8F959E
+      }
+      .language-wrap {
+        color: #fff;
+        display: flex;
+        width: 103px;
+        justify-content: space-between;
+        .language-item {
+          cursor: pointer;
+          &.active {
+            color: #FFCC17;
+          }
+        }
+      }
+    }
   }
   .content {
     display: flex;

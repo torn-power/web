@@ -1,6 +1,22 @@
 <template>
   <div class="pc-wrap">
-    <div class="header">导航</div>
+    <div class="header">
+      <div class="logo-wrap">
+        <img class="logo" src="/img/logo-pc.png" alt="logo" srcset="" />
+        <span class="logo-name">TRON</span>
+      </div>
+      <div class="left">
+        <span class="wallte">我的钱包</span>
+        <div class="header-line"></div>
+        <div class="language-wrap">
+          <span class="language-item">EN</span>
+          <span>/</span>
+          <span class="language-item">繁体</span>
+          <span>/</span>
+          <span class="language-item active">简体</span>
+        </div>
+      </div>
+    </div>
     <div class="content">
       <!-- 共享数据 -->
       <div class="share-data-wrap">
