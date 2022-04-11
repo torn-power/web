@@ -161,6 +161,12 @@
                 </div>
             </a-form>
           </div>
+          <a-button
+            class="place-order-button"
+            type="primary"
+            shape="round"
+            size="large"
+          >下单</a-button>
         </div>
       </div>
       <!-- 当前订单 -->
