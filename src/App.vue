@@ -2,9 +2,11 @@
   <a-spin :spinning="spinning" tip="交易进行中，请稍后">
     <Mobile v-if="isMobile" />
     <PC v-else />
-
-    <footer class="footer">
-      <img class="logo" src="/img/logo.png" alt="logo" srcset="" />
+    <footer class="footer" :style="{ height: isMobile ? '40px' : '87px' }">
+      <img
+        :style="{ width: isMobile ? '79px' : '153px' }"
+        src="/img/logo.png"
+      />
     </footer>
   </a-spin>
 </template>
@@ -24,14 +26,10 @@ const spinning = ref(false);
 <style lang="less">
 .footer {
   width: 100%;
-  height: 40px;
   background: #1d0f3d;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  .logo {
-    width: 79px;
-  }
 }
 </style>

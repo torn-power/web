@@ -11,12 +11,20 @@
 
         <a-card class="card-box" size="small" v-if="isMobile">
           <div class="flex-wrap">
-            <a-select style="width: 90px" v-model:value="lang" @change="changeLang">
+            <a-select
+              style="width: 90px"
+              v-model:value="lang"
+              @change="changeLang"
+            >
               <a-select-option value="zh">中文</a-select-option>
               <a-select-option value="en">En</a-select-option>
             </a-select>
             <a-space>
-              <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
+              <a-button
+                type="primary"
+                :disabled="!ownerAddress"
+                @click="leaseModal"
+              >
                 <template #icon>
                   <ShoppingCartOutlined />
                 </template>
@@ -44,8 +52,12 @@
               allow-clear
               style="width: 160px"
             >
-              <a-select-option value="unitPrice">{{ $t("global.highestPrice") }}</a-select-option>
-              <a-select-option value="aCommission">{{ $t("global.earnings") }}</a-select-option>
+              <a-select-option value="unitPrice">{{
+                $t("global.highestPrice")
+              }}</a-select-option>
+              <a-select-option value="aCommission">{{
+                $t("global.earnings")
+              }}</a-select-option>
             </a-select>
           </template>
           <a-table
@@ -107,7 +119,11 @@
             </a-tab-pane>
             <template #tabBarExtraContent v-if="!isMobile">
               <a-space>
-                <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
+                <a-button
+                  type="primary"
+                  :disabled="!ownerAddress"
+                  @click="leaseModal"
+                >
                   <template #icon>
                     <ShoppingCartOutlined />
                   </template>
@@ -119,7 +135,11 @@
                   </template>
                   {{ $t("global.sell") }}
                 </a-button>
-                <a-select style="width: 90px" v-model:value="lang" @change="changeLang">
+                <a-select
+                  style="width: 90px"
+                  v-model:value="lang"
+                  @change="changeLang"
+                >
                   <a-select-option value="zh">中文</a-select-option>
                   <a-select-option value="en">En</a-select-option>
                 </a-select>
@@ -151,7 +171,9 @@
         >
           <a-form-item
             :label="
-              $t('global.receive') + $t('global.resource') + $t('global.address')
+              $t('global.receive') +
+              $t('global.resource') +
+              $t('global.address')
             "
             v-bind="validateInfos.receiverAddress"
           >
@@ -174,7 +196,9 @@
 
           <a-form-item
             :label="
-              $t('global.chooseBuy') + $t('global.resource') + $t('global.count')
+              $t('global.chooseBuy') +
+              $t('global.resource') +
+              $t('global.count')
             "
             v-bind="validateInfos.amount"
           >
@@ -238,8 +262,15 @@
           </a-form-item>
 
           <div class="modal-info">
-            <div>{{ $t("global.orderAmount") }}：{{ needTrxCount || 0 }} TRX</div>
-            <div>{{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX</div>
+            <div>
+              {{ $t("global.orderAmount") }}：{{ needTrxCount || 0 }} TRX
+            </div>
+            <div>
+              {{ $t("global.yourBlance") }}：{{
+                accountResouce.balance || 0
+              }}
+              TRX
+            </div>
             <div>{{ $t("tip.tip1") }}：{{ saveTrx || 0 }} TRX</div>
           </div>
         </a-form>
@@ -277,7 +308,10 @@
             />
           </a-form-item>
 
-          <a-form-item :label="$t('global.yourAddress')" v-bind="validateInfos.ownerAddress">
+          <a-form-item
+            :label="$t('global.yourAddress')"
+            v-bind="validateInfos.ownerAddress"
+          >
             <a-input
               v-model:value="formState.ownerAddress"
               :placeholder="$t('tip.tip2')"
@@ -292,13 +326,23 @@
               }}
               TRX
             </div>
-            <div>{{ $t("global.yourBlance") }}：{{ accountResouce.balance || 0 }} TRX</div>
+            <div>
+              {{ $t("global.yourBlance") }}：{{
+                accountResouce.balance || 0
+              }}
+              TRX
+            </div>
             <div>
               {{ $t("global.freeze") + $t("global.time") }}： 3{{
                 $t("global.days")
               }}
             </div>
-            <div>{{ $t("global.income") }}：{{ tableInfo.aCommission / 1000000 }} TRX</div>
+            <div>
+              {{ $t("global.income") }}：{{
+                tableInfo.aCommission / 1000000
+              }}
+              TRX
+            </div>
           </div>
         </a-form>
       </a-modal>
@@ -319,14 +363,12 @@ import {
 } from "vue";
 import dayjs from "dayjs";
 import { message, Form, Modal } from "ant-design-vue";
-import { AES } from 'crypto-js'
+import { AES } from "crypto-js";
 
 import TopCard from "./components/TopCard.vue";
 import Header from "./components/Header.vue";
 
 import { megeKeySame, sellTip } from "./utils/utils";
-
-
 
 import {
   ShoppingCartOutlined,
@@ -336,7 +378,6 @@ import {
   BarsOutlined,
 } from "@ant-design/icons-vue";
 import { useI18n } from "vue-i18n";
-
 
 import { useMediaQuery, useTitle } from "@vueuse/core";
 
@@ -353,7 +394,7 @@ import {
   getOrderApi,
   undoApi,
   getOrderByIdWriting,
-  getOrderByIdReWriting
+  getOrderByIdReWriting,
 } from "./api/server";
 
 const useForm = Form.useForm;
@@ -367,7 +408,7 @@ const visible = ref(false);
 const soldVisible = ref(false);
 const currentType = ref();
 
-const spinning = ref(false)
+const spinning = ref(false);
 
 const config = ref({});
 const tableInfo = ref({});
@@ -456,7 +497,8 @@ const tableData = reactive({
         return (
           <div>
             <div>
-              {t("global.income")} : {parseInt(record.aCommission / 1000000)} TRX
+              {t("global.income")} : {parseInt(record.aCommission / 1000000)}{" "}
+              TRX
             </div>
             <div>
               {t("global.freeze")} : {parseInt(record.frozenBalance) / 1000000}{" "}
@@ -589,25 +631,27 @@ const tableData = reactive({
       title: () => t("global.operation"),
       align: "center",
       customRender: ({ record }) => {
-        return <AButton
-          type="primary"
-          disabled={record.status !== 0}
-          onClick={() => {
-            Modal.confirm({
-              title: () => "确定撤销？",
-              content: '此操作将扣除1TRX手续费',
-              onOk: async () => {
-                const res = await undoApi({ _id: record._id });
-                message.info(res.message);
-                getRecentOrders();
-                getCurrentOrders();
-                getBuyOrders();
-              },
-            });
-          }}
-        >
-          撤单
-        </AButton>
+        return (
+          <AButton
+            type="primary"
+            disabled={record.status !== 0}
+            onClick={() => {
+              Modal.confirm({
+                title: () => "确定撤销？",
+                content: "此操作将扣除1TRX手续费",
+                onOk: async () => {
+                  const res = await undoApi({ _id: record._id });
+                  message.info(res.message);
+                  getRecentOrders();
+                  getCurrentOrders();
+                  getBuyOrders();
+                },
+              });
+            }}
+          >
+            撤单
+          </AButton>
+        );
       },
     },
   ],
@@ -645,12 +689,12 @@ const transactionTrx = async (amount) => {
     );
     const signedTx = await tronWeb.value.trx.sign(tx);
     const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
-    if (broastTx.result) return true
+    if (broastTx.result) return true;
     message.warning(broastTx.code);
     return false;
   } catch (error) {
-    message.error(error)
-    return false
+    message.error(error);
+    return false;
   }
 };
 
@@ -664,10 +708,10 @@ const submitFreeze = async () => {
   // console.log(needTrxCount.value, accountResouce.value.balance)
   if (+needTrxCount.value > +accountResouce.value.balance) {
     message.warn(t("账户余额不足"));
-    return
+    return;
   }
   try {
-    spinning.value = true
+    spinning.value = true;
     const res = await transactionTrx(toSun(needTrxCount.value));
     if (res) {
       const formData = {
@@ -680,9 +724,12 @@ const submitFreeze = async () => {
         unitPrice: values.unitPrice,
         duration: values.duration,
       };
-      const ciphertext = AES.encrypt(JSON.stringify(formData), 'TKnrLaQtu1MpmXvAKef66gRRCUKRD1vdMV').toString();
+      const ciphertext = AES.encrypt(
+        JSON.stringify(formData),
+        "TKnrLaQtu1MpmXvAKef66gRRCUKRD1vdMV"
+      ).toString();
       const result = await freezeApi({
-        data: ciphertext
+        data: ciphertext,
       });
       if (result.status === 200) {
         message.success(t("global.rent") + t("global.success"));
@@ -693,14 +740,14 @@ const submitFreeze = async () => {
       message.warning(t("global.rent") + t("global.fail"));
     }
   } catch (error) {
-    message.warning(error || '冻结有误，请联系客服');
+    message.warning(error || "冻结有误，请联系客服");
   } finally {
     getAccount();
     getAccountResource();
     getCurrentOrders();
     getRecentOrders();
     visible.value = false;
-    spinning.value = false
+    spinning.value = false;
   }
 };
 
@@ -709,13 +756,16 @@ const submitSoldForm = async () => {
   const values = await validate();
   // console.log(values);
   // console.log(trxCount.value);
-  if (parseInt(tableInfo.value.frozenBalance) / 1000000 > accountResouce.value.balance) {
+  if (
+    parseInt(tableInfo.value.frozenBalance) / 1000000 >
+    accountResouce.value.balance
+  ) {
     message.warning("账户余额不足");
-    return
+    return;
   }
   //此处需要调用查询订单接口确保数量
   try {
-    spinning.value = true
+    spinning.value = true;
     const { status } = await getOrderByIdWriting({ _id: tableInfo.value._id });
     if (status === 500) {
       message.warning("订单已被出售");
@@ -723,7 +773,7 @@ const submitSoldForm = async () => {
       const { data } = await getOrderApi({ _id: tableInfo.value._id });
       if (data.status > 0) {
         message.warning("订单已被出售");
-        return
+        return;
       }
       const signedTransaction =
         await tronWeb.value.transactionBuilder.freezeBalance(
@@ -746,21 +796,21 @@ const submitSoldForm = async () => {
         });
         message.success(t("global.sell") + t("global.success"));
       } else {
-        await getOrderByIdReWriting({ _id: tableInfo.value._id })
+        await getOrderByIdReWriting({ _id: tableInfo.value._id });
         message.warning(broastTx.code);
       }
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     message.warning(error);
-    await getOrderByIdReWriting({ _id: tableInfo.value._id })
+    await getOrderByIdReWriting({ _id: tableInfo.value._id });
   } finally {
     getAccount();
     getAccountResource();
     getCurrentOrders();
     getRecentOrders();
     soldVisible.value = false;
-    spinning.value = false
+    spinning.value = false;
   }
 };
 
@@ -793,26 +843,29 @@ const getAccount = async () => {
 
 // 计算需要用户支付多少TRX
 const needTrxCount = computed(() => {
-  const res = +fromSun(formState.amount * formState.unitPrice * formState.duration) || 0
-  return res > 1 ? Math.ceil(res) : 1
+  const res =
+    +fromSun(formState.amount * formState.unitPrice * formState.duration) || 0;
+  return res > 1 ? Math.ceil(res) : 1;
 });
 
 // 计算原价需要多少TRX
-const trxCount = computed(() =>
-  +(formState.amount / resourceCount()).toFixed(2)
+const trxCount = computed(
+  () => +(formState.amount / resourceCount()).toFixed(2)
 );
 
 // 节约
 const saveTrx = computed(() => {
   if (formState.resource === "ENERGY") {
     return +(
-      (formState.amount / 100000) * 84 - (formState.amount * (9 / 100000)) * (formState.unitPrice / 30)
+      (formState.amount / 100000) * 84 -
+      formState.amount * (9 / 100000) * (formState.unitPrice / 30)
     ).toFixed(2);
   }
   return +(
-    (3 * formState.amount / 1000) - ((15 * formState.amount / 10000) * (formState.unitPrice / 500))
+    (3 * formState.amount) / 1000 -
+    ((15 * formState.amount) / 10000) * (formState.unitPrice / 500)
   ).toFixed(2);
-})
+});
 
 // 计算不同资源情况下用户能获得多少资源
 const resourceCount = () => {
@@ -826,7 +879,7 @@ const resourceCount = () => {
     accountResouce.value.bandwidth?.totalNetLimit /
     accountResouce.value.bandwidth?.totalNetWeight
   ).toFixed(2);
-}
+};
 
 // 将sun转换成trx单位
 const fromSun = (val) => (val ? tronWeb.value.fromSun(val) : 0);
@@ -861,7 +914,7 @@ const changeLang = (type) => {
 // 获取当前订单
 const getCurrentOrders = async () => {
   soldVisible.value = false;
-  tableData.currentOrderDataSource = []
+  tableData.currentOrderDataSource = [];
   const { data } = await getOrderList({
     status: 0,
     orderType: 0,
@@ -872,14 +925,14 @@ const getCurrentOrders = async () => {
 
 // 我的买单
 const getBuyOrders = async () => {
-  tableData.buyDataSource = []
+  tableData.buyDataSource = [];
   const { data } = await getOrderList({ receiverAddress: ownerAddress.value });
   tableData.buyDataSource = data.results;
 };
 
 // 获取近期完成交易
 const getRecentOrders = async () => {
-  tableData.recentDataSource = []
+  tableData.recentDataSource = [];
   const { data } = await getOrderList({ status: 1, pageSize: 10 });
   tableData.recentDataSource = data.results;
 };
@@ -908,23 +961,23 @@ watch(
 );
 
 let timer = null;
-// onMounted(() => {
-//   getRecentOrders();
-//   getCurrentOrders();
-//   window.addEventListener("message", (e) => {
-//     if (e.data.message && e.data.message.action == "accountsChanged") {
-//       activeKey.value = "1";
-//       visible.value = false;
-//       soldVisible.value = false;
-//     }
-//   });
-//   getConfig();
-//   useTitle(t("global.title"));
-//   timer = setInterval(() => {
-//     getRecentOrders();
-//     getCurrentOrders();
-//   }, 3 * 60 * 1000);
-// });
+onMounted(() => {
+  getRecentOrders();
+  getCurrentOrders();
+  window.addEventListener("message", (e) => {
+    if (e.data.message && e.data.message.action == "accountsChanged") {
+      activeKey.value = "1";
+      visible.value = false;
+      soldVisible.value = false;
+    }
+  });
+  getConfig();
+  useTitle(t("global.title"));
+  timer = setInterval(() => {
+    getRecentOrders();
+    getCurrentOrders();
+  }, 3 * 60 * 1000);
+});
 
 onUnmounted(() => {
   clearInterval(timer);
