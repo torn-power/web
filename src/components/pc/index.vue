@@ -163,6 +163,77 @@
           </div>
         </div>
       </div>
+      <!-- 当前订单 -->
+      <div class="current-order-wrap">
+        <div class="title">当前订单</div>
+        <div class="current-order-content-wrap">
+          <div style="width:100%">
+            <a-select style="width: 288px">
+              <a-select-option value="1">1</a-select-option>
+              <a-select-option value="2">2</a-select-option>
+              <a-select-option value="3">3</a-select-option>
+            </a-select>
+          </div>
+          <div style="width:100%">
+            <div class="order-table-header-wrap">
+              <a-row>
+                <a-col :span="9">
+                  <div class="order-table-header-item">订单信息</div>
+                </a-col>
+                <a-col :span="9">
+                  <div class="order-table-header-item">卖家收入</div>
+                </a-col>
+                <a-col :span="6">
+                  <div class="order-table-header-item">操作</div>
+                </a-col>
+              </a-row>
+            </div>
+            <div class="order-table-body-wrap">
+              <div class="order-table-body-row" v-for="(v, i) in 10" :key="i">
+                <a-row>
+                  <a-col :span="9">
+                    <div class="order-table-body-item">
+                      <div class="body-item-line">
+                        <span class="line-name">价格/天：</span>
+                        <span class="line-num">500</span>
+                        <span class="line-unit">sun</span>
+                      </div>
+                      <div class="body-item-line">
+                        <span class="line-name">带宽：</span>
+                        <span class="line-num">12,323</span>
+                      </div>
+                    </div>
+                  </a-col>
+                  <a-col :span="9">
+                    <div class="order-table-body-item">
+                      <div class="body-item-line">
+                        <span class="line-name">价格/天：</span>
+                        <span class="line-num">500</span>
+                        <span class="line-unit">sun</span>
+                      </div>
+                      <div class="body-item-line">
+                        <span class="line-name">带宽：</span>
+                        <span class="line-num">12,323</span>
+                      </div>
+                    </div>
+                  </a-col>
+                  <a-col :span="6">
+                    <div class="order-table-body-item operation-btn-wrap">
+                      <a-button
+                        class="sell-button"
+                        type="primary"
+                        shape="round"
+                        size="small"
+                        style="margin: 0 auto"
+                      >出售</a-button>
+                    </div>
+                  </a-col>
+                </a-row>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
