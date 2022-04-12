@@ -24,7 +24,9 @@
               >
               <span>&nbsp;带宽</span>
             </div>
-            <div class="color-3">0</div>
+            <div class="color-3">
+              {{ toLocaleString(rent.platformSum / 1000000 || 0) }}
+            </div>
           </div>
           <div class="data-box-content">
             <div class="data-box-left">
@@ -33,7 +35,9 @@
               >
               <span>&nbsp;能量</span>
             </div>
-            <div class="color-3">0</div>
+            <div class="color-3">
+              {{ toLocaleString(rent.platformSum / 1000000 || 0) }}
+            </div>
           </div>
           <div class="data-box-content">
             <div class="data-box-left">
@@ -42,7 +46,9 @@
               >
               <span>&nbsp;TRX</span>
             </div>
-            <div class="color-3">0</div>
+            <div class="color-3">
+              {{ toLocaleString(rent.sellerEarnings / 1000000) || 0 }}
+            </div>
           </div>
         </div>
       </section>
@@ -55,14 +61,14 @@
               <img class="icon" src="/img/icon-1.png" alt="" />
               <span class="color-1">&emsp;钱包余额</span>
             </div>
-            <div class="color-2">0</div>
+            <div class="color-2">{{ accountResouce.balance || 0 }} TRX</div>
           </div>
           <div class="data-box-content">
             <div class="data-box-left">
               <img class="icon" src="/img/icon-2.png" alt="" />
               <span class="color-1">&emsp;获得的奖励</span>
             </div>
-            <div class="color-2">0</div>
+            <div class="color-2">0 TRX</div>
           </div>
           <div class="data-box-content">
             <div class="data-box-left">
@@ -184,12 +190,35 @@
       </section>
 
       <section>
-        <div class="title font-36">我的订单</div>
+        <div class="title">
+          <a-radio-group
+            v-model:value="orderType"
+            @change="orderTypeChange"
+            button-style="solid"
+          >
+            <a-radio-button value="b">近期交易</a-radio-button>
+            <a-radio-button :disabled="!ownerAddress" value="a"
+              >当前订单</a-radio-button
+            >
+            <a-radio-button :disabled="!ownerAddress" value="c"
+              >我的买单</a-radio-button
+            >
+          </a-radio-group>
+        </div>
+
         <div class="data-box">
-          <a-select style="width: 100%">
-            <a-select-option value="1">1</a-select-option>
-            <a-select-option value="2">2</a-select-option>
-            <a-select-option value="3">3</a-select-option>
+          <a-select
+            v-if="orderType === 'a'"
+            style="width: 100%"
+            v-model:value="currentType"
+            @change="orderTypeChange"
+          >
+            <a-select-option value="unitPrice">{{
+              $t("global.highestPrice")
+            }}</a-select-option>
+            <a-select-option value="aCommission">{{
+              $t("global.earnings")
+            }}</a-select-option>
           </a-select>
 
           <div class="data-table">
@@ -199,40 +228,62 @@
               <div class="action">操作</div>
             </div>
             <div class="data-table-body">
-              <div class="content" v-for="(v, i) in 10" :key="i">
+              <div class="content" v-for="(record, i) in tableData" :key="i">
                 <div class="content-data">
                   <div>
                     <span class="label">价格/天：</span>
-                    <span>500</span>
+                    <span>{{ record.unitPrice }}</span>
                     <span>sun</span>
                   </div>
                   <div>
-                    <span class="label">带宽： </span>
-                    <span>1,233311</span>
+                    <span class="label">{{ record.resource }}： </span>
+                    <span>{{ record.resourceValue }}</span>
                   </div>
                 </div>
                 <div class="content-data">
                   <div>
                     <span class="label">收入：</span>
-                    <span>500</span>
-                    <span>sun</span>
+                    <span>{{ parseInt(record.aCommission / 1000000) }}</span>
+                    <span>TRX</span>
                   </div>
                   <div>
                     <span class="label">冻结：</span>
-                    <span>1,2333111</span>
+                    <span>{{ record.frozenBalance / 1000000 }}TRX</span>
                   </div>
                 </div>
                 <div class="content-action">
+                  <a
+                    v-if="orderType === 'b'"
+                    :href="`https://tronscan.org/#/transaction/ + ${record.hash}`"
+                    target="_blank"
+                    style="font-size: 14px"
+                    >详情</a
+                  >
                   <a-button
+                    v-if="orderType === 'a'"
                     class="sell-button"
                     type="primary"
                     shape="round"
                     size="small"
+                    :disabled="!ownerAddress"
                     style="margin: 0 auto"
+                    @click="submitSoldForm(record)"
                     >出售
+                  </a-button>
+                  <a-button
+                    v-if="orderType === 'c'"
+                    class="sell-button"
+                    type="primary"
+                    shape="round"
+                    size="small"
+                    :disabled="record.status !== 0"
+                    style="margin: 0 auto"
+                    @click="undo(record)"
+                    >撤单
                   </a-button>
                 </div>
               </div>
+              <div class="no-data" v-if="tableData.length === 0">暂无数据</div>
             </div>
           </div>
         </div>

@@ -12,12 +12,9 @@ import { message, Form, Modal } from "ant-design-vue";
 import { useI18n } from "vue-i18n";
 import { AES } from "crypto-js";
 import { useTitle } from "@vueuse/core";
-import { megeKeySame, sellTip } from "../utils/utils";
+import { sellTip } from "../utils/utils";
 
-import {
-  getAccountv2 as getAccountApi,
-  getAccountResource as getAccountResourceApi,
-} from "../api/http";
+import { getAccountv2 as getAccountApi } from "../api/http";
 
 import {
   freeze as freezeApi,
@@ -42,12 +39,11 @@ export default defineComponent({
     const activeKey = ref("1");
     const visible = ref(false);
     const soldVisible = ref(false);
-    const currentType = ref();
 
     const spinning = ref(false);
-
+    const currentType = ref();
     const config = ref({});
-    const tableInfo = ref({});
+    const orderType = ref("b");
 
     const rent = ref({ platformSum: 0, sellerEarnings: 0 });
 
@@ -111,209 +107,7 @@ export default defineComponent({
     );
 
     // 表格数据
-    const tableData = reactive({
-      currentOrderDataSource: [],
-      currentOrderCounmns: [
-        {
-          title: () => t("global.buyer"),
-          customRender: ({ record }) => {
-            return (
-              <div>
-                <div>
-                  {t("global.priceDay")} : {record.unitPrice} sun
-                </div>
-                <div>
-                  {record.resource !== "ENERGY"
-                    ? t("global.bandwidth")
-                    : t("global.energy")}{" "}
-                  : {record.resourceValue}
-                </div>
-              </div>
-            );
-          },
-        },
-        {
-          title: () => t("global.seller"),
-          customRender: ({ record }) => {
-            return (
-              <div>
-                <div>
-                  {t("global.income")} :{" "}
-                  {parseInt(record.aCommission / 1000000)} TRX
-                </div>
-                <div>
-                  {t("global.freeze")} :{" "}
-                  {parseInt(record.frozenBalance) / 1000000} TRX 3
-                  {t("global.days")}
-                </div>
-              </div>
-            );
-          },
-        },
-        {
-          title: () => t("global.operation"),
-          align: "center",
-          customRender: ({ record }) => {
-            return (
-              <a-button
-                size="small"
-                type="primary"
-                shape="round"
-                disabled={!ownerAddress.value}
-                onClick={() => {
-                  resetFields();
-                  tableInfo.value = record;
-                  formState.amount = record.resourceValue;
-                  formState.receiverAddress = record.receiverAddress;
-                  formState.ownerAddress = ownerAddress.value;
-                  formState.resource = record.resource;
-                  soldVisible.value = true;
-                }}
-              >
-                {t("global.sell")}
-              </a-button>
-            );
-          },
-        },
-      ],
-      recentDataSource: [],
-      recentColumns: [
-        {
-          title: () => t("global.resource"),
-          customRender: ({ record }) => {
-            return record.resourceValue + " " + record.resource;
-          },
-        },
-        {
-          title: () => t("global.priceDay"),
-          customRender: ({ record }) => {
-            return record.unitPrice + " sun";
-          },
-        },
-        {
-          title: () => t("global.income"),
-          customRender: ({ record }) => {
-            return parseInt(record.commission / 1000000) + "TRX";
-          },
-        },
-        {
-          title: () => t("global.Date"),
-          customRender: ({ record }) => {
-            return timeFormat(record.updatedAt);
-          },
-        },
-        {
-          title: () => t("global.hash"),
-          customRender: ({ record }) => {
-            return (
-              <a
-                href={"https://tronscan.org/#/transaction/" + record.hash}
-                target="_blank"
-              >
-                详情
-              </a>
-            );
-          },
-        },
-      ],
-      freezeDataSource: [],
-      freezeColumns: [
-        {
-          title: () => t("global.freezeObject"),
-          width: "50%",
-          customRender: ({ record }) => {
-            return (
-              <div>
-                <a
-                  target="_blank"
-                  href={
-                    "https://tronscan.org/#/address/" + record.receiverAddress
-                  }
-                >
-                  {record.receiverAddress}
-                </a>
-                <div>{fromSun(record.frozenBalance)}</div>
-              </div>
-            );
-          },
-        },
-        {
-          title: () => t("global.expireTime"),
-          width: "50%",
-          customRender: ({ record }) => timeFormat(record.expireTime),
-        },
-      ],
-      buyDataSource: [],
-      buyColumns: [
-        {
-          title: () => t("global.order"),
-          customRender: ({ record }) => {
-            return (
-              <div>
-                <div>
-                  {t("global.priceDay")} : {record.unitPrice} sun
-                </div>
-                <div>
-                  {record.resource !== "ENERGY"
-                    ? t("global.bandwidth")
-                    : t("global.energy")}{" "}
-                  : {record.resourceValue}
-                </div>
-              </div>
-            );
-          },
-        },
-        {
-          title: () => t("global.remainingAmount"),
-          customRender: ({ record }) => {
-            return record.settlement === 0
-              ? parseInt(record.commission / 1000000) - 1 || 0 + "TRX"
-              : 0;
-          },
-        },
-        {
-          title: () => t("global.operation"),
-          align: "center",
-          customRender: ({ record }) => {
-            return (
-              <AButton
-                type="primary"
-                disabled={record.status !== 0}
-                onClick={() => {
-                  Modal.confirm({
-                    title: () => "确定撤销？",
-                    content: "此操作将扣除1TRX手续费",
-                    onOk: async () => {
-                      const res = await undoApi({ _id: record._id });
-                      message.info(res.message);
-                      getRecentOrders();
-                      getCurrentOrders();
-                      getBuyOrders();
-                    },
-                  });
-                }}
-              >
-                撤单
-              </AButton>
-            );
-          },
-        },
-      ],
-    });
-
-    // 切换tab
-    const tabsChange = async (val) => {
-      if (!ownerAddress.value) return;
-      if (val === "1") {
-        getRecentOrders();
-      }
-      if (val === "2") {
-        getAccountResource();
-      }
-      if (val === "3") {
-        getBuyOrders();
-      }
-    };
+    const tableData = ref([]);
 
     // 打开租赁弹窗
     const leaseModal = () => {
@@ -387,21 +181,15 @@ export default defineComponent({
         message.warning(error || "冻结有误，请联系客服");
       } finally {
         getAccount();
-        getAccountResource();
-        getCurrentOrders();
-        getRecentOrders();
         visible.value = false;
         spinning.value = false;
       }
     };
 
     // 提交出售表单
-    const submitSoldForm = async () => {
-      const values = await validate();
-      // console.log(values);
-      // console.log(trxCount.value);
+    const submitSoldForm = async (record) => {
       if (
-        parseInt(tableInfo.value.frozenBalance) / 1000000 >
+        parseInt(record.frozenBalance) / 1000000 >
         accountResouce.value.balance
       ) {
         message.warning("账户余额不足");
@@ -411,12 +199,12 @@ export default defineComponent({
       try {
         spinning.value = true;
         const { status } = await getOrderByIdWriting({
-          _id: tableInfo.value._id,
+          _id: record._id,
         });
         if (status === 500) {
           message.warning("订单已被出售");
         } else {
-          const { data } = await getOrderApi({ _id: tableInfo.value._id });
+          const { data } = await getOrderApi({ _id: record._id });
           if (data.status > 0) {
             message.warning("订单已被出售");
             return;
@@ -424,10 +212,10 @@ export default defineComponent({
           const signedTransaction =
             await tronWeb.value.transactionBuilder.freezeBalance(
               data.frozenBalance,
-              values.duration,
-              values.resource,
+              3,
+              record.resource,
               ownerAddress.value,
-              values.receiverAddress,
+              record.receiverAddress,
               1
             );
           const signedTx = await tronWeb.value.trx.sign(signedTransaction);
@@ -442,35 +230,18 @@ export default defineComponent({
             });
             message.success(t("global.sell") + t("global.success"));
           } else {
-            await getOrderByIdReWriting({ _id: tableInfo.value._id });
+            await getOrderByIdReWriting({ _id: record._id });
             message.warning(broastTx.code);
           }
         }
       } catch (error) {
         console.log(error);
         message.warning(error);
-        await getOrderByIdReWriting({ _id: tableInfo.value._id });
+        await getOrderByIdReWriting({ _id: record._id });
       } finally {
         getAccount();
-        getAccountResource();
-        getCurrentOrders();
-        getRecentOrders();
-        soldVisible.value = false;
         spinning.value = false;
       }
-    };
-
-    // 获取地址资源
-    const getAccountResource = async () => {
-      const res = await getAccountResourceApi({
-        limit: 20,
-        type: 2,
-        start: 0,
-        address: ownerAddress.value,
-      });
-      tableData.freezeDataSource = megeKeySame(
-        res.data.map((v) => ({ ...v, key: v.hash })) || []
-      );
     };
 
     // 获取账户信息
@@ -487,9 +258,38 @@ export default defineComponent({
       };
     };
 
+    // 获取平台详情
     const getRentInfo = async () => {
       const { data } = await getRentInfoApi();
       rent.value = data;
+    };
+
+    const orderTypeChange = async (v) => {
+      tableData.value = [];
+      if (orderType.value === "b") {
+        const { data } = await getOrderList({ status: 1, pageSize: 10 });
+        tableData.value = data.results;
+      } else {
+        if (!ownerAddress.value) {
+          message.warning("请链接你的钱包");
+          return;
+        }
+
+        if (orderType.value === "a") {
+          const { data } = await getOrderList({
+            status: 0,
+            orderType: 0,
+            currentType: currentType.value,
+          });
+          tableData.value = data.results;
+        }
+        if (orderType.value === "c") {
+          const { data } = await getOrderList({
+            receiverAddress: ownerAddress.value,
+          });
+          tableData.value = data.results;
+        }
+      }
     };
 
     // 计算需要用户支付多少TRX
@@ -543,6 +343,9 @@ export default defineComponent({
     const timeFormat = (timestamp) =>
       dayjs(timestamp).format("YYYY-MM-DD HH:mm:ss");
 
+    // 千分位
+    const toLocaleString = (val) => val.toLocaleString();
+
     // 链接钱包
     const linkWallet = async () => {
       if (!window.tronWeb) {
@@ -564,38 +367,22 @@ export default defineComponent({
       location.reload();
     };
 
-    // 获取当前订单
-    const getCurrentOrders = async () => {
-      soldVisible.value = false;
-      tableData.currentOrderDataSource = [];
-      const { data } = await getOrderList({
-        status: 0,
-        orderType: 0,
-        currentType: currentType.value,
-      });
-      tableData.currentOrderDataSource = data.results;
-    };
-
-    // 我的买单
-    const getBuyOrders = async () => {
-      tableData.buyDataSource = [];
-      const { data } = await getOrderList({
-        receiverAddress: ownerAddress.value,
-      });
-      tableData.buyDataSource = data.results;
-    };
-
-    // 获取近期完成交易
-    const getRecentOrders = async () => {
-      tableData.recentDataSource = [];
-      const { data } = await getOrderList({ status: 1, pageSize: 10 });
-      tableData.recentDataSource = data.results;
-    };
-
     // 获取配置
     const getConfig = async () => {
       const { data } = await getConfigApi();
       config.value = { ...data.config, address: data.address };
+    };
+
+    const undo = async (record) => {
+      Modal.confirm({
+        title: () => "确定撤销？",
+        content: "此操作将扣除1TRX手续费",
+        onOk: async () => {
+          const res = await undoApi({ _id: record._id });
+          message.info(res.message);
+          orderTypeChange();
+        },
+      });
     };
 
     const mathFloor = (val = 0) => {
@@ -617,9 +404,10 @@ export default defineComponent({
 
     let timer = null;
     onMounted(() => {
+      getConfig();
+      getRentInfo();
       linkWallet();
-      getRecentOrders();
-      getCurrentOrders();
+      orderTypeChange();
       window.addEventListener("message", (e) => {
         if (e.data.message && e.data.message.action == "accountsChanged") {
           activeKey.value = "1";
@@ -628,12 +416,10 @@ export default defineComponent({
           linkWallet();
         }
       });
-      getConfig();
       useTitle(t("global.title"));
       timer = setInterval(() => {
-        getRecentOrders();
-        getCurrentOrders();
-        getRentInfo();
+        getAccount();
+        orderTypeChange();
       }, 3 * 60 * 1000);
     });
 
@@ -655,8 +441,6 @@ export default defineComponent({
       changeLang,
       leaseModal,
       sellTip,
-      getCurrentOrders,
-      tabsChange,
       tableData,
       accountResouce,
       ownerAddress,
@@ -675,6 +459,12 @@ export default defineComponent({
       needTrxCount,
       uzipAddress,
       linkWallet,
+      rent,
+      toLocaleString,
+      currentType,
+      orderType,
+      orderTypeChange,
+      undo,
     };
   },
 });
