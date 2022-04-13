@@ -43,7 +43,9 @@ export default defineComponent({
     const spinning = ref(false);
     const currentType = ref();
     const config = ref({});
-    const orderType = ref("b");
+    const orderType = ref("a");
+
+    const status = ref("home");
 
     const rent = ref({ platformSum: 0, sellerEarnings: 0 });
 
@@ -266,7 +268,16 @@ export default defineComponent({
 
     const orderTypeChange = async (v) => {
       tableData.value = [];
-      if (orderType.value === "b") {
+      if (status.value === "home") {
+        const { data } = await getOrderList({
+          status: 0,
+          orderType: 0,
+          currentType: currentType.value,
+        });
+        tableData.value = data.results;
+        return;
+      }
+      if (status.value === "date") {
         const { data } = await getOrderList({ status: 1, pageSize: 10 });
         tableData.value = data.results;
       } else {
@@ -275,15 +286,7 @@ export default defineComponent({
           return;
         }
 
-        if (orderType.value === "a") {
-          const { data } = await getOrderList({
-            status: 0,
-            orderType: 0,
-            currentType: currentType.value,
-          });
-          tableData.value = data.results;
-        }
-        if (orderType.value === "c") {
+        if (status.value === "myOrder") {
           const { data } = await getOrderList({
             receiverAddress: ownerAddress.value,
           });
@@ -389,6 +392,12 @@ export default defineComponent({
       return Math.floor(val / 1000000) * 1000000;
     };
 
+    const changeStatus = (v) => {
+      status.value = v;
+      drawerVisible.value = false;
+      orderTypeChange();
+    };
+
     watch(
       () => formState.resource,
       (val) => {
@@ -428,6 +437,7 @@ export default defineComponent({
     });
 
     const uzipAddress = (str) => {
+      if (!str) return "请链接钱包";
       return str.substr(0, 8) + "..." + str.substr(-4, 4);
     };
 
@@ -465,6 +475,8 @@ export default defineComponent({
       orderType,
       orderTypeChange,
       undo,
+      changeStatus,
+      status,
     };
   },
 });

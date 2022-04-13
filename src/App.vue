@@ -1,14 +1,10 @@
 <template>
-  <a-spin :spinning="spinning" tip="交易进行中，请稍后">
-    <Mobile v-if="isMobile" />
-    <PC v-else />
-    <footer class="footer" :style="{ height: isMobile ? '40px' : '87px' }">
-      <img
-        :style="{ width: isMobile ? '79px' : '153px' }"
-        src="/img/logo.png"
-      />
-    </footer>
-  </a-spin>
+  <Mobile />
+  <!-- <Mobile v-if="isMobile" />
+  <PC v-else /> -->
+  <footer class="footer" :style="{ height: isMobile ? '40px' : '87px' }">
+    <img :style="{ width: isMobile ? '79px' : '153px' }" src="/img/logo.png" />
+  </footer>
 </template>
 <script setup>
 import { ref } from "vue";
@@ -19,8 +15,6 @@ import PC from "./components/pc/index.vue";
 
 const { t } = useI18n();
 const isMobile = useMediaQuery("(max-width: 750px)");
-
-const spinning = ref(false);
 </script>
 
 <style lang="less">

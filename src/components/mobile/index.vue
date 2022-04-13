@@ -14,15 +14,15 @@
         <img class="line" src="/img/line.png" @click="drawerVisible = true" />
       </header>
 
-      <section>
+      <section v-if="status === 'home'">
         <div class="title">共享数据</div>
         <div class="data-box">
           <div class="data-box-content">
             <div class="data-box-left">
-              <span class="color-1" style="font-weight: 600"
-                >累计为用户提供</span
-              >
-              <span>&nbsp;带宽</span>
+              <span class="color-1" style="font-weight: 600">{{
+                $t("global.totalVolume")
+              }}</span>
+              <!-- <span>&nbsp;带宽</span> -->
             </div>
             <div class="color-3">
               {{ toLocaleString(rent.platformSum / 1000000 || 0) }}
@@ -30,16 +30,16 @@
           </div>
           <div class="data-box-content">
             <div class="data-box-left">
-              <span class="color-1" style="font-weight: 600"
-                >累计为用户提供</span
-              >
-              <span>&nbsp;能量</span>
+              <span class="color-1" style="font-weight: 600">{{
+                $t("global.totalSellersIncome")
+              }}</span>
+              <span>&nbsp;TRX</span>
             </div>
             <div class="color-3">
-              {{ toLocaleString(rent.platformSum / 1000000 || 0) }}
+              {{ toLocaleString(rent.sellerEarnings / 1000000 || 0) }}
             </div>
           </div>
-          <div class="data-box-content">
+          <!-- <div class="data-box-content">
             <div class="data-box-left">
               <span class="color-1" style="font-weight: 600"
                 >累计为用户节省</span
@@ -49,11 +49,11 @@
             <div class="color-3">
               {{ toLocaleString(rent.sellerEarnings / 1000000) || 0 }}
             </div>
-          </div>
+          </div> -->
         </div>
       </section>
 
-      <section>
+      <section v-if="status === 'home'">
         <div class="title font-36">推荐奖励</div>
         <div class="data-box m36">
           <div class="data-box-content">
@@ -92,7 +92,7 @@
         </div>
       </section>
 
-      <section>
+      <section v-if="status === 'home'">
         <div class="title font-36">资源共享</div>
         <div class="data-box data-form">
           <a-form name="formState" :model="formState">
@@ -190,7 +190,7 @@
       </section>
 
       <section>
-        <div class="title">
+        <!-- <div class="title">
           <a-radio-group
             v-model:value="orderType"
             @change="orderTypeChange"
@@ -204,11 +204,14 @@
               >我的买单</a-radio-button
             >
           </a-radio-group>
-        </div>
+        </div> -->
+        <div class="title font-36" v-if="status === 'home'">当前订单</div>
+        <div class="title font-36" v-if="status === 'myOrder'">我的买单</div>
+        <div class="title font-36" v-if="status === 'date'">近期订单</div>
 
         <div class="data-box">
           <a-select
-            v-if="orderType === 'a'"
+            v-if="status === 'home'"
             style="width: 100%"
             v-model:value="currentType"
             @change="orderTypeChange"
@@ -253,14 +256,14 @@
                 </div>
                 <div class="content-action">
                   <a
-                    v-if="orderType === 'b'"
+                    v-if="status === 'date'"
                     :href="`https://tronscan.org/#/transaction/ + ${record.hash}`"
                     target="_blank"
                     style="font-size: 14px"
                     >详情</a
                   >
                   <a-button
-                    v-if="orderType === 'a'"
+                    v-if="status === 'home'"
                     class="sell-button"
                     type="primary"
                     shape="round"
@@ -271,7 +274,7 @@
                     >出售
                   </a-button>
                   <a-button
-                    v-if="orderType === 'c'"
+                    v-if="status === 'myOrder'"
                     class="sell-button"
                     type="primary"
                     shape="round"
@@ -296,10 +299,46 @@
         v-model:visible="drawerVisible"
       >
         <div v-if="ownerAddress">地址：{{ uzipAddress(ownerAddress) }}</div>
+        <div v-else>
+          地址：<a-button
+            v-if="!ownerAddress"
+            type="primary"
+            shape="round"
+            size="small"
+            @click="linkWallet"
+            >链接钱包</a-button
+          >
+        </div>
+        <a-divider />
+        <div
+          @click="changeStatus('home')"
+          :class="status === 'home' && 'actived'"
+        >
+          首页
+        </div>
+        <a-divider />
+        <div
+          @click="changeStatus('myOrder')"
+          :class="status === 'myOrder' && 'actived'"
+        >
+          我的买单
+        </div>
+        <a-divider />
+        <div
+          @click="changeStatus('date')"
+          :class="status === 'date' && 'actived'"
+        >
+          近期交易
+        </div>
+        <a-divider />
         <a-space>
-          <div class="actived">中文</div>
+          <div :class="lang === 'zh' && 'actived'" @click="changeLang('zh')">
+            中文
+          </div>
           /
-          <div>En</div>
+          <div :class="lang === 'en' && 'actived'" @click="changeLang('en')">
+            En
+          </div>
         </a-space>
       </a-drawer>
     </div>
@@ -317,7 +356,7 @@ export default defineComponent({
 @import "index.less";
 
 .actived {
-  color: rgb(107, 107, 141);
+  color: rgb(197, 237, 19);
 }
 </style>
 <style lang="less">
@@ -350,5 +389,9 @@ export default defineComponent({
 
 .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
   color: rgb(255, 255, 255);
+}
+
+.ant-divider-horizontal {
+  margin: 10px 0;
 }
 </style>
