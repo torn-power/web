@@ -257,7 +257,7 @@
                 <div class="content-action">
                   <a
                     v-if="status === 'date'"
-                    :href="`https://tronscan.org/#/transaction/ + ${record.hash}`"
+                    :href="`https://tronscan.org/#/transaction/${record.hash}`"
                     target="_blank"
                     style="font-size: 14px"
                     >详情</a
