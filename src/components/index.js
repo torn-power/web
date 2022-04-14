@@ -37,17 +37,14 @@ export default defineComponent({
     const ownerAddress = ref();
     const formRef = ref();
     const activeKey = ref("1");
-    const visible = ref(false);
-    const soldVisible = ref(false);
 
     const spinning = ref(false);
     const currentType = ref();
     const config = ref({});
-    const orderType = ref("a");
 
     const status = ref("home");
 
-    const rent = ref({ platformSum: 0, sellerEarnings: 0 });
+    const rent = ref({ totalBandWidth: 0, totalEnergy: 0, totalTrx: 0 });
 
     // 账户资源
     const accountResouce = ref({});
@@ -116,7 +113,6 @@ export default defineComponent({
       resetFields();
       formState.ownerAddress = ownerAddress.value;
       formState.receiverAddress = ownerAddress.value;
-      visible.value = true;
     };
 
     // trx转账接口
@@ -183,7 +179,7 @@ export default defineComponent({
         message.warning(error || "冻结有误，请联系客服");
       } finally {
         getAccount();
-        visible.value = false;
+        getRentInfo();
         spinning.value = false;
       }
     };
@@ -197,53 +193,60 @@ export default defineComponent({
         message.warning("账户余额不足");
         return;
       }
-      //此处需要调用查询订单接口确保数量
-      try {
-        spinning.value = true;
-        const { status } = await getOrderByIdWriting({
-          _id: record._id,
-        });
-        if (status === 500) {
-          message.warning("订单已被出售");
-        } else {
-          const { data } = await getOrderApi({ _id: record._id });
-          if (data.status > 0) {
-            message.warning("订单已被出售");
-            return;
-          }
-          const signedTransaction =
-            await tronWeb.value.transactionBuilder.freezeBalance(
-              data.frozenBalance,
-              3,
-              record.resource,
-              ownerAddress.value,
-              record.receiverAddress,
-              1
-            );
-          const signedTx = await tronWeb.value.trx.sign(signedTransaction);
-          const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
-          if (broastTx.result) {
-            // 出售后需要将收款地址和订单信息发送到后台给人家转钱
-            await sellApi({
-              _id: data._id,
-              commission: data.aCommission,
-              hash: broastTx.txid,
-              ownerAddress: ownerAddress.value,
+      Modal.confirm({
+        title: "确定出售？",
+        onOk: async () => {
+          try {
+            spinning.value = true;
+            const { status } = await getOrderByIdWriting({
+              _id: record._id,
             });
-            message.success(t("global.sell") + t("global.success"));
-          } else {
+            if (status === 500) {
+              message.warning("订单已被出售");
+            } else {
+              const { data } = await getOrderApi({ _id: record._id });
+              if (data.status > 0) {
+                message.warning("订单已被出售");
+                return;
+              }
+              const signedTransaction =
+                await tronWeb.value.transactionBuilder.freezeBalance(
+                  data.frozenBalance,
+                  3,
+                  record.resource,
+                  ownerAddress.value,
+                  record.receiverAddress,
+                  1
+                );
+              const signedTx = await tronWeb.value.trx.sign(signedTransaction);
+              const broastTx = await tronWeb.value.trx.sendRawTransaction(
+                signedTx
+              );
+              if (broastTx.result) {
+                // 出售后需要将收款地址和订单信息发送到后台给人家转钱
+                await sellApi({
+                  _id: data._id,
+                  commission: data.aCommission,
+                  hash: broastTx.txid,
+                  ownerAddress: ownerAddress.value,
+                });
+                message.success(t("global.sell") + t("global.success"));
+              } else {
+                await getOrderByIdReWriting({ _id: record._id });
+                message.warning(broastTx.code);
+              }
+            }
+          } catch (error) {
+            console.log(error);
+            message.warning(error);
             await getOrderByIdReWriting({ _id: record._id });
-            message.warning(broastTx.code);
+          } finally {
+            getAccount();
+            getRentInfo();
+            spinning.value = false;
           }
-        }
-      } catch (error) {
-        console.log(error);
-        message.warning(error);
-        await getOrderByIdReWriting({ _id: record._id });
-      } finally {
-        getAccount();
-        spinning.value = false;
-      }
+        },
+      });
     };
 
     // 获取账户信息
@@ -420,8 +423,6 @@ export default defineComponent({
       window.addEventListener("message", (e) => {
         if (e.data.message && e.data.message.action == "accountsChanged") {
           activeKey.value = "1";
-          visible.value = false;
-          soldVisible.value = false;
           linkWallet();
         }
       });
@@ -456,7 +457,6 @@ export default defineComponent({
       ownerAddress,
       lang,
       activeKey,
-      visible,
       formRef,
       submitFreeze,
       spinning,
@@ -465,14 +465,12 @@ export default defineComponent({
       config,
       saveTrx,
       submitSoldForm,
-      soldVisible,
       needTrxCount,
       uzipAddress,
       linkWallet,
       rent,
       toLocaleString,
       currentType,
-      orderType,
       orderTypeChange,
       undo,
       changeStatus,

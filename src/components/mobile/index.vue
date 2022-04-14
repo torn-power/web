@@ -19,27 +19,27 @@
         <div class="data-box">
           <div class="data-box-content">
             <div class="data-box-left">
-              <span class="color-1" style="font-weight: 600">{{
-                $t("global.totalVolume")
-              }}</span>
-              <!-- <span>&nbsp;带宽</span> -->
+              <span class="color-1" style="font-weight: 600">
+                累计为用户提供
+              </span>
+              <span>&nbsp;带宽</span>
             </div>
             <div class="color-3">
-              {{ toLocaleString(rent.platformSum / 1000000 || 0) }}
+              {{ toLocaleString(rent.totalBandWidth || 0) }}
             </div>
           </div>
           <div class="data-box-content">
             <div class="data-box-left">
-              <span class="color-1" style="font-weight: 600">{{
-                $t("global.totalSellersIncome")
-              }}</span>
-              <span>&nbsp;TRX</span>
+              <span class="color-1" style="font-weight: 600">
+                累计为用户提供
+              </span>
+              <span>&nbsp;能量</span>
             </div>
             <div class="color-3">
-              {{ toLocaleString(rent.sellerEarnings / 1000000 || 0) }}
+              {{ toLocaleString(rent.totalEnergy || 0) }}
             </div>
           </div>
-          <!-- <div class="data-box-content">
+          <div class="data-box-content">
             <div class="data-box-left">
               <span class="color-1" style="font-weight: 600"
                 >累计为用户节省</span
@@ -47,9 +47,9 @@
               <span>&nbsp;TRX</span>
             </div>
             <div class="color-3">
-              {{ toLocaleString(rent.sellerEarnings / 1000000) || 0 }}
+              {{ toLocaleString(rent.totalTrx / 1000000) }}
             </div>
-          </div> -->
+          </div>
         </div>
       </section>
 
@@ -190,21 +190,6 @@
       </section>
 
       <section>
-        <!-- <div class="title">
-          <a-radio-group
-            v-model:value="orderType"
-            @change="orderTypeChange"
-            button-style="solid"
-          >
-            <a-radio-button value="b">近期交易</a-radio-button>
-            <a-radio-button :disabled="!ownerAddress" value="a"
-              >当前订单</a-radio-button
-            >
-            <a-radio-button :disabled="!ownerAddress" value="c"
-              >我的买单</a-radio-button
-            >
-          </a-radio-group>
-        </div> -->
         <div class="title font-36" v-if="status === 'home'">当前订单</div>
         <div class="title font-36" v-if="status === 'myOrder'">我的买单</div>
         <div class="title font-36" v-if="status === 'date'">近期订单</div>
