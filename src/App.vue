@@ -713,7 +713,7 @@ const submitFreeze = async () => {
         ownerAddress: ownerAddress.value,
         receiverAddress: values.receiverAddress,
         commission: toSun(needTrxCount.value),
-        frozenBalance: mathFloor(toSun(trxCount.value)),
+        frozenBalance: toSun(trxCount.value),
         resource: values.resource,
         resourceValue: values.amount,
         unitPrice: values.unitPrice,
