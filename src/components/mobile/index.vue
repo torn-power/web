@@ -189,7 +189,9 @@
         </div>
       </section>
 
-      <section v-if="status === 'home' || status === 'myOrder' || status == 'date'">
+      <section
+        v-if="status === 'home' || status === 'myOrder' || status == 'date'"
+      >
         <div class="title font-36" v-if="status === 'home'">当前订单</div>
         <div class="title font-36" v-if="status === 'myOrder'">我的买单</div>
         <div class="title font-36" v-if="status === 'date'">近期订单</div>
@@ -280,10 +282,14 @@
       <section v-if="status === 'sellerEntery'">
         <div class="data-box">
           <h1>卖家入驻</h1>
-          Tron energy-sharing平台意在打造一个能量、带宽共享平台，为广大波场用户降低资费。
-          点击订阅订单频道 <a target="_blank" href="https://t.me/tronenergysharing">https://t.me/tronenergysharing</a>获取实时订单信息。<br>
-          如你长期持有200万TRX或以上数量，可联系官方电报（@Tron_energysharing），获取加入卖家量化池的信息。<br>
-          
+          Tron
+          energy-sharing平台意在打造一个能量、带宽共享平台，为广大波场用户降低资费。
+          点击订阅订单频道
+          <a target="_blank" href="https://t.me/tronenergysharing"
+            >https://t.me/tronenergysharing</a
+          >获取实时订单信息。<br />
+          如你长期持有200万TRX或以上数量，可联系官方电报（@Tron_energysharing），获取加入卖家量化池的信息。<br />
+
           <div></div>
         </div>
       </section>
@@ -291,20 +297,24 @@
       <section v-if="status === 'noticeCenter'">
         <div class="data-box">
           <h1>公告中心</h1>
-          <div>最新公告</div>          
+          <div>最新公告</div>
           <div>
-            关于启动第一期百万空投计划的公告<br>
+            关于启动第一期百万空投计划的公告<br />
 
-            第一期百万空投计划将于新加坡时间2022年4月10日0时启动，于新加坡时间2022年4月20日24时结束。<br>
-            本期空投代币信息：<br>
-            名称：STAR<br>
-            代币简介：stat是基于Tronchain开发的Defi属性代币，致力于创造Defi和Gamefi的一个完善的经济模型<br>
-            相关生态：<a target="_blank" href="https://jxgamefi.com">https://jxgamefi.com</a><br>
-            社区推特：<a target="_blank" href="https://t.me/wdccn">https://t.me/wdccn</a><br>
-            空投数量：0.2<br>
-            空投总量：2000<br>
-            合约地址：TA74PoX3vgpZfghFJDB3sog7mfYRkjWQwW<br>
-            本期空投发放地址：<br>
+            第一期百万空投计划将于新加坡时间2022年4月10日0时启动，于新加坡时间2022年4月20日24时结束。<br />
+            本期空投代币信息：<br />
+            名称：STAR<br />
+            代币简介：stat是基于Tronchain开发的Defi属性代币，致力于创造Defi和Gamefi的一个完善的经济模型<br />
+            相关生态：<a target="_blank" href="https://jxgamefi.com"
+              >https://jxgamefi.com</a
+            ><br />
+            社区推特：<a target="_blank" href="https://t.me/wdccn"
+              >https://t.me/wdccn</a
+            ><br />
+            空投数量：0.2<br />
+            空投总量：2000<br />
+            合约地址：TA74PoX3vgpZfghFJDB3sog7mfYRkjWQwW<br />
+            本期空投发放地址：<br />
           </div>
         </div>
       </section>
@@ -314,22 +324,30 @@
           <h1>帮助中心</h1>
           <div>
             <h2>1.能量和带宽简介</h2>
-            <p>能量和带宽是波场网络下gas费的两种形态，如账户能量和带宽不足则需燃烧TRX获得能量和带宽，每个账户每日获得的免费带宽为1500单位，能量则无法免费获得。相比较通过燃烧获得能量和带宽而言，通过Tron enery-sharing平台支付租金获得能量和带宽的资费将大大降低。</p>
+            <p>
+              能量和带宽是波场网络下gas费的两种形态，如账户能量和带宽不足则需燃烧TRX获得能量和带宽，每个账户每日获得的免费带宽为1500单位，能量则无法免费获得。相比较通过燃烧获得能量和带宽而言，通过Tron
+              enery-sharing平台支付租金获得能量和带宽的资费将大大降低。
+            </p>
             <h2>2.基本操作</h2>
             <p>
-              ·下单 <br>
-                通过主页下单，选择所需的资源类型、数量支付订单费用。<br>
-              ·单价<br>
-                如遇流量高峰期，Tron enery-sharing平台的资源将无法实时满足用户需求，此时提高单价则有助用户优先他人获得资源。<br>
-              ·撤单<br>
-                如遇流量高峰期，Tron enery-sharing平台的资源将无法实时满足用户需求，此时用户可选择继续等待也可选择点击“我的订单”进行撤单。<br>
-              ·出售<br>
-                如遇流量高峰期，Tron enery-sharing平台的资源将无法实时满足用户需求，对于持有TRX的用户，可选择通过主页面“当前订单”处出售资源，赚取TRX。<br>
+              ·下单 <br />
+              通过主页下单，选择所需的资源类型、数量支付订单费用。<br />
+              ·单价<br />
+              如遇流量高峰期，Tron
+              enery-sharing平台的资源将无法实时满足用户需求，此时提高单价则有助用户优先他人获得资源。<br />
+              ·撤单<br />
+              如遇流量高峰期，Tron
+              enery-sharing平台的资源将无法实时满足用户需求，此时用户可选择继续等待也可选择点击“我的订单”进行撤单。<br />
+              ·出售<br />
+              如遇流量高峰期，Tron
+              enery-sharing平台的资源将无法实时满足用户需求，对于持有TRX的用户，可选择通过主页面“当前订单”处出售资源，赚取TRX。<br />
             </p>
             <h2>3.安全性</h2>
             <p>
-              Tron enery-sharing平台目前系全网最低价的能量共享平台，平台本身没有资源可供出售。用户所购买的资源来源于第三方用户<br>
-              相比较其他能量交易平台，Tron enery-sharing平台的交易方式没有采用智能合约授权的方式，无论是买方还是卖方，平台绝无可能得到用户账户转账的授权，排除了智能合约漏洞侵害用户资产的可能，请各位用户放心使用。<br>
+              Tron
+              enery-sharing平台目前系全网最低价的能量共享平台，平台本身没有资源可供出售。用户所购买的资源来源于第三方用户<br />
+              相比较其他能量交易平台，Tron
+              enery-sharing平台的交易方式没有采用智能合约授权的方式，无论是买方还是卖方，平台绝无可能得到用户账户转账的授权，排除了智能合约漏洞侵害用户资产的可能，请各位用户放心使用。<br />
             </p>
             <div>Tron energy-sharing团队</div>
           </div>
@@ -389,13 +407,13 @@
           帮助中心
         </div>
         <a-divider />
-        <!-- <div
+        <div
           @click="changeStatus('date')"
           :class="status === 'date' && 'actived'"
         >
           近期交易
-        </div> 
-        <a-divider /> -->
+        </div>
+        <a-divider />
         <a-space>
           <div :class="lang === 'zh' && 'actived'" @click="changeLang('zh')">
             中文
