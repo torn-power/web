@@ -1,7 +1,7 @@
 <template>
-  <Mobile />
-  <!-- <Mobile v-if="isMobile" />
-  <PC v-else /> -->
+  <!-- <Mobile /> -->
+  <Mobile v-if="isMobile" />
+  <PC v-else />
   <footer class="footer" :style="{ height: isMobile ? '40px' : '87px' }">
     <img :style="{ width: isMobile ? '79px' : '153px' }" src="/img/logo.png" />
   </footer>
