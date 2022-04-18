@@ -23,19 +23,19 @@
         <div class="title">共享数据</div>
         <div class="share-data-content-wrap">
           <div class="content-item-wrap">
-            <div class="num">1,545,632,123</div>
+            <div class="num">{{ toLocaleString(rent.totalBandWidth || 0) }}</div>
             <div class="name">
               累计为用户提供<span class="sign-name">&nbsp;带宽</span>
             </div>
           </div>
           <div class="content-item-wrap">
-            <div class="num">1,545,632 K</div>
+            <div class="num">{{ toLocaleString(rent.totalEnergy || 0) }} K</div>
             <div class="name">
               累计为用户提供<span class="sign-name">&nbsp;能量</span>
             </div>
           </div>
           <div class="content-item-wrap">
-            <div class="num">1,545,632,123</div>
+            <div class="num">{{ toLocaleString(rent.totalTrx / 1000000) }}</div>
             <div class="name">
               累计为用户节省<span class="sign-name">&nbsp;TRX</span>
             </div>
@@ -51,7 +51,7 @@
               <img class="reward-icon" src="/img/icon-1.png" alt="" />
               <div class="reward-detail-wrap">
                 <div class="reward-name">钱包余额</div>
-                <div class="reward-num">0.00</div>
+                <div class="reward-num">{{ accountResouce.balance || 0 }} TRX</div>
               </div>
             </div>
             <div class="reward-detail-item-wrap">
@@ -87,8 +87,8 @@
         <div class="title">资源租赁</div>
         <div class="resource-lease-content-wrap">
           <div class="resource-lease-content-form">
-            <a-form name="formState">
-              <a-form-item>
+            <a-form name="formState" :model="formState">
+              <a-form-item v-bind="validateInfos.receiverAddress">
                 <a-row>
                   <a-col :span="5">
                     <div class="color-1 font-24 form-item-name">
@@ -96,18 +96,21 @@
                     </div>
                   </a-col>
                   <a-col :span="19">
-                    <a-input placeholder="资源接收地址"></a-input>
+                    <a-input
+                      v-model:value="formState.receiverAddress"
+                      :placeholder="$t('tip.tronAddress')"
+                    ></a-input>
                   </a-col>
                 </a-row>
               </a-form-item>
-              <a-form-item>
+              <a-form-item v-bind="validateInfos.resource">
                 <a-row>
                   <a-col :span="5">
                     <div class="color-1 font-24 form-item-name">资源类型</div>
                   </a-col>
                   <a-col :span="19">
                     <div class="form-item-value">
-                      <a-radio-group>
+                      <a-radio-group v-model:value="formState.resource">
                         <a-radio
                           value="ENERGY"
                           class="font-24"
@@ -125,26 +128,36 @@
                   </a-col>
                 </a-row>
               </a-form-item>
-              <a-form-item>
+              <a-form-item v-bind="validateInfos.amount">
                 <a-row>
                   <a-col :span="5">
                     <div class="color-1 font-24 form-item-name">资源数量</div>
                   </a-col>
                   <a-col :span="19">
                     <a-input-number
-                      v-if="1"
-                      :placeholder="$t('tip.pledgeEnergy', { amount: 300 })"
+                      v-if="formState.resource === 'ENERGY'"
+                      :placeholder="
+                        $t('tip.pledgeEnergy', { amount: config.minEnergyNumber })
+                      "
                       :precision="0"
+                      v-model:value="formState.amount"
+                      :min="config.minEnergyNumber"
                     />
                     <a-input-number
                       v-else
-                      :placeholder="$t('tip.pledegBandWidth', { amount: 500 })"
+                      :placeholder="
+                        $t('tip.pledegBandWidth', {
+                          amount: config.minBandwidthNumber,
+                        })
+                      "
                       :precision="0"
+                      v-model:value="formState.amount"
+                      :min="config.minBandwidthNumber"
                     />
                   </a-col>
                 </a-row>
               </a-form-item>
-              <a-form-item>
+              <a-form-item v-bind="validateInfos.unitPrice">
                 <a-row>
                   <a-col :span="5">
                     <div class="color-1 font-24 form-item-name">
@@ -153,10 +166,17 @@
                   </a-col>
                   <a-col :span="19">
                     <a-input-number
-                      :min="0"
-                      class="input-search"
-                      placeholder="单价"
-                    ></a-input-number>
+                      :precision="0"
+                      v-if="formState.resource === 'ENERGY'"
+                      v-model:value="formState.unitPrice"
+                      :min="config.energyPrice"
+                    />
+                    <a-input-number
+                      v-else
+                      :precision="0"
+                      v-model:value="formState.unitPrice"
+                      :min="config.bandwidthPrice"
+                    />
                   </a-col>
                 </a-row>
               </a-form-item>
@@ -176,7 +196,7 @@
                           color: #ffcc17;
                           margin-right: 4px;
                         "
-                        >196.00</span
+                        >{{needTrxCount || 0}}</span
                       >
                       <span
                         style="
@@ -209,7 +229,7 @@
                           color: #ffffff;
                           margin-right: 4px;
                         "
-                        >196.00</span
+                        >{{ saveTrx || 0 }}</span
                       >
                       <span
                         style="
@@ -232,6 +252,8 @@
             type="primary"
             shape="round"
             size="large"
+            @click="submitFreeze"
+            :disabled="!ownerAddress"
             >下单</a-button
           >
         </div>
@@ -241,10 +263,17 @@
         <div class="title">当前订单</div>
         <div class="current-order-content-wrap">
           <div style="width: 100%">
-            <a-select style="width: 288px">
-              <a-select-option value="1">1</a-select-option>
-              <a-select-option value="2">2</a-select-option>
-              <a-select-option value="3">3</a-select-option>
+            <a-select
+              style="width: 288px"
+              v-model:value="currentType"
+              @change="orderTypeChange"
+            >
+              <a-select-option value="unitPrice">{{
+                $t("global.highestPrice")
+              }}</a-select-option>
+              <a-select-option value="aCommission">{{
+                $t("global.earnings")
+              }}</a-select-option>
             </a-select>
           </div>
           <div style="width: 100%">
@@ -262,31 +291,31 @@
               </a-row>
             </div>
             <div class="order-table-body-wrap">
-              <div class="order-table-body-row" v-for="(v, i) in 10" :key="i">
+              <div class="order-table-body-row" v-for="(record, i) in tableData" :key="i">
                 <a-row>
                   <a-col :span="9">
                     <div class="order-table-body-item">
                       <div class="body-item-line">
                         <span class="line-name">价格/天：</span>
-                        <span class="line-num">500</span>
+                        <span class="line-num">{{ record.unitPrice }}</span>
                         <span class="line-unit">sun</span>
                       </div>
                       <div class="body-item-line">
                         <span class="line-name">带宽：</span>
-                        <span class="line-num">12,323</span>
+                        <span class="line-num">{{ record.resourceValue }}</span>
                       </div>
                     </div>
                   </a-col>
                   <a-col :span="9">
                     <div class="order-table-body-item">
                       <div class="body-item-line">
-                        <span class="line-name">价格/天：</span>
-                        <span class="line-num">500</span>
-                        <span class="line-unit">sun</span>
+                        <span class="line-name">收入：</span>
+                        <span class="line-num">{{ parseInt(record.aCommission / 1000000) }}</span>
+                        <span class="line-unit">TRX</span>
                       </div>
                       <div class="body-item-line">
-                        <span class="line-name">带宽：</span>
-                        <span class="line-num">12,323</span>
+                        <span class="line-name">冻结：</span>
+                        <span class="line-num">{{ record.frozenBalance / 1000000 }}TRX</span>
                       </div>
                     </div>
                   </a-col>
@@ -297,13 +326,16 @@
                         type="primary"
                         shape="round"
                         size="small"
+                        :disabled="!ownerAddress"
                         style="margin: 0 auto"
+                        @click="submitSoldForm(record)"
                         >出售</a-button
                       >
                     </div>
                   </a-col>
                 </a-row>
               </div>
+              <div class="no-data" v-if="tableData.length === 0">暂无数据</div>
             </div>
           </div>
         </div>
@@ -311,7 +343,13 @@
     </div>
   </div>
 </template>
-<script setup></script>
+<script>
+import { defineComponent } from "vue";
+import index from "../index";
+export default defineComponent({
+  ...index,
+});
+</script>
 
 <style lang="less" scoped>
 @import "index.less";

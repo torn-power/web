@@ -93,7 +93,7 @@
       </section>
 
       <section v-if="status === 'home'">
-        <div class="title font-36">资源共享</div>
+        <div class="title font-36">资源租赁</div>
         <div class="data-box data-form">
           <a-form name="formState" :model="formState">
             <a-form-item v-bind="validateInfos.receiverAddress">
