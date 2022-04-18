@@ -282,9 +282,29 @@
           <h1>卖家入驻</h1>
           Tron energy-sharing平台意在打造一个能量、带宽共享平台，为广大波场用户降低资费。
           点击订阅订单频道 <a target="_blank" href="https://t.me/tronenergysharing">https://t.me/tronenergysharing</a>获取实时订单信息。<br>
-          如你长期持有200万TRX或以上数量，可联系官方电报（@Tron_energysharing），获取加入卖家量化池的信息。
-          Tron energy-sharing团队
+          如你长期持有200万TRX或以上数量，可联系官方电报（@Tron_energysharing），获取加入卖家量化池的信息。<br>
+          
+          <div></div>
+        </div>
+      </section>
+      <section v-if="status === 'noticeCenter'">
+        <div class="data-box">
+          <h1>公告中心</h1>
+          <div>最新公告</div>          
+          <div>
+            关于启动第一期百万空投计划的公告<br>
 
+            第一期百万空投计划将于新加坡时间2022年4月10日0时启动，于新加坡时间2022年4月20日24时结束。<br>
+            本期空投代币信息：<br>
+            名称：STAR<br>
+            代币简介：stat是基于Tronchain开发的Defi属性代币，致力于创造Defi和Gamefi的一个完善的经济模型<br>
+            相关生态：<a target="_blank" href="https://jxgamefi.com">https://jxgamefi.com</a><br>
+            社区推特：<a target="_blank" href="https://t.me/wdccn">https://t.me/wdccn</a><br>
+            空投数量：0.2<br>
+            空投总量：2000<br>
+            合约地址：TA74PoX3vgpZfghFJDB3sog7mfYRkjWQwW<br>
+            本期空投发放地址：<br>
+          </div>
         </div>
       </section>
 
@@ -325,6 +345,13 @@
           :class="status === 'sellerEntery' && 'actived'"
         >
           卖家入驻
+        </div>
+        <a-divider />
+        <div
+          @click="changeStatus('noticeCenter')"
+          :class="status === 'noticeCenter' && 'actived'"
+        >
+          公告中心
         </div>
         <a-divider />
         <!-- <div
