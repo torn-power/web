@@ -189,7 +189,7 @@
         </div>
       </section>
 
-      <section>
+      <section v-if="status === 'home' || status === 'myOrder' || status == 'date'">
         <div class="title font-36" v-if="status === 'home'">当前订单</div>
         <div class="title font-36" v-if="status === 'myOrder'">我的买单</div>
         <div class="title font-36" v-if="status === 'date'">近期订单</div>
@@ -277,6 +277,17 @@
         </div>
       </section>
 
+      <section v-if="status === 'sellerEntery'">
+        <div class="data-box">
+          <h1>卖家入驻</h1>
+          Tron energy-sharing平台意在打造一个能量、带宽共享平台，为广大波场用户降低资费。
+          点击订阅订单频道 <a target="_blank" href="https://t.me/tronenergysharing">https://t.me/tronenergysharing</a>获取实时订单信息。<br>
+          如你长期持有200万TRX或以上数量，可联系官方电报（@Tron_energysharing），获取加入卖家量化池的信息。
+          Tron energy-sharing团队
+
+        </div>
+      </section>
+
       <a-drawer
         title="更多"
         placement="right"
@@ -306,15 +317,22 @@
           @click="changeStatus('myOrder')"
           :class="status === 'myOrder' && 'actived'"
         >
-          我的买单
+          我的订单
         </div>
         <a-divider />
         <div
+          @click="changeStatus('sellerEntery')"
+          :class="status === 'sellerEntery' && 'actived'"
+        >
+          卖家入驻
+        </div>
+        <a-divider />
+        <!-- <div
           @click="changeStatus('date')"
           :class="status === 'date' && 'actived'"
         >
           近期交易
-        </div>
+        </div> -->
         <a-divider />
         <a-space>
           <div :class="lang === 'zh' && 'actived'" @click="changeLang('zh')">
