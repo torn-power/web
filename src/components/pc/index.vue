@@ -1,347 +1,394 @@
 <template>
-  <div class="pc-wrap">
-    <div class="header">
-      <div class="logo-wrap">
-        <img class="logo" src="/img/logo-pc.png" alt="logo" srcset="" />
-        <span class="logo-name">TRON</span>
-      </div>
-      <div class="left">
-        <span class="wallte">我的钱包</span>
-        <div class="header-line"></div>
-        <div class="language-wrap">
-          <span class="language-item">EN</span>
-          <span>/</span>
-          <span class="language-item">繁体</span>
-          <span>/</span>
-          <span class="language-item active">简体</span>
+  <a-spin :spinning="spinning" tip="交易进行中，请稍后">
+    <div class="pc-wrap">
+      <div class="header">
+        <div class="logo-wrap">
+          <img class="logo" src="/img/logo-pc.png" alt="logo" srcset="" />
+          <span class="logo-name">TRON</span>
         </div>
-      </div>
-    </div>
-    <div class="content">
-      <!-- 共享数据 -->
-      <div class="share-data-wrap">
-        <div class="title">共享数据</div>
-        <div class="share-data-content-wrap">
-          <div class="content-item-wrap">
-            <div class="num">{{ toLocaleString(rent.totalBandWidth || 0) }}</div>
-            <div class="name">
-              累计为用户提供<span class="sign-name">&nbsp;带宽</span>
+        <div class="left">
+          <a-space>
+            <div v-if="ownerAddress" style="color: white">
+              {{ uzipAddress(ownerAddress) }}
             </div>
-          </div>
-          <div class="content-item-wrap">
-            <div class="num">{{ toLocaleString(rent.totalEnergy || 0) }} K</div>
-            <div class="name">
-              累计为用户提供<span class="sign-name">&nbsp;能量</span>
-            </div>
-          </div>
-          <div class="content-item-wrap">
-            <div class="num">{{ toLocaleString(rent.totalTrx / 1000000) }}</div>
-            <div class="name">
-              累计为用户节省<span class="sign-name">&nbsp;TRX</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 推荐奖励 -->
-      <div class="recommend-reward">
-        <div class="title">推荐奖励</div>
-        <div class="recommend-reward-wrap">
-          <div class="reward-detail-content-wrap">
-            <div class="reward-detail-item-wrap">
-              <img class="reward-icon" src="/img/icon-1.png" alt="" />
-              <div class="reward-detail-wrap">
-                <div class="reward-name">钱包余额</div>
-                <div class="reward-num">{{ accountResouce.balance || 0 }} TRX</div>
-              </div>
-            </div>
-            <div class="reward-detail-item-wrap">
-              <img class="reward-icon" src="/img/icon-2.png" alt="" />
-              <div class="reward-detail-wrap">
-                <div class="reward-name">获得的奖励</div>
-                <div class="reward-num">0.00</div>
-              </div>
-            </div>
-            <div class="reward-detail-item-wrap">
-              <img class="reward-icon" src="/img/icon-3.png" alt="" />
-              <div class="reward-detail-wrap">
-                <div class="reward-name">已邀请人数</div>
-                <div class="reward-num">0.00</div>
-              </div>
-            </div>
-          </div>
-          <div class="recommend-url-wrap">
-            <div class="recommend-url-tips">
-              复制您的推荐链接，邀请并获得海量奖励。
-            </div>
-            <div class="recommend-url-content-wrap">
-              <div class="url-content-wrap">https://www.figma.com/id=0%3A1</div>
-              <div class="copy-url-line"></div>
-              <img class="copy-img" src="/img/copy.png" alt="" />
-              <div class="copy-btn">复制到剪贴板</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 资源租赁 -->
-      <div class="resource-lease-wrap">
-        <div class="title">资源租赁</div>
-        <div class="resource-lease-content-wrap">
-          <div class="resource-lease-content-form">
-            <a-form name="formState" :model="formState">
-              <a-form-item v-bind="validateInfos.receiverAddress">
-                <a-row>
-                  <a-col :span="5">
-                    <div class="color-1 font-24 form-item-name">
-                      资源接收地址
-                    </div>
-                  </a-col>
-                  <a-col :span="19">
-                    <a-input
-                      v-model:value="formState.receiverAddress"
-                      :placeholder="$t('tip.tronAddress')"
-                    ></a-input>
-                  </a-col>
-                </a-row>
-              </a-form-item>
-              <a-form-item v-bind="validateInfos.resource">
-                <a-row>
-                  <a-col :span="5">
-                    <div class="color-1 font-24 form-item-name">资源类型</div>
-                  </a-col>
-                  <a-col :span="19">
-                    <div class="form-item-value">
-                      <a-radio-group v-model:value="formState.resource">
-                        <a-radio
-                          value="ENERGY"
-                          class="font-24"
-                          style="color: white"
-                          >{{ $t("global.energy") }}</a-radio
-                        >
-                        <a-radio
-                          value="BANDWIDTH"
-                          class="font-24"
-                          style="color: white"
-                          >{{ $t("global.bandwidth") }}</a-radio
-                        >
-                      </a-radio-group>
-                    </div>
-                  </a-col>
-                </a-row>
-              </a-form-item>
-              <a-form-item v-bind="validateInfos.amount">
-                <a-row>
-                  <a-col :span="5">
-                    <div class="color-1 font-24 form-item-name">资源数量</div>
-                  </a-col>
-                  <a-col :span="19">
-                    <a-input-number
-                      v-if="formState.resource === 'ENERGY'"
-                      :placeholder="
-                        $t('tip.pledgeEnergy', { amount: config.minEnergyNumber })
-                      "
-                      :precision="0"
-                      v-model:value="formState.amount"
-                      :min="config.minEnergyNumber"
-                    />
-                    <a-input-number
-                      v-else
-                      :placeholder="
-                        $t('tip.pledegBandWidth', {
-                          amount: config.minBandwidthNumber,
-                        })
-                      "
-                      :precision="0"
-                      v-model:value="formState.amount"
-                      :min="config.minBandwidthNumber"
-                    />
-                  </a-col>
-                </a-row>
-              </a-form-item>
-              <a-form-item v-bind="validateInfos.unitPrice">
-                <a-row>
-                  <a-col :span="5">
-                    <div class="color-1 font-24 form-item-name">
-                      单价(sun) / 天
-                    </div>
-                  </a-col>
-                  <a-col :span="19">
-                    <a-input-number
-                      :precision="0"
-                      v-if="formState.resource === 'ENERGY'"
-                      v-model:value="formState.unitPrice"
-                      :min="config.energyPrice"
-                    />
-                    <a-input-number
-                      v-else
-                      :precision="0"
-                      v-model:value="formState.unitPrice"
-                      :min="config.bandwidthPrice"
-                    />
-                  </a-col>
-                </a-row>
-              </a-form-item>
-              <div>
-                <a-row>
-                  <a-col :span="5">
-                    <div class="color-1 font-24 form-item-name">订单金额</div>
-                  </a-col>
-                  <a-col :span="19">
-                    <div class="form-item-value">
-                      <span
-                        style="
-                          font-style: normal;
-                          font-weight: 600;
-                          font-size: 24px;
-                          line-height: 24px;
-                          color: #ffcc17;
-                          margin-right: 4px;
-                        "
-                        >{{needTrxCount || 0}}</span
-                      >
-                      <span
-                        style="
-                          font-style: normal;
-                          font-weight: 400;
-                          font-size: 14px;
-                          line-height: 22px;
-                          color: #ffcc17;
-                          margin-right: 12px;
-                        "
-                        >TRX</span
-                      >
-                      <span
-                        style="
-                          font-style: normal;
-                          font-weight: 400;
-                          font-size: 14px;
-                          line-height: 22px;
-                          color: #ffcc17;
-                          margin-right: 4px;
-                        "
-                        >相比燃烧TRX获得资源节省</span
-                      >
-                      <span
-                        style="
-                          font-style: normal;
-                          font-weight: 600;
-                          font-size: 18px;
-                          line-height: 24px;
-                          color: #ffffff;
-                          margin-right: 4px;
-                        "
-                        >{{ saveTrx || 0 }}</span
-                      >
-                      <span
-                        style="
-                          font-style: normal;
-                          font-weight: 400;
-                          font-size: 14px;
-                          line-height: 22px;
-                          color: #ffffff;
-                        "
-                        >TRX</span
-                      >
-                    </div>
-                  </a-col>
-                </a-row>
-              </div>
-            </a-form>
-          </div>
-          <a-button
-            class="place-order-button"
-            type="primary"
-            shape="round"
-            size="large"
-            @click="submitFreeze"
-            :disabled="!ownerAddress"
-            >下单</a-button
-          >
-        </div>
-      </div>
-      <!-- 当前订单 -->
-      <div class="current-order-wrap">
-        <div class="title">当前订单</div>
-        <div class="current-order-content-wrap">
-          <div style="width: 100%">
-            <a-select
-              style="width: 288px"
-              v-model:value="currentType"
-              @change="orderTypeChange"
+            <a-button
+              v-if="!ownerAddress"
+              type="primary"
+              shape="round"
+              @click="linkWallet"
+              >{{ $t("global.LinkWallet") }}</a-button
             >
-              <a-select-option value="unitPrice">{{
-                $t("global.highestPrice")
-              }}</a-select-option>
-              <a-select-option value="aCommission">{{
-                $t("global.earnings")
-              }}</a-select-option>
-            </a-select>
-          </div>
-          <div style="width: 100%">
-            <div class="order-table-header-wrap">
-              <a-row>
-                <a-col :span="9">
-                  <div class="order-table-header-item">订单信息</div>
-                </a-col>
-                <a-col :span="9">
-                  <div class="order-table-header-item">卖家收入</div>
-                </a-col>
-                <a-col :span="6">
-                  <div class="order-table-header-item">操作</div>
-                </a-col>
-              </a-row>
+            <div class="header-line"></div>
+            <div class="language-wrap">
+              <a-space>
+                <div
+                  :class="lang === 'zh' && 'actived'"
+                  @click="changeLang('zh')"
+                >
+                  中文
+                </div>
+                /
+                <div
+                  :class="lang === 'en' && 'actived'"
+                  @click="changeLang('en')"
+                >
+                  En
+                </div>
+              </a-space>
             </div>
-            <div class="order-table-body-wrap">
-              <div class="order-table-body-row" v-for="(record, i) in tableData" :key="i">
+          </a-space>
+        </div>
+      </div>
+      <div class="content">
+        <!-- 共享数据 -->
+        <div class="share-data-wrap">
+          <div class="title">共享数据</div>
+          <div class="share-data-content-wrap">
+            <div class="content-item-wrap">
+              <div class="num">
+                {{ toLocaleString(rent.totalBandWidth || 0) }}
+              </div>
+              <div class="name">
+                累计为用户提供<span class="sign-name">&nbsp;带宽</span>
+              </div>
+            </div>
+            <div class="content-item-wrap">
+              <div class="num">
+                {{ toLocaleString(rent.totalEnergy || 0) }} K
+              </div>
+              <div class="name">
+                累计为用户提供<span class="sign-name">&nbsp;能量</span>
+              </div>
+            </div>
+            <div class="content-item-wrap">
+              <div class="num">
+                {{ toLocaleString(rent.totalTrx / 1000000) }}
+              </div>
+              <div class="name">
+                累计为用户节省<span class="sign-name">&nbsp;TRX</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 推荐奖励 -->
+        <div class="recommend-reward">
+          <div class="title">推荐奖励</div>
+          <div class="recommend-reward-wrap">
+            <div class="reward-detail-content-wrap">
+              <div class="reward-detail-item-wrap">
+                <img class="reward-icon" src="/img/icon-1.png" alt="" />
+                <div class="reward-detail-wrap">
+                  <div class="reward-name">钱包余额</div>
+                  <div class="reward-num">
+                    {{ accountResouce.balance || 0 }} TRX
+                  </div>
+                </div>
+              </div>
+              <div class="reward-detail-item-wrap">
+                <img class="reward-icon" src="/img/icon-2.png" alt="" />
+                <div class="reward-detail-wrap">
+                  <div class="reward-name">获得的奖励</div>
+                  <div class="reward-num">0.00</div>
+                </div>
+              </div>
+              <div class="reward-detail-item-wrap">
+                <img class="reward-icon" src="/img/icon-3.png" alt="" />
+                <div class="reward-detail-wrap">
+                  <div class="reward-name">已邀请人数</div>
+                  <div class="reward-num">0.00</div>
+                </div>
+              </div>
+            </div>
+            <div class="recommend-url-wrap" @click="copyText">
+              <div class="recommend-url-tips">
+                复制您的推荐链接，邀请并获得海量奖励。
+              </div>
+              <div class="recommend-url-content-wrap">
+                <div class="url-content-wrap">
+                  https://www.figma.com/id=0%3A1
+                </div>
+                <div class="copy-url-line"></div>
+                <img class="copy-img" src="/img/copy.png" alt="" />
+                <div class="copy-btn">复制到剪贴板</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 资源租赁 -->
+        <div class="resource-lease-wrap">
+          <div class="title">资源租赁</div>
+          <div class="resource-lease-content-wrap">
+            <div class="resource-lease-content-form">
+              <a-form name="formState" :model="formState">
+                <a-form-item v-bind="validateInfos.receiverAddress">
+                  <a-row>
+                    <a-col :span="5">
+                      <div class="color-1 font-24 form-item-name">
+                        资源接收地址
+                      </div>
+                    </a-col>
+                    <a-col :span="19">
+                      <a-input
+                        v-model:value="formState.receiverAddress"
+                        :placeholder="$t('tip.tronAddress')"
+                      ></a-input>
+                    </a-col>
+                  </a-row>
+                </a-form-item>
+                <a-form-item v-bind="validateInfos.resource">
+                  <a-row>
+                    <a-col :span="5">
+                      <div class="color-1 font-24 form-item-name">资源类型</div>
+                    </a-col>
+                    <a-col :span="19">
+                      <div class="form-item-value">
+                        <a-radio-group v-model:value="formState.resource">
+                          <a-radio
+                            value="ENERGY"
+                            class="font-24"
+                            style="color: white"
+                            >{{ $t("global.energy") }}</a-radio
+                          >
+                          <a-radio
+                            value="BANDWIDTH"
+                            class="font-24"
+                            style="color: white"
+                            >{{ $t("global.bandwidth") }}</a-radio
+                          >
+                        </a-radio-group>
+                      </div>
+                    </a-col>
+                  </a-row>
+                </a-form-item>
+                <a-form-item v-bind="validateInfos.amount">
+                  <a-row>
+                    <a-col :span="5">
+                      <div class="color-1 font-24 form-item-name">资源数量</div>
+                    </a-col>
+                    <a-col :span="19">
+                      <a-input-number
+                        v-if="formState.resource === 'ENERGY'"
+                        :placeholder="
+                          $t('tip.pledgeEnergy', {
+                            amount: config.minEnergyNumber,
+                          })
+                        "
+                        :precision="0"
+                        v-model:value="formState.amount"
+                        :min="config.minEnergyNumber"
+                      />
+                      <a-input-number
+                        v-else
+                        :placeholder="
+                          $t('tip.pledegBandWidth', {
+                            amount: config.minBandwidthNumber,
+                          })
+                        "
+                        :precision="0"
+                        v-model:value="formState.amount"
+                        :min="config.minBandwidthNumber"
+                      />
+                    </a-col>
+                  </a-row>
+                </a-form-item>
+                <a-form-item v-bind="validateInfos.unitPrice">
+                  <a-row>
+                    <a-col :span="5">
+                      <div class="color-1 font-24 form-item-name">
+                        单价(sun) / 天
+                      </div>
+                    </a-col>
+                    <a-col :span="19">
+                      <a-input-number
+                        :precision="0"
+                        v-if="formState.resource === 'ENERGY'"
+                        v-model:value="formState.unitPrice"
+                        :min="config.energyPrice"
+                      />
+                      <a-input-number
+                        v-else
+                        :precision="0"
+                        v-model:value="formState.unitPrice"
+                        :min="config.bandwidthPrice"
+                      />
+                    </a-col>
+                  </a-row>
+                </a-form-item>
+                <div>
+                  <a-row>
+                    <a-col :span="5">
+                      <div class="color-1 font-24 form-item-name">订单金额</div>
+                    </a-col>
+                    <a-col :span="19">
+                      <div class="form-item-value">
+                        <span
+                          style="
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 24px;
+                            line-height: 24px;
+                            color: #ffcc17;
+                            margin-right: 4px;
+                          "
+                          >{{ needTrxCount || 0 }}</span
+                        >
+                        <span
+                          style="
+                            font-style: normal;
+                            font-weight: 400;
+                            font-size: 14px;
+                            line-height: 22px;
+                            color: #ffcc17;
+                            margin-right: 12px;
+                          "
+                          >TRX</span
+                        >
+                        <span
+                          style="
+                            font-style: normal;
+                            font-weight: 400;
+                            font-size: 14px;
+                            line-height: 22px;
+                            color: #ffcc17;
+                            margin-right: 4px;
+                          "
+                          >相比燃烧TRX获得资源节省</span
+                        >
+                        <span
+                          style="
+                            font-style: normal;
+                            font-weight: 600;
+                            font-size: 18px;
+                            line-height: 24px;
+                            color: #ffffff;
+                            margin-right: 4px;
+                          "
+                          >{{ saveTrx || 0 }}</span
+                        >
+                        <span
+                          style="
+                            font-style: normal;
+                            font-weight: 400;
+                            font-size: 14px;
+                            line-height: 22px;
+                            color: #ffffff;
+                          "
+                          >TRX</span
+                        >
+                      </div>
+                    </a-col>
+                  </a-row>
+                </div>
+              </a-form>
+            </div>
+            <a-button
+              class="place-order-button"
+              type="primary"
+              shape="round"
+              size="large"
+              @click="submitFreeze"
+              :disabled="!ownerAddress"
+              >下单</a-button
+            >
+          </div>
+        </div>
+        <!-- 当前订单 -->
+        <div class="current-order-wrap">
+          <div class="title">当前订单</div>
+          <div class="current-order-content-wrap">
+            <div style="width: 100%">
+              <a-select
+                style="width: 288px"
+                v-model:value="currentType"
+                @change="orderTypeChange"
+              >
+                <a-select-option value="unitPrice">{{
+                  $t("global.highestPrice")
+                }}</a-select-option>
+                <a-select-option value="aCommission">{{
+                  $t("global.earnings")
+                }}</a-select-option>
+              </a-select>
+            </div>
+            <div style="width: 100%">
+              <div class="order-table-header-wrap">
                 <a-row>
                   <a-col :span="9">
-                    <div class="order-table-body-item">
-                      <div class="body-item-line">
-                        <span class="line-name">价格/天：</span>
-                        <span class="line-num">{{ record.unitPrice }}</span>
-                        <span class="line-unit">sun</span>
-                      </div>
-                      <div class="body-item-line">
-                        <span class="line-name">带宽：</span>
-                        <span class="line-num">{{ record.resourceValue }}</span>
-                      </div>
-                    </div>
+                    <div class="order-table-header-item">订单信息</div>
                   </a-col>
                   <a-col :span="9">
-                    <div class="order-table-body-item">
-                      <div class="body-item-line">
-                        <span class="line-name">收入：</span>
-                        <span class="line-num">{{ parseInt(record.aCommission / 1000000) }}</span>
-                        <span class="line-unit">TRX</span>
-                      </div>
-                      <div class="body-item-line">
-                        <span class="line-name">冻结：</span>
-                        <span class="line-num">{{ record.frozenBalance / 1000000 }}TRX</span>
-                      </div>
-                    </div>
+                    <div class="order-table-header-item">卖家收入</div>
                   </a-col>
                   <a-col :span="6">
-                    <div class="order-table-body-item operation-btn-wrap">
-                      <a-button
-                        class="sell-button"
-                        type="primary"
-                        shape="round"
-                        size="small"
-                        :disabled="!ownerAddress"
-                        style="margin: 0 auto"
-                        @click="submitSoldForm(record)"
-                        >出售</a-button
-                      >
-                    </div>
+                    <div class="order-table-header-item">操作</div>
                   </a-col>
                 </a-row>
               </div>
-              <div class="no-data" v-if="tableData.length === 0">暂无数据</div>
+              <div class="order-table-body-wrap">
+                <div
+                  class="order-table-body-row"
+                  v-for="(record, i) in tableData"
+                  :key="i"
+                >
+                  <a-row>
+                    <a-col :span="9">
+                      <div class="order-table-body-item">
+                        <div class="body-item-line">
+                          <span class="line-name">价格/天：</span>
+                          <span class="line-num">{{ record.unitPrice }}</span>
+                          <span class="line-unit">sun</span>
+                        </div>
+                        <div class="body-item-line">
+                          <span class="line-name">带宽：</span>
+                          <span class="line-num">{{
+                            record.resourceValue
+                          }}</span>
+                        </div>
+                      </div>
+                    </a-col>
+                    <a-col :span="9">
+                      <div class="order-table-body-item">
+                        <div class="body-item-line">
+                          <span class="line-name">收入：</span>
+                          <span class="line-num">{{
+                            parseInt(record.aCommission / 1000000)
+                          }}</span>
+                          <span class="line-unit">TRX</span>
+                        </div>
+                        <div class="body-item-line">
+                          <span class="line-name">冻结：</span>
+                          <span class="line-num"
+                            >{{ record.frozenBalance / 1000000 }}TRX</span
+                          >
+                        </div>
+                      </div>
+                    </a-col>
+                    <a-col :span="6">
+                      <div class="order-table-body-item operation-btn-wrap">
+                        <a-button
+                          class="sell-button"
+                          type="primary"
+                          shape="round"
+                          size="small"
+                          :disabled="!ownerAddress"
+                          style="margin: 0 auto"
+                          @click="submitSoldForm(record)"
+                          >出售</a-button
+                        >
+                      </div>
+                    </a-col>
+                  </a-row>
+                </div>
+                <div class="no-data" v-if="tableData.length === 0">
+                  暂无数据
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </a-spin>
 </template>
 <script>
 import { defineComponent } from "vue";
@@ -353,4 +400,8 @@ export default defineComponent({
 
 <style lang="less" scoped>
 @import "index.less";
+
+.actived {
+  color: rgb(197, 237, 19);
+}
 </style>
