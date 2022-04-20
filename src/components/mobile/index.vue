@@ -9,20 +9,20 @@
           shape="round"
           size="small"
           @click="linkWallet"
-          >链接钱包</a-button
+          >{{$t("global.LinkWallet")}}</a-button
         >
         <img class="line" src="/img/line.png" @click="drawerVisible = true" />
       </header>
 
       <section v-if="status === 'home'">
-        <div class="title">共享数据</div>
+        <div class="title">{{$t("global.shareData")}}</div>
         <div class="data-box">
           <div class="data-box-content">
             <div class="data-box-left">
               <span class="color-1" style="font-weight: 600">
-                累计为用户提供
+                {{$t("global.providedUsersBandWidth")}}
               </span>
-              <span>&nbsp;带宽</span>
+              <!-- <span>&nbsp;带宽</span> -->
             </div>
             <div class="color-3">
               {{ toLocaleString(rent.totalBandWidth || 0) }}
@@ -31,9 +31,9 @@
           <div class="data-box-content">
             <div class="data-box-left">
               <span class="color-1" style="font-weight: 600">
-                累计为用户提供
+                {{$t("global.providedUsersEnergy")}}
               </span>
-              <span>&nbsp;能量</span>
+              <!-- <span>&nbsp;能量</span> -->
             </div>
             <div class="color-3">
               {{ toLocaleString(rent.totalEnergy || 0) }}
@@ -42,9 +42,9 @@
           <div class="data-box-content">
             <div class="data-box-left">
               <span class="color-1" style="font-weight: 600"
-                >累计为用户节省</span
+                >{{$t("global.saveUserTrx")}}</span
               >
-              <span>&nbsp;TRX</span>
+              <!-- <span>&nbsp;TRX</span> -->
             </div>
             <div class="color-3">
               {{ toLocaleString(rent.totalTrx / 1000000) }}
@@ -54,37 +54,37 @@
       </section>
 
       <section v-if="status === 'home'">
-        <div class="title font-36">推荐奖励</div>
+        <div class="title font-36">{{$t("global.recommendReward")}}</div>
         <div class="data-box m36">
           <div class="data-box-content">
             <div class="data-box-left">
               <img class="icon" src="/img/icon-1.png" alt="" />
-              <span class="color-1">&emsp;钱包余额</span>
+              <span class="color-1">&emsp;{{$t("global.walletBalance")}}</span>
             </div>
             <div class="color-2">{{ accountResouce.balance || 0 }} TRX</div>
           </div>
           <div class="data-box-content">
             <div class="data-box-left">
               <img class="icon" src="/img/icon-2.png" alt="" />
-              <span class="color-1">&emsp;获得的奖励</span>
+              <span class="color-1">&emsp;{{$t("global.gainedReward")}}</span>
             </div>
             <div class="color-2">0 TRX</div>
           </div>
           <div class="data-box-content">
             <div class="data-box-left">
               <img class="icon" src="/img/icon-3.png" alt="" />
-              <span class="color-1">&emsp;已邀请人数</span>
+              <span class="color-1">&emsp;{{$t("global.invitedNumbers")}}</span>
             </div>
             <div class="color-2">0</div>
           </div>
 
           <div class="line"></div>
 
-          <div class="copy-text">复制您的推荐链接，邀请并获得海量奖励</div>
+          <div class="copy-text">{{$t("global.copyLinkTips")}}</div>
 
           <div class="copy-box" @click="copyText">
             <div class="copy-url">
-              {{ ownerAddress || "请链接钱包" }}
+              {{ ownerAddress || $t("global.linkWallet") }}
             </div>
             <div class="copy-line"></div>
             <img class="copy-img" src="/img/copy.png" alt="" />
@@ -93,7 +93,7 @@
       </section>
 
       <section v-if="status === 'home'">
-        <div class="title font-36">资源租赁</div>
+        <div class="title font-36">{{$t("global.resourceLeasing")}}</div>
         <div class="data-box data-form">
           <a-form name="formState" :model="formState">
             <a-form-item v-bind="validateInfos.receiverAddress">
@@ -104,7 +104,7 @@
             </a-form-item>
             <a-form-item v-bind="validateInfos.resource">
               <a-space>
-                <span class="color-1 font-24">资源类型：</span>
+                <span class="color-1 font-24">{{$t('global.resourceType')}}：</span>
                 <a-radio-group v-model:value="formState.resource">
                   <a-radio
                     value="ENERGY"
@@ -182,7 +182,7 @@
                 style="width: 100%"
                 @click="submitFreeze"
                 :disabled="!ownerAddress"
-                >下单</a-button
+                >{{$t("global.placeOrder")}}</a-button
               >
             </a-form-item>
           </a-form>
@@ -192,9 +192,9 @@
       <section
         v-if="status === 'home' || status === 'myOrder' || status == 'date'"
       >
-        <div class="title font-36" v-if="status === 'home'">当前订单</div>
-        <div class="title font-36" v-if="status === 'myOrder'">我的买单</div>
-        <div class="title font-36" v-if="status === 'date'">近期订单</div>
+        <div class="title font-36" v-if="status === 'home'">{{$t("global.currentOrder")}}</div>
+        <div class="title font-36" v-if="status === 'myOrder'">{{$t("global.myOrder")}}</div>
+        <div class="title font-36" v-if="status === 'date'">{{$t("global.recentOrders")}}</div>
 
         <div class="data-box">
           <a-select
@@ -213,15 +213,15 @@
 
           <div class="data-table">
             <div class="data-table-header">
-              <div>订单信息</div>
-              <div>订单信息</div>
-              <div class="action">操作</div>
+              <div>{{$t("global.orderList")}}</div>
+              <div>{{$t("global.sellerIncome")}}</div>
+              <div class="action">{{$t("global.operation")}}</div>
             </div>
             <div class="data-table-body">
               <div class="content" v-for="(record, i) in tableData" :key="i">
                 <div class="content-data">
                   <div>
-                    <span class="label">价格/天：</span>
+                    <span class="label">{{$t("global.priceOfDay")}}：</span>
                     <span>{{ record.unitPrice }}</span>
                     <span>sun</span>
                   </div>
@@ -232,12 +232,12 @@
                 </div>
                 <div class="content-data">
                   <div>
-                    <span class="label">收入：</span>
+                    <span class="label">{{$t("global.priceOfDay")}}：</span>
                     <span>{{ parseInt(record.aCommission / 1000000) }}</span>
                     <span>TRX</span>
                   </div>
                   <div>
-                    <span class="label">冻结：</span>
+                    <span class="label">{{$t("global.freeze")}}：</span>
                     <span>{{ record.frozenBalance / 1000000 }}TRX</span>
                   </div>
                 </div>
@@ -247,7 +247,7 @@
                     :href="`https://tronscan.org/#/transaction/${record.hash}`"
                     target="_blank"
                     style="font-size: 14px"
-                    >详情</a
+                    >{{$t("global.detail")}}</a
                   >
                   <a-button
                     v-if="status === 'home'"
@@ -258,7 +258,7 @@
                     :disabled="!ownerAddress"
                     style="margin: 0 auto"
                     @click="submitSoldForm(record)"
-                    >出售
+                    >{{$t("global.sell")}}
                   </a-button>
                   <a-button
                     v-if="status === 'myOrder'"
@@ -269,11 +269,11 @@
                     :disabled="record.status !== 0"
                     style="margin: 0 auto"
                     @click="undo(record)"
-                    >撤单
+                    >{{$t("global.cancelOrder")}}
                   </a-button>
                 </div>
               </div>
-              <div class="no-data" v-if="tableData.length === 0">暂无数据</div>
+              <div class="no-data" v-if="tableData.length === 0">{{$t("global.noDate")}}</div>
             </div>
           </div>
         </div>
@@ -281,40 +281,37 @@
 
       <section v-if="status === 'sellerEntery'">
         <div class="data-box">
-          <h1>卖家入驻</h1>
-          Tron
-          energy-sharing平台意在打造一个能量、带宽共享平台，为广大波场用户降低资费。
-          点击订阅订单频道
+          <h1>{{$t("global.selleryEntry")}}</h1>
+          {{$t("global.selleryEntryContent1")}}
           <a target="_blank" href="https://t.me/tronenergysharing"
             >https://t.me/tronenergysharing</a
-          >获取实时订单信息。<br />
-          如你长期持有200万TRX或以上数量，可联系官方电报（@Tron_energysharing），获取加入卖家量化池的信息。<br />
-
-          <div></div>
+          >{{$t("global.selleryEntryContent2")}}<br />
+          {{$t("global.selleryEntryContent3")}}
+          <br />
         </div>
       </section>
 
       <section v-if="status === 'noticeCenter'">
         <div class="data-box">
-          <h1>公告中心</h1>
-          <div>最新公告</div>
+          <h1>{{$t("global.announcementCenter")}}</h1>
+          <div>{{$t("global.latestAnnouncement")}}</div>
           <div>
-            关于启动第一期百万空投计划的公告<br />
-
-            第一期百万空投计划将于新加坡时间2022年4月10日0时启动，于新加坡时间2022年4月20日24时结束。<br />
-            本期空投代币信息：<br />
-            名称：STAR<br />
-            代币简介：stat是基于Tronchain开发的Defi属性代币，致力于创造Defi和Gamefi的一个完善的经济模型<br />
-            相关生态：<a target="_blank" href="https://jxgamefi.com"
+            {{$t("global.announcementCenterP1")}}<br />
+            {{$t("global.announcementCenterP2")}}<br />
+            {{$t("global.announcementCenterP3")}}<br />
+            {{$t("global.announcementCenterP4")}}<br />
+            {{$t("global.announcementCenterP5")}}<br />
+            {{$t("global.announcementCenterP6")}}<a target="_blank" href="https://jxgamefi.com"
               >https://jxgamefi.com</a
             ><br />
-            社区推特：<a target="_blank" href="https://t.me/wdccn"
+            {{$t("global.communityTwitter")}}<a target="_blank" href="https://t.me/wdccn"
               >https://t.me/wdccn</a
             ><br />
-            空投数量：0.2<br />
-            空投总量：2000<br />
-            合约地址：TA74PoX3vgpZfghFJDB3sog7mfYRkjWQwW<br />
-            本期空投发放地址：<br />
+            {{$t("global.numberAirdrops")}}0.2<br />
+            {{$t('global.totalAirdrop')}}2000<br />
+            {{$t("global.contractAddress")}}<br />
+            TA74PoX3vgpZfghFJDB3sog7mfYRkjWQwW<br />
+            {{$t("global.addressOfPeriod")}}<br />
           </div>
         </div>
       </section>
