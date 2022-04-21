@@ -105,7 +105,13 @@ const messages = {
             myOrders: 'My order',
             sellerEntry: 'Seller entry',
             recentTransactions: 'Recent transactions',
-            more: 'more'
+            more: 'more',
+            myWallet: 'My wallet',
+            copyToClipboard:'copy to clipboard',
+            resourceReceAddress:'Resource receiving address',
+            numResource: 'Number of resources',
+            unitPricDay: 'Unit price (sun) / day',
+            burnTrxTips: 'Resource savings compared to burning TRX'
         },
         tip: {
             ownerAddress: 'Please enter your wallet address',
@@ -190,7 +196,7 @@ const messages = {
             walletBalance: '钱包余额',
             gainedReward: '获得的奖励',
             invitedNumbers: '已邀请人数',
-            copyLinkTips: '复制您的推荐链接，邀请并获得海量奖励',
+            copyLinkTips: '复制您的推荐链接，邀请并获得海量奖励。',
             linkWallet: '请链接钱包',
             resourceLeasing: '资源租赁',
             resourceType: '资源类型',
@@ -236,7 +242,13 @@ const messages = {
             myOrders: '我的订单',
             sellerEntry: '卖家入驻',
             recentTransactions: '近期交易',
-            more: '更多'
+            more: '更多',
+            myWallet: '我的钱包',
+            copyToClipboard:'复制到剪贴板',
+            resourceReceAddress:'资源接收地址',
+            numResource: '资源数量',
+            unitPricDay: '单价(sun) / 天',
+            burnTrxTips: '相比燃烧TRX获得资源节省'
         },
         tip: {
             ownerAddress: '请输入你的钱包地址',
