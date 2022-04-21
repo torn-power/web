@@ -42,7 +42,7 @@
               <!-- 累计为用户节省<span class="sign-name">&nbsp;TRX</span> -->
               {{$t("global.saveUserTrx")}}
             </div>
-          </a-space>
+          </div>
         </div>
       </div>
       <!-- 推荐奖励 -->
@@ -232,16 +232,15 @@
                           color: #ffffff;
                           margin-right: 4px;
                         "
-                        :precision="0"
-                        v-model:value="formState.amount"
-                        :min="config.minEnergyNumber"
-                      />
-                      <a-input-number
-                        v-else
-                        :placeholder="
-                          $t('tip.pledegBandWidth', {
-                            amount: config.minBandwidthNumber,
-                          })
+                        >{{ saveTrx || 0 }}</span
+                      >
+                      <span
+                        style="
+                          font-style: normal;
+                          font-weight: 400;
+                          font-size: 14px;
+                          line-height: 22px;
+                          color: #ffffff;
                         "
                         >TRX</span
                       >
@@ -272,6 +271,13 @@
               v-model:value="currentType"
               @change="orderTypeChange"
             >
+              <a-select-option value="unitPrice">{{
+                $t("global.highestPrice")
+              }}</a-select-option>
+              <a-select-option value="aCommission">{{
+                $t("global.earnings")
+              }}</a-select-option>
+            </a-select>
           </div>
           <div style="width: 100%">
             <div class="order-table-header-wrap">
@@ -287,8 +293,8 @@
                 </a-col>
               </a-row>
             </div>
-            <div style="width: 100%">
-              <div class="order-table-header-wrap">
+            <div class="order-table-body-wrap">
+              <div class="order-table-body-row" v-for="(record, i) in tableData" :key="i">
                 <a-row>
                   <a-col :span="9">
                     <div class="order-table-body-item">
@@ -338,7 +344,7 @@
         </div>
       </div>
     </div>
-  </a-spin>
+  </div>
 </template>
 <script>
 import { defineComponent } from "vue";
@@ -350,8 +356,4 @@ export default defineComponent({
 
 <style lang="less" scoped>
 @import "index.less";
-
-.actived {
-  color: rgb(197, 237, 19);
-}
 </style>
