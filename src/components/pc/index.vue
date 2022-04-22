@@ -128,7 +128,7 @@
                   <a-col :span="19">
                     <a-input
                       v-model:value="formState.receiverAddress"
-                      :placeholder="$t('tip.tronAddress')"
+                      :placeholder="$t('global.tronAddress')"
                     ></a-input>
                   </a-col>
                 </a-row>
@@ -171,7 +171,7 @@
                     <a-input-number
                       v-if="formState.resource === 'ENERGY'"
                       :placeholder="
-                        $t('tip.pledgeEnergy', {
+                        $t('global.pledgeEnergy', {
                           amount: config.minEnergyNumber,
                         })
                       "
@@ -182,7 +182,7 @@
                     <a-input-number
                       v-else
                       :placeholder="
-                        $t('tip.pledegBandWidth', {
+                        $t('global.pledegBandWidth', {
                           amount: config.minBandwidthNumber,
                         })
                       "
@@ -197,7 +197,7 @@
                 <a-row>
                   <a-col :span="5">
                     <div class="color-1 font-24 form-item-name">
-                      {{ $t("tip.unitPricDay") }}
+                      {{ $t("global.unitPricDay") }}
                     </div>
                   </a-col>
                   <a-col :span="19">
@@ -220,7 +220,7 @@
                 <a-row>
                   <a-col :span="5">
                     <div class="color-1 font-24 form-item-name">
-                      {{ $t("tip.orderAmount") }}
+                      {{ $t("global.orderAmount") }}
                     </div>
                   </a-col>
                   <a-col :span="19">
@@ -256,7 +256,7 @@
                           color: #ffcc17;
                           margin-right: 4px;
                         "
-                        >{{ $t("tip.burnTrxTips") }}</span
+                        >{{ $t("global.burnTrxTips") }}</span
                       >
                       <span
                         style="
@@ -292,13 +292,13 @@
             size="large"
             @click="submitFreeze"
             :disabled="!ownerAddress"
-            >{{ $t("tip.placeOrder") }}</a-button
+            >{{ $t("global.placeOrder") }}</a-button
           >
         </div>
       </div>
       <!-- 当前订单 -->
       <div class="current-order-wrap">
-        <div class="title">{{ $t("tip.currentOrder") }}</div>
+        <div class="title">{{ $t("global.currentOrder") }}</div>
         <div class="current-order-content-wrap">
           <div style="width: 100%">
             <a-select
@@ -319,17 +319,17 @@
               <a-row>
                 <a-col :span="9">
                   <div class="order-table-header-item">
-                    {{ $t("tip.orderList") }}
+                    {{ $t("global.orderList") }}
                   </div>
                 </a-col>
                 <a-col :span="9">
                   <div class="order-table-header-item">
-                    {{ $t("tip.sellerIncome") }}
+                    {{ $t("global.sellerIncome") }}
                   </div>
                 </a-col>
                 <a-col :span="6">
                   <div class="order-table-header-item">
-                    {{ $t("tip.operation") }}
+                    {{ $t("global.operation") }}
                   </div>
                 </a-col>
               </a-row>
@@ -345,14 +345,14 @@
                     <div class="order-table-body-item">
                       <div class="body-item-line">
                         <span class="line-name"
-                          >{{ $t("tip.priceOfDay") }}：</span
+                          >{{ $t("global.priceOfDay") }}：</span
                         >
                         <span class="line-num">{{ record.unitPrice }}</span>
                         <span class="line-unit">sun</span>
                       </div>
                       <div class="body-item-line">
                         <span class="line-name"
-                          >{{ $t("tip.bandwidth") }}：</span
+                          >{{ $t("global.bandwidth") }}：</span
                         >
                         <span class="line-num">{{ record.resourceValue }}</span>
                       </div>
@@ -361,14 +361,14 @@
                   <a-col :span="9">
                     <div class="order-table-body-item">
                       <div class="body-item-line">
-                        <span class="line-name">{{ $t("tip.income") }}：</span>
+                        <span class="line-name">{{ $t("global.income") }}：</span>
                         <span class="line-num">{{
                           parseInt(record.aCommission / 1000000)
                         }}</span>
                         <span class="line-unit">TRX</span>
                       </div>
                       <div class="body-item-line">
-                        <span class="line-name">{{ $t("tip.freeze") }}：</span>
+                        <span class="line-name">{{ $t("global.freeze") }}：</span>
                         <span class="line-num"
                           >{{ record.frozenBalance / 1000000 }}TRX</span
                         >
@@ -385,14 +385,14 @@
                         :disabled="!ownerAddress"
                         style="margin: 0 auto"
                         @click="submitSoldForm(record)"
-                        >{{ $t("tip.sell") }}</a-button
+                        >{{ $t("global.sell") }}</a-button
                       >
                     </div>
                   </a-col>
                 </a-row>
               </div>
               <div class="no-data" v-if="tableData.length === 0">
-                {{ $t("tip.noDate") }}
+                {{ $t("global.noDate") }}
               </div>
             </div>
           </div>

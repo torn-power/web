@@ -1,4 +1,4 @@
-import { createI18n } from "vue-i18n";
+import { createI18n } from 'vue-i18n'
 
 const messages = {
     en: {
@@ -54,7 +54,7 @@ const messages = {
             yourBlance: 'Your Balance',
             yourAddress: 'Your payment address',
             game1:'Wild Continent https://jxgamefi.com/',
-            shareData:'shared data',
+            shareData:'Shared data',
             providedUsersBandWidth: 'accumulated Bandwidth provided for users',
             providedUsersEnergy: 'accumulated Energy provided for users',
             saveUserTrx: 'accumulated TRX saved for users',
@@ -107,7 +107,7 @@ const messages = {
             recentTransactions: 'Recent transactions',
             more: 'more',
             myWallet: 'My wallet',
-            copyToClipboard:'copy to clipboard',
+            copyToClipboard:'Copy',
             resourceReceAddress:'Resource receiving address',
             numResource: 'Number of resources',
             unitPricDay: 'Unit price (sun) / day',
@@ -274,8 +274,8 @@ const messages = {
     }
 }
 const i18n = createI18n({
-  locale: localStorage.getItem("language") || "zh",
-  messages,
-});
+    locale: localStorage.getItem('language') || 'zh',
+    messages
+})
 
-export default i18n;
+export default i18n
