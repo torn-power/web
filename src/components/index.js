@@ -475,6 +475,7 @@ export default defineComponent({
       undo,
       changeStatus,
       status,
+      t,
     };
   },
 });

@@ -128,7 +128,7 @@
                   <a-col :span="19">
                     <a-input
                       v-model:value="formState.receiverAddress"
-                      :placeholder="$t('global.tronAddress')"
+                      :placeholder="t('tip.tronAddress')"
                     ></a-input>
                   </a-col>
                 </a-row>
@@ -171,7 +171,7 @@
                     <a-input-number
                       v-if="formState.resource === 'ENERGY'"
                       :placeholder="
-                        $t('global.pledgeEnergy', {
+                        t('tip.pledgeEnergy', {
                           amount: config.minEnergyNumber,
                         })
                       "
@@ -182,7 +182,7 @@
                     <a-input-number
                       v-else
                       :placeholder="
-                        $t('global.pledegBandWidth', {
+                        t('global.pledegBandWidth', {
                           amount: config.minBandwidthNumber,
                         })
                       "
@@ -361,14 +361,18 @@
                   <a-col :span="9">
                     <div class="order-table-body-item">
                       <div class="body-item-line">
-                        <span class="line-name">{{ $t("global.income") }}：</span>
+                        <span class="line-name"
+                          >{{ $t("global.income") }}：</span
+                        >
                         <span class="line-num">{{
                           parseInt(record.aCommission / 1000000)
                         }}</span>
                         <span class="line-unit">TRX</span>
                       </div>
                       <div class="body-item-line">
-                        <span class="line-name">{{ $t("global.freeze") }}：</span>
+                        <span class="line-name"
+                          >{{ $t("global.freeze") }}：</span
+                        >
                         <span class="line-num"
                           >{{ record.frozenBalance / 1000000 }}TRX</span
                         >
