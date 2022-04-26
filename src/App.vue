@@ -850,7 +850,7 @@ const getAccount = async () => {
 // 用户需要支付的TRX数量=（所需带宽/10000）*（设置sun单价/500）*15
 const needTrxCount = computed(() => {
   let res = 0;
-  if (formState.resource === "energy") {
+  if (formState.resource === "ENERGY") {
     res = +(
       (formState.amount / 100000) *
       (formState.unitPrice / 30) *
@@ -882,7 +882,7 @@ const trxCount = computed(
 // （3X/1000）-(（15X/10000）*（Y/500）)=节约的TRX数量
 const saveTrx = computed(() => {
   let res = 0;
-  if (formState.resource === "energy") {
+  if (formState.resource === "ENERGY") {
     res = +(
       (formState.amount / 100000) * 84 -
       formState.amount * (9 / 100000) * (formState.unitPrice / 30)
