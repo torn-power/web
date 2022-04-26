@@ -863,7 +863,7 @@ const needTrxCount = computed(() => {
       15
     ).toFixed(2);
   }
-  return res > 1 ? Math.ceil(res) : 1;
+  return res > 1 ? res : 1;
 });
 
 // 计算原价需要多少TRX
@@ -893,7 +893,7 @@ const saveTrx = computed(() => {
       formState.amount * (15 / 10000) * (formState.unitPrice / 500)
     ).toFixed(2);
   }
-  return res > 1 ? Math.ceil(res) : 0;
+  return res > 1 ? res : 0;
 });
 
 // 计算不同资源情况下用户能获得多少资源
