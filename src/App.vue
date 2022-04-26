@@ -673,6 +673,7 @@ const leaseModal = () => {
   resetFields();
   formState.ownerAddress = ownerAddress.value;
   formState.receiverAddress = ownerAddress.value;
+  getConfig();
   visible.value = true;
 };
 
@@ -970,6 +971,8 @@ const getRecentOrders = async () => {
 const getConfig = async () => {
   const { data } = await getConfigApi();
   config.value = { ...data.config, address: data.address };
+  formState.amount = config.value.minEnergyNumber;
+  formState.unitPrice = config.value.energyPrice;
 };
 
 const mathFloor = (val = 0) => {
