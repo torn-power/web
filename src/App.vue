@@ -852,14 +852,14 @@ const needTrxCount = computed(() => {
   let res = 0;
   if (formState.resource === "energy") {
     res = +(
-      (parseInt(formState.amount) / 100000) *
-      (parseInt(formState.unitPrice) / 30) *
+      (formState.amount / 100000) *
+      (formState.unitPrice / 30) *
       9
     ).toFixed(2);
   } else {
     res = +(
-      (parseInt(formState.amount) / 10000) *
-      (parseInt(formState.unitPrice) / 500) *
+      (formState.amount / 10000) *
+      (formState.unitPrice / 500) *
       15
     ).toFixed(2);
   }
@@ -884,17 +884,13 @@ const saveTrx = computed(() => {
   let res = 0;
   if (formState.resource === "energy") {
     res = +(
-      (parseInt(formState.amount) / 100000) * 84 -
-      parseInt(formState.amount) *
-        (9 / 100000) *
-        (parseInt(formState.unitPrice) / 30)
+      (formState.amount / 100000) * 84 -
+      formState.amount * (9 / 100000) * (formState.unitPrice / 30)
     ).toFixed(2);
   } else {
     res = +(
-      parseInt(formState.amount) * (3 / 1000) -
-      parseInt(formState.amount) *
-        (15 / 10000) *
-        (parseInt(formState.unitPrice) / 500)
+      formState.amount * (3 / 1000) -
+      formState.amount * (15 / 10000) * (formState.unitPrice / 500)
     ).toFixed(2);
   }
   return res > 1 ? Math.ceil(res) : 0;
