@@ -3,28 +3,16 @@
     <a-spin :spinning="spinning" tip="交易进行中，请稍后">
       <Header @change="linkWallet" />
       <a-layout-content class="layout">
-        <TopCard
-          :accountResouce="accountResouce"
-          :ownerAddress="ownerAddress"
-          :isMobile="isMobile"
-        />
+        <TopCard :accountResouce="accountResouce" :ownerAddress="ownerAddress" :isMobile="isMobile" />
 
         <a-card class="card-box" size="small" v-if="isMobile">
           <div class="flex-wrap">
-            <a-select
-              style="width: 90px"
-              v-model:value="lang"
-              @change="changeLang"
-            >
+            <a-select style="width: 90px" v-model:value="lang" @change="changeLang">
               <a-select-option value="zh">中文</a-select-option>
               <a-select-option value="en">En</a-select-option>
             </a-select>
             <a-space>
-              <a-button
-                type="primary"
-                :disabled="!ownerAddress"
-                @click="leaseModal"
-              >
+              <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
                 <template #icon>
                   <ShoppingCartOutlined />
                 </template>
@@ -46,27 +34,17 @@
             {{ $t("global.currentOrder") }}
           </template>
           <template #extra>
-            <a-select
-              v-model:value="currentType"
-              @change="getCurrentOrders"
-              allow-clear
-              style="width: 160px"
-            >
+            <a-select v-model:value="currentType" @change="getCurrentOrders" allow-clear style="width: 160px">
               <a-select-option value="unitPrice">{{
-                $t("global.highestPrice")
+                  $t("global.highestPrice")
               }}</a-select-option>
               <a-select-option value="aCommission">{{
-                $t("global.earnings")
+                  $t("global.earnings")
               }}</a-select-option>
             </a-select>
           </template>
-          <a-table
-            size="small"
-            bordered
-            rowKey="_id"
-            :dataSource="tableData.currentOrderDataSource"
-            :columns="tableData.currentOrderCounmns"
-          />
+          <a-table size="small" bordered rowKey="_id" :dataSource="tableData.currentOrderDataSource"
+            :columns="tableData.currentOrderCounmns" />
         </a-card>
 
         <a-card class="card-box" size="small">
@@ -78,13 +56,8 @@
                   {{ $t("global.recentTrade") }}
                 </span>
               </template>
-              <a-table
-                size="small"
-                bordered
-                rowKey="_id"
-                :dataSource="tableData.recentDataSource"
-                :columns="tableData.recentColumns"
-              />
+              <a-table size="small" bordered rowKey="_id" :dataSource="tableData.recentDataSource"
+                :columns="tableData.recentColumns" />
             </a-tab-pane>
             <a-tab-pane key="2">
               <template #tab>
@@ -93,14 +66,8 @@
                   {{ $t("global.myFreezeList") }}
                 </span>
               </template>
-              <a-table
-                size="small"
-                bordered
-                rowKey="receiverAddress"
-                :dataSource="tableData.freezeDataSource"
-                :columns="tableData.freezeColumns"
-                :scroll="{ x: true }"
-              />
+              <a-table size="small" bordered rowKey="receiverAddress" :dataSource="tableData.freezeDataSource"
+                :columns="tableData.freezeColumns" :scroll="{ x: true }" />
             </a-tab-pane>
             <a-tab-pane key="3">
               <template #tab>
@@ -109,21 +76,12 @@
                   {{ $t("global.myOrder") }}
                 </span>
               </template>
-              <a-table
-                size="small"
-                bordered
-                rowKey="_id"
-                :dataSource="tableData.buyDataSource"
-                :columns="tableData.buyColumns"
-              />
+              <a-table size="small" bordered rowKey="_id" :dataSource="tableData.buyDataSource"
+                :columns="tableData.buyColumns" />
             </a-tab-pane>
             <template #tabBarExtraContent v-if="!isMobile">
               <a-space>
-                <a-button
-                  type="primary"
-                  :disabled="!ownerAddress"
-                  @click="leaseModal"
-                >
+                <a-button type="primary" :disabled="!ownerAddress" @click="leaseModal">
                   <template #icon>
                     <ShoppingCartOutlined />
                   </template>
@@ -135,11 +93,7 @@
                   </template>
                   {{ $t("global.sell") }}
                 </a-button>
-                <a-select
-                  style="width: 90px"
-                  v-model:value="lang"
-                  @change="changeLang"
-                >
+                <a-select style="width: 90px" v-model:value="lang" @change="changeLang">
                   <a-select-option value="zh">中文</a-select-option>
                   <a-select-option value="en">En</a-select-option>
                 </a-select>
@@ -149,115 +103,51 @@
         </a-card>
       </a-layout-content>
 
-      <a-modal
-        ref="formRef"
-        v-model:visible="visible"
-        :maskClosable="false"
-        width="600px"
-        :dialogStyle="{ top: '10px' }"
-        @ok="submitFreeze"
-        :okText="$t('global.placeOrder')"
-        :cancelText="$t('global.cancel')"
-        :title="$t('global.rent') + $t('global.resource')"
-        :closable="false"
-        :ok-button-props="{ loading: spinning, type: 'primary' }"
-        :cancel-button-props="{ disabled: spinning }"
-      >
-        <a-form
-          name="formState"
-          :model="formState"
-          :label-col="{ span: 6 }"
-          :wrapper-col="{ span: 16 }"
-        >
-          <a-form-item
-            :label="
-              $t('global.receive') +
-              $t('global.resource') +
-              $t('global.address')
-            "
-            v-bind="validateInfos.receiverAddress"
-          >
-            <a-input
-              v-model:value="formState.receiverAddress"
-              :placeholder="$t('tip.tronAddress')"
-              allow-clear
-            />
+      <a-modal ref="formRef" v-model:visible="visible" :maskClosable="false" width="600px"
+        :dialogStyle="{ top: '10px' }" @ok="submitFreeze" :okText="$t('global.placeOrder')"
+        :cancelText="$t('global.cancel')" :title="$t('global.rent') + $t('global.resource')" :closable="false"
+        :ok-button-props="{ loading: spinning, type: 'primary' }" :cancel-button-props="{ disabled: spinning }">
+        <a-form name="formState" :model="formState" :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }">
+          <a-form-item :label="
+            $t('global.receive') +
+            $t('global.resource') +
+            $t('global.address')
+          " v-bind="validateInfos.receiverAddress">
+            <a-input v-model:value="formState.receiverAddress" :placeholder="$t('tip.tronAddress')" allow-clear />
           </a-form-item>
 
-          <a-form-item
-            :label="$t('global.resource') + $t('global.type')"
-            v-bind="validateInfos.resource"
-          >
+          <a-form-item :label="$t('global.resource') + $t('global.type')" v-bind="validateInfos.resource">
             <a-radio-group v-model:value="formState.resource">
               <a-radio value="ENERGY">{{ $t("global.energy") }}</a-radio>
               <a-radio value="BANDWIDTH">{{ $t("global.bandwidth") }}</a-radio>
             </a-radio-group>
           </a-form-item>
 
-          <a-form-item
-            :label="
-              $t('global.chooseBuy') +
-              $t('global.resource') +
-              $t('global.count')
-            "
-            v-bind="validateInfos.amount"
-          >
-            <a-input-number
-              v-if="formState.resource === 'ENERGY'"
-              :placeholder="
-                $t('tip.pledgeEnergy', { amount: config.minEnergyNumber })
-              "
-              style="width: 300px"
-              :precision="0"
-              v-model:value="formState.amount"
-              :min="config.minEnergyNumber"
-            />
-            <a-input-number
-              v-else
-              :placeholder="
-                $t('tip.pledegBandWidth', { amount: config.minBandwidthNumber })
-              "
-              style="width: 300px"
-              :precision="0"
-              v-model:value="formState.amount"
-              :min="config.minBandwidthNumber"
-            />
+          <a-form-item :label="
+            $t('global.chooseBuy') +
+            $t('global.resource') +
+            $t('global.count')
+          " v-bind="validateInfos.amount">
+            <a-input-number v-if="formState.resource === 'ENERGY'" :placeholder="
+              $t('tip.pledgeEnergy', { amount: config.minEnergyNumber })
+            " style="width: 300px" :precision="0" v-model:value="formState.amount" :min="config.minEnergyNumber" />
+            <a-input-number v-else :placeholder="
+              $t('tip.pledegBandWidth', { amount: config.minBandwidthNumber })
+            " style="width: 300px" :precision="0" v-model:value="formState.amount"
+              :min="config.minBandwidthNumber" />
           </a-form-item>
 
-          <a-form-item
-            :label="$t('global.priceDay', { way: '(sun)' })"
-            v-bind="validateInfos.unitPrice"
-          >
-            <a-input-number
-              style="width: 300px"
-              :precision="0"
-              v-if="formState.resource === 'ENERGY'"
-              v-model:value="formState.unitPrice"
-              :min="config.energyPrice"
-            />
-            <a-input-number
-              v-else
-              style="width: 300px"
-              :precision="0"
-              v-model:value="formState.unitPrice"
-              :min="config.bandwidthPrice"
-            />
+          <a-form-item :label="$t('global.priceDay', { way: '(sun)' })" v-bind="validateInfos.unitPrice">
+            <a-input-number style="width: 300px" :precision="0" v-if="formState.resource === 'ENERGY'"
+              v-model:value="formState.unitPrice" :min="config.energyPrice" />
+            <a-input-number v-else style="width: 300px" :precision="0" v-model:value="formState.unitPrice"
+              :min="config.bandwidthPrice" />
           </a-form-item>
 
-          <a-form-item
-            :label="$t('global.freeze') + t('global.time')"
-            v-bind="validateInfos.duration"
-          >
+          <a-form-item :label="$t('global.freeze') + t('global.time')" v-bind="validateInfos.duration">
             <a-tooltip :title="$t('tip.freezeToolTip')">
-              <a-input-number
-                :placeholder="$t('tip.freezeTip')"
-                style="width: 200px"
-                :precision="0"
-                disabled
-                v-model:value="formState.duration"
-                :min="3"
-                :max="3"
-              />
+              <a-input-number :placeholder="$t('tip.freezeTip')" style="width: 200px" :precision="0" disabled
+                v-model:value="formState.duration" :min="3" :max="3" />
             </a-tooltip>
           </a-form-item>
 
@@ -274,53 +164,24 @@
         </a-form>
       </a-modal>
 
-      <a-modal
-        ref="formRef"
-        v-model:visible="soldVisible"
-        :maskClosable="false"
-        @ok="submitSoldForm"
-        :okText="$t('global.sell')"
-        :cancelText="$t('global.cancel')"
-        :title="$t('global.sellResource')"
-        :closable="false"
-        :ok-button-props="{ loading: spinning, type: 'primary' }"
-        :cancel-button-props="{ disabled: spinning }"
-      >
-        <a-form
-          name="formState"
-          :model="formState"
-          :label-col="{ span: 6 }"
-          :wrapper-col="{ span: 16 }"
-        >
-          <a-form-item
-            :label="$t('global.resource') + $t('global.count')"
-            v-bind="validateInfos.amount"
-          >
-            <a-input-number
-              style="width: 100%"
-              v-model:value="formState.amount"
-              :precision="0"
-              :min="0"
-              allow-clear
-              disabled
-            />
+      <a-modal ref="formRef" v-model:visible="soldVisible" :maskClosable="false" @ok="submitSoldForm"
+        :okText="$t('global.sell')" :cancelText="$t('global.cancel')" :title="$t('global.sellResource')"
+        :closable="false" :ok-button-props="{ loading: spinning, type: 'primary' }"
+        :cancel-button-props="{ disabled: spinning }">
+        <a-form name="formState" :model="formState" :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }">
+          <a-form-item :label="$t('global.resource') + $t('global.count')" v-bind="validateInfos.amount">
+            <a-input-number style="width: 100%" v-model:value="formState.amount" :precision="0" :min="0" allow-clear
+              disabled />
           </a-form-item>
 
-          <a-form-item
-            :label="$t('global.yourAddress')"
-            v-bind="validateInfos.ownerAddress"
-          >
-            <a-input
-              v-model:value="formState.ownerAddress"
-              :placeholder="$t('tip.tip2')"
-              allow-clear
-            />
+          <a-form-item :label="$t('global.yourAddress')" v-bind="validateInfos.ownerAddress">
+            <a-input v-model:value="formState.ownerAddress" :placeholder="$t('tip.tip2')" allow-clear />
           </a-form-item>
 
           <div class="modal-info">
             <div>
               {{ $t("global.freeze") }}：{{
-                parseInt(tableInfo.frozenBalance) / 1000000
+                  parseInt(tableInfo.frozenBalance) / 1000000
               }}
               TRX
             </div>
@@ -330,7 +191,7 @@
             </div>
             <div>
               {{ $t("global.freeze") + $t("global.time") }}： 3{{
-                $t("global.days")
+                  $t("global.days")
               }}
             </div>
             <div>
@@ -364,8 +225,6 @@ import Header from "./components/Header.vue";
 
 import { megeKeySame, sellTip } from "./utils/utils";
 
-const useForm = Form.useForm;
-
 import {
   ShoppingCartOutlined,
   SendOutlined,
@@ -374,7 +233,6 @@ import {
   BarsOutlined,
 } from "@ant-design/icons-vue";
 import { useI18n } from "vue-i18n";
-const { t } = useI18n();
 
 import { useMediaQuery, useTitle } from "@vueuse/core";
 
@@ -393,6 +251,9 @@ import {
   getOrderByIdWriting,
   getOrderByIdReWriting,
 } from "./api/server";
+
+const { t } = useI18n();
+const useForm = Form.useForm;
 
 const isMobile = useMediaQuery("(max-width: 750px)");
 const tronWeb = ref(null);
@@ -838,9 +699,29 @@ const getAccount = async () => {
 };
 
 // 计算需要用户支付多少TRX
+
+// 能量的常量=100000
+// sun常量=30
+// 用户需要支付的TRX数量=（所需能量/100000）*（设置sun单价/30）*9
+
+// 带宽的常量=10000
+// sun常量=500
+// 用户需要支付的TRX数量=（所需带宽/10000）*（设置sun单价/500）*15
 const needTrxCount = computed(() => {
-  const res =
-    +fromSun(formState.amount * formState.unitPrice * formState.duration) || 0;
+  let res = 0
+  if (formState.resource === "energy") {
+    res = +(
+      (parseInt(formState.amount) / 100000) *
+      (parseInt(formState.unitPrice) / 30) *
+      9
+    ).toFixed(2);
+  } else {
+    res = +(
+      (parseInt(formState.amount) / 10000) *
+      (parseInt(formState.unitPrice) / 500) *
+      15
+    ).toFixed(2);
+  }
   return res > 1 ? Math.ceil(res) : 1;
 });
 
@@ -850,17 +731,32 @@ const trxCount = computed(
 );
 
 // 节约
+
+// X=用户需要获取的能量数量
+// Y=sun单价
+// （X/100000）*84-（X*(9/100000)）*（Y/30）=节约的TRX数量
+
+// X=用户需要获取的带宽数量
+// Y=sun单价
+// （3X/1000）-(（15X/10000）*（Y/500）)=节约的TRX数量
 const saveTrx = computed(() => {
-  if (formState.resource === "ENERGY") {
-    return +(
-      (formState.amount / 100000) * 84 -
-      formState.amount * (9 / 100000) * (formState.unitPrice / 30)
+  let res = 0
+  if (formState.resource === "energy") {
+    res =  +(
+      (parseInt(formState.amount) / 100000) *
+      84 -
+      (parseInt(formState.amount) * (9 / 100000)) *
+      (parseInt(formState.unitPrice) / 30)
+    ).toFixed(2);
+  } else {
+    res =  +(
+      parseInt(formState.amount) *
+      (3 / 1000) -
+      (parseInt(formState.amount) * (15 / 10000)) *
+      (parseInt(formState.unitPrice) / 500)
     ).toFixed(2);
   }
-  return +(
-    (3 * formState.amount) / 1000 -
-    ((15 * formState.amount) / 10000) * (formState.unitPrice / 500)
-  ).toFixed(2);
+  return res > 1 ? Math.ceil(res) : 0;
 });
 
 // 计算不同资源情况下用户能获得多少资源
@@ -984,10 +880,12 @@ onUnmounted(() => {
 span {
   font-weight: bold;
 }
+
 .flex-wrap {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   .title {
     color: white;
     font-size: 24px;
@@ -999,10 +897,12 @@ span {
   padding: 0 10px;
   // background-color: white;
 }
+
 .layout {
   padding: 10px;
   // background: white;
   min-height: 93vh;
+
   .card-box {
     margin: 10px auto;
   }
