@@ -116,7 +116,7 @@ const messages = {
         "Compared with other energy trading platforms, the trading mode of Tron energy sharing platform does not adopt the way of smart contract authorization. No matter the buyer or the seller, the platform is absolutely impossible to obtain the authorization of user account transfer, which eliminates the possibility of smart contract vulnerabilities infringing on user assets. Please rest assured to use it.",
       teamName: "Tron energy-sharing Team",
       location: "address：",
-      homePage: "home page",
+      homePage: "Home",
       myOrders: "My order",
       sellerEntry: "Seller entry",
       recentTransactions: "Recent transactions",
