@@ -3,7 +3,45 @@
     <div class="header">
       <div class="logo-wrap">
         <img class="logo" src="/img/logo-pc.png" alt="logo" srcset="" />
-        <span class="logo-name">TRON</span>
+        <span class="logo-name">tron energy-sharing</span>
+      </div>
+      <div class="sub">
+        <div
+          @click="changeStatus('home')"
+          :class="status === 'home' && 'actived'"
+        >
+          首页
+        </div>
+        <div
+          @click="changeStatus('myOrder')"
+          :class="status === 'myOrder' && 'actived'"
+        >
+          我的订单
+        </div>
+        <div
+          @click="changeStatus('sellerEntery')"
+          :class="status === 'sellerEntery' && 'actived'"
+        >
+          卖家入驻
+        </div>
+        <div
+          @click="changeStatus('noticeCenter')"
+          :class="status === 'noticeCenter' && 'actived'"
+        >
+          公告中心
+        </div>
+        <div
+          @click="changeStatus('helpCenter')"
+          :class="status === 'helpCenter' && 'actived'"
+        >
+          帮助中心
+        </div>
+        <div
+          @click="changeStatus('date')"
+          :class="status === 'date' && 'actived'"
+        >
+          近期交易
+        </div>
       </div>
       <div class="left">
         <a-space>
@@ -42,7 +80,7 @@
     </div>
     <div class="content">
       <!-- 共享数据 -->
-      <div class="share-data-wrap">
+      <div v-if="status === 'home'" class="share-data-wrap">
         <div class="title">{{ $t("global.shareData") }}</div>
         <div class="share-data-content-wrap">
           <div class="content-item-wrap">
@@ -71,7 +109,7 @@
         </div>
       </div>
       <!-- 推荐奖励 -->
-      <div class="recommend-reward">
+      <div v-if="status === 'home'" class="recommend-reward">
         <div class="title">{{ $t("global.recommendReward") }}</div>
         <div class="recommend-reward-wrap">
           <div class="reward-detail-content-wrap">
@@ -113,7 +151,7 @@
         </div>
       </div>
       <!-- 资源租赁 -->
-      <div class="resource-lease-wrap">
+      <div v-if="status === 'home'" class="resource-lease-wrap">
         <div class="title">{{ $t("global.resourceType") }}</div>
         <div class="resource-lease-content-wrap">
           <div class="resource-lease-content-form">
@@ -297,10 +335,21 @@
         </div>
       </div>
       <!-- 当前订单 -->
-      <div class="current-order-wrap">
-        <div class="title">{{ $t("global.currentOrder") }}</div>
+      <div
+        v-if="status === 'home' || status === 'myOrder' || status == 'date'"
+        class="current-order-wrap"
+      >
+        <div v-if="status === 'home'" class="title">
+          {{ $t("global.currentOrder") }}
+        </div>
+        <div v-if="status === 'myOrder'" class="title">
+          {{ $t("global.myOrder") }}
+        </div>
+        <div v-if="status === 'date'" class="title">
+          {{ $t("global.recentOrders") }}
+        </div>
         <div class="current-order-content-wrap">
-          <div style="width: 100%">
+          <div v-if="status === 'home'" style="width: 100%">
             <a-select
               style="width: 288px"
               v-model:value="currentType"
@@ -381,7 +430,14 @@
                   </a-col>
                   <a-col :span="6">
                     <div class="order-table-body-item operation-btn-wrap">
+                      <a
+                        v-if="status === 'date'"
+                        :href="`https://tronscan.org/#/transaction/${record.hash}`"
+                        target="_blank"
+                        >{{ $t("global.detail") }}</a
+                      >
                       <a-button
+                        v-if="status === 'home'"
                         class="sell-button"
                         type="primary"
                         shape="round"
@@ -390,6 +446,17 @@
                         style="margin: 0 auto"
                         @click="submitSoldForm(record)"
                         >{{ $t("global.sell") }}</a-button
+                      >
+                      <a-button
+                        v-if="status === 'myOrder'"
+                        class="sell-button"
+                        type="primary"
+                        shape="round"
+                        size="small"
+                        :disabled="record.status !== 0"
+                        style="margin: 0 auto"
+                        @click="undo(record)"
+                        >{{ $t("global.cancelOrder") }}</a-button
                       >
                     </div>
                   </a-col>
@@ -402,6 +469,73 @@
           </div>
         </div>
       </div>
+
+      <section v-if="status === 'sellerEntery'">
+        <div class="data-box">
+          <h1>{{ $t("global.selleryEntry") }}</h1>
+          {{ $t("global.selleryEntryContent1") }}
+          <a target="_blank" href="https://t.me/tronenergysharing"
+            >https://t.me/tronenergysharing</a
+          >{{ $t("global.selleryEntryContent2") }}<br />
+          {{ $t("global.selleryEntryContent3") }}
+          <br />
+        </div>
+      </section>
+
+      <section v-if="status === 'noticeCenter'">
+        <div class="data-box">
+          <h1>{{ $t("global.announcementCenter") }}</h1>
+          <div>{{ $t("global.latestAnnouncement") }}</div>
+          <div>
+            {{ $t("global.announcementCenterP1") }}<br />
+            {{ $t("global.announcementCenterP2") }}<br />
+            {{ $t("global.announcementCenterP3") }}<br />
+            {{ $t("global.announcementCenterP4") }}<br />
+            {{ $t("global.announcementCenterP5") }}<br />
+            {{ $t("global.announcementCenterP6")
+            }}<a target="_blank" href="https://jxgamefi.com"
+              >https://jxgamefi.com</a
+            ><br />
+            {{ $t("global.communityTwitter")
+            }}<a target="_blank" href="https://t.me/wdccn">https://t.me/wdccn</a
+            ><br />
+            {{ $t("global.numberAirdrops") }}0.2<br />
+            {{ $t("global.totalAirdrop") }}2000<br />
+            {{ $t("global.contractAddress") }}<br />
+            TA74PoX3vgpZfghFJDB3sog7mfYRkjWQwW<br />
+            {{ $t("global.addressOfPeriod") }}<br />
+          </div>
+        </div>
+      </section>
+
+      <section v-if="status === 'helpCenter'">
+        <div class="data-box">
+          <h1>{{ $t("global.helpCenter") }}</h1>
+          <div>
+            <h2>{{ $t("global.engeryAndBandWidth") }}</h2>
+            <p>
+              {{ $t("global.engeryAndBandWidthP1") }}
+            </p>
+            <h2>{{ $t("global.basicOperation") }}</h2>
+            <p>
+              ·{{ $t("global.placeOrder") }} <br />
+              {{ $t("global.placeOrderTips") }}<br />
+              ·{{ $t("global.unitPrice") }}<br />
+              {{ $t("global.unitPriceTips") }}<br />
+              ·{{ $t("global.cancelOrder") }}<br />
+              {{ $t("global.cancelOrderTips") }}<br />
+              ·{{ $t("global.sell") }}<br />
+              {{ $t("global.sellTips") }}<br />
+            </p>
+            <h2>{{ $t("global.security") }}</h2>
+            <p>
+              {{ $t("global.securityTips1") }}<br />
+              {{ $t("global.securityTips2") }}<br />
+            </p>
+            <div>{{ $t("global.teamName") }}</div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </template>

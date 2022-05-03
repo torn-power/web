@@ -2,25 +2,28 @@
   <a-spin :spinning="spinning" tip="交易进行中，请稍后">
     <div class="mobile-wrap">
       <header>
-        <img class="logo" src="/img/logo.png" />
+        <a-space>
+          <img class="logo" style="width: 26px" src="/img/logo-pc.png" />
+          <span>tron energy-sharing</span>
+        </a-space>
         <a-button
           v-if="!ownerAddress"
           type="primary"
           shape="round"
           size="small"
           @click="linkWallet"
-          >{{$t("global.LinkWallet")}}</a-button
+          >{{ $t("global.LinkWallet") }}</a-button
         >
         <img class="line" src="/img/line.png" @click="drawerVisible = true" />
       </header>
 
       <section v-if="status === 'home'">
-        <div class="title">{{$t("global.shareData")}}</div>
+        <div class="title">{{ $t("global.shareData") }}</div>
         <div class="data-box">
           <div class="data-box-content">
             <div class="data-box-left">
               <span class="color-1" style="font-weight: 600">
-                {{$t("global.providedUsersBandWidth")}}
+                {{ $t("global.providedUsersBandWidth") }}
               </span>
               <!-- <span>&nbsp;带宽</span> -->
             </div>
@@ -31,7 +34,7 @@
           <div class="data-box-content">
             <div class="data-box-left">
               <span class="color-1" style="font-weight: 600">
-                {{$t("global.providedUsersEnergy")}}
+                {{ $t("global.providedUsersEnergy") }}
               </span>
               <!-- <span>&nbsp;能量</span> -->
             </div>
@@ -41,9 +44,9 @@
           </div>
           <div class="data-box-content">
             <div class="data-box-left">
-              <span class="color-1" style="font-weight: 600"
-                >{{$t("global.saveUserTrx")}}</span
-              >
+              <span class="color-1" style="font-weight: 600">{{
+                $t("global.saveUserTrx")
+              }}</span>
               <!-- <span>&nbsp;TRX</span> -->
             </div>
             <div class="color-3">
@@ -54,33 +57,37 @@
       </section>
 
       <section v-if="status === 'home'">
-        <div class="title font-36">{{$t("global.recommendReward")}}</div>
+        <div class="title font-36">{{ $t("global.recommendReward") }}</div>
         <div class="data-box m36">
           <div class="data-box-content">
             <div class="data-box-left">
               <img class="icon" src="/img/icon-1.png" alt="" />
-              <span class="color-1">&emsp;{{$t("global.walletBalance")}}</span>
+              <span class="color-1"
+                >&emsp;{{ $t("global.walletBalance") }}</span
+              >
             </div>
             <div class="color-2">{{ accountResouce.balance || 0 }} TRX</div>
           </div>
           <div class="data-box-content">
             <div class="data-box-left">
               <img class="icon" src="/img/icon-2.png" alt="" />
-              <span class="color-1">&emsp;{{$t("global.gainedReward")}}</span>
+              <span class="color-1">&emsp;{{ $t("global.gainedReward") }}</span>
             </div>
             <div class="color-2">0 TRX</div>
           </div>
           <div class="data-box-content">
             <div class="data-box-left">
               <img class="icon" src="/img/icon-3.png" alt="" />
-              <span class="color-1">&emsp;{{$t("global.invitedNumbers")}}</span>
+              <span class="color-1"
+                >&emsp;{{ $t("global.invitedNumbers") }}</span
+              >
             </div>
             <div class="color-2">0</div>
           </div>
 
           <div class="line"></div>
 
-          <div class="copy-text">{{$t("global.copyLinkTips")}}</div>
+          <div class="copy-text">{{ $t("global.copyLinkTips") }}</div>
 
           <div class="copy-box" @click="copyText">
             <div class="copy-url">
@@ -93,7 +100,7 @@
       </section>
 
       <section v-if="status === 'home'">
-        <div class="title font-36">{{$t("global.resourceLeasing")}}</div>
+        <div class="title font-36">{{ $t("global.resourceLeasing") }}</div>
         <div class="data-box data-form">
           <a-form name="formState" :model="formState">
             <a-form-item v-bind="validateInfos.receiverAddress">
@@ -104,7 +111,9 @@
             </a-form-item>
             <a-form-item v-bind="validateInfos.resource">
               <a-space>
-                <span class="color-1 font-24">{{$t('global.resourceType')}}：</span>
+                <span class="color-1 font-24"
+                  >{{ $t("global.resourceType") }}：</span
+                >
                 <a-radio-group v-model:value="formState.resource">
                   <a-radio
                     value="ENERGY"
@@ -182,7 +191,7 @@
                 style="width: 100%"
                 @click="submitFreeze"
                 :disabled="!ownerAddress"
-                >{{$t("global.placeOrder")}}</a-button
+                >{{ $t("global.placeOrder") }}</a-button
               >
             </a-form-item>
           </a-form>
@@ -192,9 +201,15 @@
       <section
         v-if="status === 'home' || status === 'myOrder' || status == 'date'"
       >
-        <div class="title font-36" v-if="status === 'home'">{{$t("global.currentOrder")}}</div>
-        <div class="title font-36" v-if="status === 'myOrder'">{{$t("global.myOrder")}}</div>
-        <div class="title font-36" v-if="status === 'date'">{{$t("global.recentOrders")}}</div>
+        <div class="title font-36" v-if="status === 'home'">
+          {{ $t("global.currentOrder") }}
+        </div>
+        <div class="title font-36" v-if="status === 'myOrder'">
+          {{ $t("global.myOrder") }}
+        </div>
+        <div class="title font-36" v-if="status === 'date'">
+          {{ $t("global.recentOrders") }}
+        </div>
 
         <div class="data-box">
           <a-select
@@ -213,15 +228,15 @@
 
           <div class="data-table">
             <div class="data-table-header">
-              <div>{{$t("global.orderList")}}</div>
-              <div>{{$t("global.sellerIncome")}}</div>
-              <div class="action">{{$t("global.operation")}}</div>
+              <div>{{ $t("global.orderList") }}</div>
+              <div>{{ $t("global.sellerIncome") }}</div>
+              <div class="action">{{ $t("global.operation") }}</div>
             </div>
             <div class="data-table-body">
               <div class="content" v-for="(record, i) in tableData" :key="i">
                 <div class="content-data">
                   <div>
-                    <span class="label">{{$t("global.priceOfDay")}}：</span>
+                    <span class="label">{{ $t("global.priceOfDay") }}：</span>
                     <span>{{ record.unitPrice }}</span>
                     <span>sun</span>
                   </div>
@@ -232,12 +247,12 @@
                 </div>
                 <div class="content-data">
                   <div>
-                    <span class="label">{{$t("global.priceOfDay")}}：</span>
+                    <span class="label">{{ $t("global.priceOfDay") }}：</span>
                     <span>{{ parseInt(record.aCommission / 1000000) }}</span>
                     <span>TRX</span>
                   </div>
                   <div>
-                    <span class="label">{{$t("global.freeze")}}：</span>
+                    <span class="label">{{ $t("global.freeze") }}：</span>
                     <span>{{ record.frozenBalance / 1000000 }}TRX</span>
                   </div>
                 </div>
@@ -247,7 +262,7 @@
                     :href="`https://tronscan.org/#/transaction/${record.hash}`"
                     target="_blank"
                     style="font-size: 14px"
-                    >{{$t("global.detail")}}</a
+                    >{{ $t("global.detail") }}</a
                   >
                   <a-button
                     v-if="status === 'home'"
@@ -258,7 +273,7 @@
                     :disabled="!ownerAddress"
                     style="margin: 0 auto"
                     @click="submitSoldForm(record)"
-                    >{{$t("global.sell")}}
+                    >{{ $t("global.sell") }}
                   </a-button>
                   <a-button
                     v-if="status === 'myOrder'"
@@ -269,11 +284,13 @@
                     :disabled="record.status !== 0"
                     style="margin: 0 auto"
                     @click="undo(record)"
-                    >{{$t("global.cancelOrder")}}
+                    >{{ $t("global.cancelOrder") }}
                   </a-button>
                 </div>
               </div>
-              <div class="no-data" v-if="tableData.length === 0">{{$t("global.noDate")}}</div>
+              <div class="no-data" v-if="tableData.length === 0">
+                {{ $t("global.noDate") }}
+              </div>
             </div>
           </div>
         </div>
@@ -281,66 +298,67 @@
 
       <section v-if="status === 'sellerEntery'">
         <div class="data-box">
-          <h1>{{$t("global.selleryEntry")}}</h1>
-          {{$t("global.selleryEntryContent1")}}
+          <h1>{{ $t("global.selleryEntry") }}</h1>
+          {{ $t("global.selleryEntryContent1") }}
           <a target="_blank" href="https://t.me/tronenergysharing"
             >https://t.me/tronenergysharing</a
-          >{{$t("global.selleryEntryContent2")}}<br />
-          {{$t("global.selleryEntryContent3")}}
+          >{{ $t("global.selleryEntryContent2") }}<br />
+          {{ $t("global.selleryEntryContent3") }}
           <br />
         </div>
       </section>
 
       <section v-if="status === 'noticeCenter'">
         <div class="data-box">
-          <h1>{{$t("global.announcementCenter")}}</h1>
-          <div>{{$t("global.latestAnnouncement")}}</div>
+          <h1>{{ $t("global.announcementCenter") }}</h1>
+          <div>{{ $t("global.latestAnnouncement") }}</div>
           <div>
-            {{$t("global.announcementCenterP1")}}<br />
-            {{$t("global.announcementCenterP2")}}<br />
-            {{$t("global.announcementCenterP3")}}<br />
-            {{$t("global.announcementCenterP4")}}<br />
-            {{$t("global.announcementCenterP5")}}<br />
-            {{$t("global.announcementCenterP6")}}<a target="_blank" href="https://jxgamefi.com"
+            {{ $t("global.announcementCenterP1") }}<br />
+            {{ $t("global.announcementCenterP2") }}<br />
+            {{ $t("global.announcementCenterP3") }}<br />
+            {{ $t("global.announcementCenterP4") }}<br />
+            {{ $t("global.announcementCenterP5") }}<br />
+            {{ $t("global.announcementCenterP6")
+            }}<a target="_blank" href="https://jxgamefi.com"
               >https://jxgamefi.com</a
             ><br />
-            {{$t("global.communityTwitter")}}<a target="_blank" href="https://t.me/wdccn"
-              >https://t.me/wdccn</a
+            {{ $t("global.communityTwitter")
+            }}<a target="_blank" href="https://t.me/wdccn">https://t.me/wdccn</a
             ><br />
-            {{$t("global.numberAirdrops")}}0.2<br />
-            {{$t('global.totalAirdrop')}}2000<br />
-            {{$t("global.contractAddress")}}<br />
+            {{ $t("global.numberAirdrops") }}0.2<br />
+            {{ $t("global.totalAirdrop") }}2000<br />
+            {{ $t("global.contractAddress") }}<br />
             TA74PoX3vgpZfghFJDB3sog7mfYRkjWQwW<br />
-            {{$t("global.addressOfPeriod")}}<br />
+            {{ $t("global.addressOfPeriod") }}<br />
           </div>
         </div>
       </section>
 
       <section v-if="status === 'helpCenter'">
         <div class="data-box">
-          <h1>{{$t("global.helpCenter")}}</h1>
+          <h1>{{ $t("global.helpCenter") }}</h1>
           <div>
-            <h2>{{$t("global.engeryAndBandWidth")}}</h2>
+            <h2>{{ $t("global.engeryAndBandWidth") }}</h2>
             <p>
-              {{$t("global.engeryAndBandWidthP1")}}
+              {{ $t("global.engeryAndBandWidthP1") }}
             </p>
-            <h2>{{$t("global.basicOperation")}}</h2>
+            <h2>{{ $t("global.basicOperation") }}</h2>
             <p>
-              ·{{$t("global.placeOrder")}} <br />
-              {{$t("global.placeOrderTips")}}<br />
-              ·{{$t("global.unitPrice")}}<br />
-              {{$t("global.unitPriceTips")}}<br />
-              ·{{$t("global.cancelOrder")}}<br />
-              {{$t("global.cancelOrderTips")}}<br />
-              ·{{$t("global.sell")}}<br />
-              {{$t("global.sellTips")}}<br />
+              ·{{ $t("global.placeOrder") }} <br />
+              {{ $t("global.placeOrderTips") }}<br />
+              ·{{ $t("global.unitPrice") }}<br />
+              {{ $t("global.unitPriceTips") }}<br />
+              ·{{ $t("global.cancelOrder") }}<br />
+              {{ $t("global.cancelOrderTips") }}<br />
+              ·{{ $t("global.sell") }}<br />
+              {{ $t("global.sellTips") }}<br />
             </p>
-            <h2>{{$t("global.security")}}</h2>
+            <h2>{{ $t("global.security") }}</h2>
             <p>
-              {{$t("global.securityTips1")}}<br />
-              {{$t("global.securityTips2")}}<br />
+              {{ $t("global.securityTips1") }}<br />
+              {{ $t("global.securityTips2") }}<br />
             </p>
-            <div>{{$t("global.teamName")}}</div>
+            <div>{{ $t("global.teamName") }}</div>
           </div>
         </div>
       </section>
@@ -351,15 +369,18 @@
         :closable="false"
         v-model:visible="drawerVisible"
       >
-        <div v-if="ownerAddress">{{$t("global.location")}} {{ uzipAddress(ownerAddress) }}</div>
+        <div v-if="ownerAddress">
+          {{ $t("global.location") }} {{ uzipAddress(ownerAddress) }}
+        </div>
         <div v-else>
-          {{$t("global.location")}}<a-button
+          {{ $t("global.location")
+          }}<a-button
             v-if="!ownerAddress"
             type="primary"
             shape="round"
             size="small"
             @click="linkWallet"
-            >{{$t("global.LinkWallet")}}</a-button
+            >{{ $t("global.LinkWallet") }}</a-button
           >
         </div>
         <a-divider />
@@ -367,42 +388,42 @@
           @click="changeStatus('home')"
           :class="status === 'home' && 'actived'"
         >
-          {{$t("global.homePage")}}
+          {{ $t("global.homePage") }}
         </div>
         <a-divider />
         <div
           @click="changeStatus('myOrder')"
           :class="status === 'myOrder' && 'actived'"
         >
-          {{$t("global.myOrders")}}
+          {{ $t("global.myOrders") }}
         </div>
         <a-divider />
         <div
           @click="changeStatus('sellerEntery')"
           :class="status === 'sellerEntery' && 'actived'"
         >
-          {{$t("global.sellerEntry")}} 
+          {{ $t("global.sellerEntry") }}
         </div>
         <a-divider />
         <div
           @click="changeStatus('noticeCenter')"
           :class="status === 'noticeCenter' && 'actived'"
         >
-          {{$t("global.announcementCenter")}} 
+          {{ $t("global.announcementCenter") }}
         </div>
         <a-divider />
         <div
           @click="changeStatus('helpCenter')"
           :class="status === 'helpCenter' && 'actived'"
         >
-          {{$t("global.helpCenter")}} 
+          {{ $t("global.helpCenter") }}
         </div>
         <a-divider />
         <div
           @click="changeStatus('date')"
           :class="status === 'date' && 'actived'"
         >
-          {{$t("global.recentTransactions")}}
+          {{ $t("global.recentTransactions") }}
         </div>
         <a-divider />
         <a-space>
