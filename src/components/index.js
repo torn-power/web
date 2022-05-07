@@ -113,6 +113,7 @@ export default defineComponent({
       resetFields();
       formState.ownerAddress = ownerAddress.value;
       formState.receiverAddress = ownerAddress.value;
+      getConfig();
     };
 
     // trx转账接口
@@ -125,7 +126,7 @@ export default defineComponent({
         );
         const signedTx = await tronWeb.value.trx.sign(tx);
         const broastTx = await tronWeb.value.trx.sendRawTransaction(signedTx);
-        if (broastTx.result) return true;
+        if (broastTx.result) return broastTx.txid;
         message.warning(broastTx.code);
         return false;
       } catch (error) {
@@ -154,11 +155,12 @@ export default defineComponent({
             ownerAddress: ownerAddress.value,
             receiverAddress: values.receiverAddress,
             commission: toSun(needTrxCount.value),
-            frozenBalance: mathFloor(toSun(trxCount.value)),
+            frozenBalance: toSun(trxCount.value),
             resource: values.resource,
             resourceValue: values.amount,
             unitPrice: values.unitPrice,
             duration: values.duration,
+            txid: res,
           };
           const ciphertext = AES.encrypt(
             JSON.stringify(formData),
@@ -300,10 +302,21 @@ export default defineComponent({
 
     // 计算需要用户支付多少TRX
     const needTrxCount = computed(() => {
-      const res =
-        +fromSun(formState.amount * formState.unitPrice * formState.duration) ||
-        0;
-      return res > 1 ? Math.ceil(res) : 1;
+      let res = 0;
+      if (formState.resource === "ENERGY") {
+        res = +(
+          (formState.amount / 100000) *
+          (formState.unitPrice / 30) *
+          9
+        ).toFixed(2);
+      } else {
+        res = +(
+          (formState.amount / 10000) *
+          (formState.unitPrice / 500) *
+          15
+        ).toFixed(2);
+      }
+      return res > 1 ? res : 1;
     });
 
     // 计算原价需要多少TRX
@@ -313,16 +326,19 @@ export default defineComponent({
 
     // 节约
     const saveTrx = computed(() => {
+      let res = 0;
       if (formState.resource === "ENERGY") {
-        return +(
+        res = +(
           (formState.amount / 100000) * 84 -
           formState.amount * (9 / 100000) * (formState.unitPrice / 30)
         ).toFixed(2);
+      } else {
+        res = +(
+          formState.amount * (3 / 1000) -
+          formState.amount * (15 / 10000) * (formState.unitPrice / 500)
+        ).toFixed(2);
       }
-      return +(
-        (3 * formState.amount) / 1000 -
-        ((15 * formState.amount) / 10000) * (formState.unitPrice / 500)
-      ).toFixed(2);
+      return res > 1 ? res : 0;
     });
 
     // 计算不同资源情况下用户能获得多少资源
@@ -377,6 +393,8 @@ export default defineComponent({
     const getConfig = async () => {
       const { data } = await getConfigApi();
       config.value = { ...data.config, address: data.address };
+      formState.amount = config.value.minEnergyNumber;
+      formState.unitPrice = config.value.energyPrice;
     };
 
     const undo = async (record) => {
