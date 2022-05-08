@@ -1,4 +1,3 @@
-
 import { Modal, Space, Divider } from "ant-design-vue";
 
 import i18n from "../locales/i18n";
@@ -39,25 +38,26 @@ export const megeKeySame = (arr = []) => {
   return [...classData(energy), ...classData(bindWidth)];
 };
 
-
 export const sellTip = () => {
   Modal.info({
-    title: () => i18n.global.t('tip.sell'),
-    okText: i18n.global.t('tip.knowThe'),
+    title: () => i18n.global.t("tip.sell"),
+    okText: i18n.global.t("tip.knowThe"),
     content: () => (
       <div>
-        <p>{i18n.global.t('tip.tip3')}</p>
+        <p>{i18n.global.t("tip.tip3")}</p>
         <Space>
           <img src="/telegram.png" width="24" />
-          <a href="https://t.me/Tron_energysharing" target='_blank'>@Tron_energysharing</a>
+          <a href="https://t.me/Tron_energysharing" target="_blank">
+            @Tron_energysharing
+          </a>
         </Space>
         <Divider />
-        <p>
-          {i18n.global.t('tip.tip4')}
-        </p>
+        <p>{i18n.global.t("tip.tip4")}</p>
         <Space>
           <img src="/telegram.png" width="24" />
-          <a href="https://t.me/tronenergysharing" target='_blank'>@Tron energy-sharing</a>
+          <a href="https://t.me/tronenergysharing" target="_blank">
+            @Tron energy-sharing
+          </a>
         </Space>
       </div>
     ),

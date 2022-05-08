@@ -1,5 +1,5 @@
 <template>
-  <a-spin :spinning="spinning" tip="交易进行中，请稍后">
+  <a-spin :spinning="spinning" :tip="$t('tip.spin')">
     <div class="mobile-wrap">
       <header>
         <a-space>

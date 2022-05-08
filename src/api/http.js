@@ -35,3 +35,15 @@ export const getAccountResource = (params) => {
     params,
   });
 };
+
+/**
+ * 查询地址是否激活
+ * @param {*} params
+ * @returns
+ */
+export const searchAddress = (params) => {
+  return service({
+    url: `${URL}/search-main`,
+    params,
+  });
+};

@@ -14,7 +14,7 @@ import { AES } from "crypto-js";
 import { useTitle } from "@vueuse/core";
 import { sellTip } from "../utils/utils";
 
-import { getAccountv2 as getAccountApi } from "../api/http";
+import { getAccountv2 as getAccountApi, searchAddress } from "../api/http";
 
 import {
   freeze as freezeApi,
@@ -139,7 +139,13 @@ export default defineComponent({
     const submitFreeze = async () => {
       const values = await validate();
       if (!tronWeb.value.isAddress(values.receiverAddress)) {
-        message.warn(t("global.tronAddress"));
+        message.warn(t("tip.tronAddress"));
+        return;
+      }
+
+      const r = await searchAddress({ term: values.receiverAddress });
+      if (r.length === 0) {
+        message.warn(t("tip.activeAddress"));
         return;
       }
 
@@ -149,6 +155,10 @@ export default defineComponent({
       }
       try {
         spinning.value = true;
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
         const res = await transactionTrx(toSun(needTrxCount.value));
         if (res) {
           const formData = {
@@ -200,6 +210,10 @@ export default defineComponent({
         onOk: async () => {
           try {
             spinning.value = true;
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
             const { status } = await getOrderByIdWriting({
               _id: record._id,
             });
