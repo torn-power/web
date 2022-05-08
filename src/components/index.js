@@ -26,6 +26,7 @@ import {
   getOrderByIdWriting,
   getOrderByIdReWriting,
   getRentInfoApi,
+  verifyRepeatApi,
 } from "../api/server";
 
 export default defineComponent({
@@ -205,8 +206,15 @@ export default defineComponent({
         message.warning("账户余额不足");
         return;
       }
+
+      const r = await verifyRepeatApi({
+        resource: record.resource,
+        sellerAddress: ownerAddress.value,
+        receiverAddress: record.receiverAddress,
+      });
       Modal.confirm({
         title: "确定出售？",
+        content: r.message,
         onOk: async () => {
           try {
             spinning.value = true;

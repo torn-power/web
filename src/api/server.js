@@ -95,3 +95,14 @@ export const getRentInfoApi = () => {
     url: "/order/rent_info",
   });
 };
+
+/**
+ * 检测三天是否冻结过
+ * @returns
+ */
+export const verifyRepeatApi = (params) => {
+  return service({
+    url: "/order/verify-repeat",
+    params,
+  });
+};
