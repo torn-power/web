@@ -11,7 +11,8 @@ import dayjs from "dayjs";
 import { message, Form, Modal } from "ant-design-vue";
 import { useI18n } from "vue-i18n";
 import { AES } from "crypto-js";
-import { useTitle } from "@vueuse/core";
+import { useTitle, useMediaQuery } from "@vueuse/core";
+import { useRouter, useRoute } from "vue-router";
 import { sellTip } from "../utils/utils";
 
 import { getAccountv2 as getAccountApi, searchAddress } from "../api/http";
@@ -39,9 +40,14 @@ export default defineComponent({
     const formRef = ref();
     const activeKey = ref("1");
 
+    const isMobile = useMediaQuery("(max-width: 750px)");
+
     const spinning = ref(false);
     const currentType = ref();
     const config = ref({});
+
+    const router = useRouter();
+    const route = useRoute();
 
     const status = ref("home");
 
@@ -304,22 +310,6 @@ export default defineComponent({
         tableData.value = data.results;
         return;
       }
-      if (status.value === "date") {
-        const { data } = await getOrderList({ status: 1, pageSize: 10 });
-        tableData.value = data.results;
-      } else {
-        if (!ownerAddress.value) {
-          message.warning("请链接你的钱包");
-          return;
-        }
-
-        if (status.value === "myOrder") {
-          const { data } = await getOrderList({
-            receiverAddress: ownerAddress.value,
-          });
-          tableData.value = data.results;
-        }
-      }
     };
 
     // 计算需要用户支付多少TRX
@@ -437,6 +427,7 @@ export default defineComponent({
 
     const changeStatus = (v) => {
       status.value = v;
+      router.push(v);
       drawerVisible.value = false;
       orderTypeChange();
     };
@@ -456,10 +447,10 @@ export default defineComponent({
 
     let timer = null;
     onMounted(() => {
+      status.value = route.path.replace("/", "");
       getConfig();
       getRentInfo();
       linkWallet();
-      orderTypeChange();
       window.addEventListener("message", (e) => {
         if (e.data.message && e.data.message.action == "accountsChanged") {
           activeKey.value = "1";
@@ -516,6 +507,7 @@ export default defineComponent({
       changeStatus,
       status,
       t,
+      isMobile,
     };
   },
 });
