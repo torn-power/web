@@ -181,7 +181,7 @@ export default defineComponent({
           };
           const ciphertext = AES.encrypt(
             JSON.stringify(formData),
-            "TKnrLaQtu1MpmXvAKef66gRRCUKRD1vdMV"
+            process.env.VUE_APP_KEY
           ).toString();
           const result = await freezeApi({
             data: ciphertext,
@@ -333,7 +333,7 @@ export default defineComponent({
 
     // 计算原价需要多少TRX
     const trxCount = computed(
-      () => +(formState.amount / resourceCount()).toFixed(2)
+      () => +(formState.amount / resourceCount.value).toFixed(2)
     );
 
     // 节约
@@ -354,7 +354,7 @@ export default defineComponent({
     });
 
     // 计算不同资源情况下用户能获得多少资源
-    const resourceCount = () => {
+    const resourceCount = computed(() => {
       if (formState.resource === "ENERGY") {
         return +(
           accountResouce.value.bandwidth?.totalEnergyLimit /
@@ -365,7 +365,7 @@ export default defineComponent({
         accountResouce.value.bandwidth?.totalNetLimit /
         accountResouce.value.bandwidth?.totalNetWeight
       ).toFixed(2);
-    };
+    });
 
     // 将sun转换成trx单位
     const fromSun = (val) => (val ? val / 1000000 : 0);
@@ -389,6 +389,7 @@ export default defineComponent({
       tronWeb.value = window.tronWeb;
       ownerAddress.value = window.tronWeb.defaultAddress.base58;
       formState.ownerAddress = ownerAddress.value;
+      formState.receiverAddress = ownerAddress.value;
       await getAccount();
     };
 
@@ -497,6 +498,7 @@ export default defineComponent({
       saveTrx,
       submitSoldForm,
       needTrxCount,
+      trxCount,
       uzipAddress,
       linkWallet,
       rent,
