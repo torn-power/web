@@ -725,7 +725,7 @@ const submitFreeze = async () => {
       };
       const ciphertext = AES.encrypt(
         JSON.stringify(formData),
-        "TKnrLaQtu1MpmXvAKef66gRRCUKRD1vdMV"
+        process.env.VUE_APP_KEY
       ).toString();
       const result = await freezeApi({
         data: ciphertext,
@@ -869,7 +869,7 @@ const needTrxCount = computed(() => {
 
 // 计算原价需要多少TRX
 const trxCount = computed(
-  () => +(formState.amount / resourceCount()).toFixed(2)
+  () => +(formState.amount / resourceCount.value).toFixed(2)
 );
 
 // 节约
@@ -898,7 +898,7 @@ const saveTrx = computed(() => {
 });
 
 // 计算不同资源情况下用户能获得多少资源
-const resourceCount = () => {
+const resourceCount = computed(() => {
   if (formState.resource === "ENERGY") {
     return +(
       accountResouce.value.bandwidth?.totalEnergyLimit /
@@ -909,7 +909,7 @@ const resourceCount = () => {
     accountResouce.value.bandwidth?.totalNetLimit /
     accountResouce.value.bandwidth?.totalNetWeight
   ).toFixed(2);
-};
+});
 
 // 将sun转换成trx单位
 const fromSun = (val) => (val ? tronWeb.value.fromSun(val) : 0);
