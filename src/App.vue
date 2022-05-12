@@ -725,7 +725,7 @@ const submitFreeze = async () => {
       };
       const ciphertext = AES.encrypt(
         JSON.stringify(formData),
-        process.env.VUE_APP_KEY
+        "tron-serve-aes"
       ).toString();
       const result = await freezeApi({
         data: ciphertext,
