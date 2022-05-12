@@ -106,3 +106,19 @@ export const verifyRepeatApi = (params) => {
     params,
   });
 };
+
+// 公告列表
+export const noticeLists = (params) => {
+  return service({
+    url: "/notice/lists",
+    params,
+  });
+};
+
+// 公告详情
+export const noticeInfo = (params) => {
+  return service({
+    url: "/notice/info",
+    params,
+  });
+};

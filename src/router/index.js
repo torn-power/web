@@ -32,6 +32,11 @@ const routes = [
         component: () => import("../views/noticeCenter/index.vue"),
       },
       {
+        path: "/notice-detail",
+        name: "noticeDetail",
+        component: () => import("../views/noticeCenter/detail.vue"),
+      },
+      {
         path: "/sellerEntery",
         name: "sellerEntery",
         component: () => import("../views/sellerEntery/index.vue"),
@@ -49,7 +54,7 @@ const router = createRouter({
   routes: routes,
 });
 
-router.afterEach((to, from, next) => {
+router.afterEach(() => {
   window.scrollTo(0, 0);
 });
 

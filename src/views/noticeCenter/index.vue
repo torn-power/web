@@ -2,25 +2,59 @@
   <section>
     <div class="data-box">
       <h1>{{ $t("global.announcementCenter") }}</h1>
-      <div>{{ $t("global.latestAnnouncement") }}</div>
-      <div>
-        {{ $t("global.announcementCenterP1") }}<br />
-        {{ $t("global.announcementCenterP2") }}<br />
-        {{ $t("global.announcementCenterP3") }}<br />
-        {{ $t("global.announcementCenterP4") }}<br />
-        {{ $t("global.announcementCenterP5") }}<br />
-        {{ $t("global.announcementCenterP6")
-        }}<a target="_blank" href="https://jxgamefi.com">https://jxgamefi.com</a
-        ><br />
-        {{ $t("global.communityTwitter")
-        }}<a target="_blank" href="https://t.me/wdccn">https://t.me/wdccn</a
-        ><br />
-        {{ $t("global.numberAirdrops") }}0.2<br />
-        {{ $t("global.totalAirdrop") }}2000<br />
-        {{ $t("global.contractAddress") }}<br />
-        TA74PoX3vgpZfghFJDB3sog7mfYRkjWQwW<br />
-        {{ $t("global.addressOfPeriod") }}<br />
-      </div>
+      <ol class="notice">
+        <li class="item" v-for="(v, i) in lists" :key="i" @click="detail(v)">
+          {{ v.title }}
+        </li>
+      </ol>
     </div>
   </section>
 </template>
+<script setup>
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { noticeLists } from "../../api/server";
+
+const router = useRouter();
+
+const lists = ref([]);
+
+const getLists = async () => {
+  const { data } = await noticeLists({ pageSize: 100 });
+  lists.value = data.results;
+};
+
+const detail = (v) => {
+  router.push({
+    path: "/notice-detail",
+    query: {
+      _id: v._id,
+    },
+  });
+};
+
+onMounted(() => {
+  getLists();
+});
+</script>
+<style lang="less" scoped>
+ol {
+  padding: 10px;
+}
+.notice {
+  height: 75vh;
+  overflow: auto;
+  .item {
+    font-size: 14px;
+    color: white;
+    padding: 10px;
+    margin: 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.3s;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+  }
+}
+</style>

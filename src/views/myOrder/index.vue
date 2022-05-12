@@ -157,7 +157,7 @@ const isMobile = useMediaQuery("(max-width: 750px)");
 // 表格数据
 const tableData = ref([]);
 
-const orderTypeChange = async (v) => {
+const orderTypeChange = async () => {
   if (!window.tronWeb) {
     message.warning(t("tip.tip5"));
     return;
