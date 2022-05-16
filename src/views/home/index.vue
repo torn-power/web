@@ -66,7 +66,12 @@
 
         <div class="line"></div>
 
-        <div class="copy-text">{{ $t("global.copyLinkTips") }}</div>
+        <div class="flex-space">
+          <div class="copy-text">{{ $t("global.copyLinkTips") }}</div>
+          <div class="receive-award" @click="changeStatus('receiveAward')">
+            {{ $t("global.receiveAward") }}
+          </div>
+        </div>
 
         <div class="copy-box" @click="copyText">
           <div class="copy-url">
@@ -214,7 +219,7 @@
               </div>
               <div class="content-data">
                 <div>
-                  <span class="label">{{ $t("global.priceOfDay") }}：</span>
+                  <span class="label">{{ $t("global.income") }}：</span>
                   <span>{{ (record.aCommission / 1000000).toFixed(2) }}</span>
                   <span>TRX</span>
                 </div>
@@ -258,7 +263,7 @@
           </div>
         </div>
         <div class="content-item-wrap">
-          <div class="num">{{ toLocaleString(rent.totalEnergy || 0) }} K</div>
+          <div class="num">{{ toLocaleString(rent.totalEnergy || 0) }}</div>
           <div class="name">
             <!-- 累计为用户提供<span class="sign-name">&nbsp;能量</span> -->
             {{ $t("global.providedUsersEnergy") }}
@@ -309,8 +314,13 @@
           </div>
         </div>
         <div class="recommend-url-wrap">
-          <div class="recommend-url-tips">
-            {{ $t("global.copyLinkTips") }}
+          <div class="flex-space">
+            <div class="recommend-url-tips">
+              {{ $t("global.copyLinkTips") }}
+            </div>
+            <div class="receive-award" @click="changeStatus('receiveAward')">
+              {{ $t("global.receiveAward") }}
+            </div>
           </div>
           <div class="recommend-url-content-wrap" @click="copyText">
             <div class="url-content-wrap">
@@ -620,3 +630,20 @@ export default defineComponent({
   ...index,
 });
 </script>
+<style lang="less" scoped>
+.flex-space {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .receive-award {
+    width: 100px;
+    text-align: center;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 4px 6px;
+    background-color: rgb(187, 179, 179);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+}
+</style>

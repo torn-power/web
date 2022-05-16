@@ -53,6 +53,13 @@
         </div>
         <a-divider />
         <div
+          @click="changeStatus('receiveAward')"
+          :class="status === 'receiveAward' && 'actived'"
+        >
+          {{ $t("global.receiveAward") }}
+        </div>
+        <a-divider />
+        <div
           @click="changeStatus('sellerEntery')"
           :class="status === 'sellerEntery' && 'actived'"
         >

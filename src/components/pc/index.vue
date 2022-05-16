@@ -20,6 +20,12 @@
             {{ $t("global.myOrders") }}
           </div>
           <div
+            @click="changeStatus('receiveAward')"
+            :class="status === 'receiveAward' && 'actived'"
+          >
+            {{ $t("global.receiveAward") }}
+          </div>
+          <div
             @click="changeStatus('sellerEntery')"
             :class="status === 'sellerEntery' && 'actived'"
           >

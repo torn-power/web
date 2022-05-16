@@ -26,7 +26,7 @@
             </div>
             <div class="content-data">
               <div>
-                <span class="label">{{ $t("global.priceOfDay") }}：</span>
+                <span class="label">{{ $t("global.income") }}：</span>
                 <span>{{ (record.aCommission / 1000000).toFixed(2) }}</span>
                 <span>TRX</span>
               </div>

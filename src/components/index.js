@@ -446,12 +446,20 @@ export default defineComponent({
       }
     );
 
+    watch(
+      () => route.path,
+      (v) => {
+        status.value = v.replace("/", "");
+      }
+    );
+
     let timer = null;
     onMounted(() => {
       status.value = route.path.replace("/", "");
       getConfig();
       getRentInfo();
       linkWallet();
+      orderTypeChange();
       window.addEventListener("message", (e) => {
         if (e.data.message && e.data.message.action == "accountsChanged") {
           activeKey.value = "1";
@@ -462,7 +470,7 @@ export default defineComponent({
       timer = setInterval(() => {
         getAccount();
         orderTypeChange();
-      }, 3 * 60 * 1000);
+      }, 2 * 60 * 1000);
     });
 
     onUnmounted(() => {
@@ -501,6 +509,8 @@ export default defineComponent({
       trxCount,
       uzipAddress,
       linkWallet,
+      getConfig,
+      getRentInfo,
       rent,
       toLocaleString,
       currentType,
