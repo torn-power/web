@@ -11,9 +11,9 @@ import dayjs from "dayjs";
 import { message, Form, Modal } from "ant-design-vue";
 import { useI18n } from "vue-i18n";
 import { AES } from "crypto-js";
-import { useTitle, useMediaQuery } from "@vueuse/core";
+import { useTitle, useMediaQuery, useClipboard } from "@vueuse/core";
 import { useRouter, useRoute } from "vue-router";
-import { sellTip } from "../utils/utils";
+import { sellTip, shardText } from "../utils/utils";
 
 import { getAccountv2 as getAccountApi, searchAddress } from "../api/http";
 
@@ -483,7 +483,11 @@ export default defineComponent({
     };
 
     const copyText = () => {
-      message.info("敬请期待");
+      const { copy } = useClipboard({
+        source: shardText(ownerAddress.value),
+      });
+      copy();
+      message.info("复制成功，快去分享吧");
     };
 
     return {
