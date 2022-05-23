@@ -122,3 +122,46 @@ export const noticeInfo = (params) => {
     params,
   });
 };
+
+// 分享 /api/recommend
+// 是否绑定
+export const isBinding = (params) => {
+  return service({
+    url: "/recommend/is-binding",
+    params,
+  });
+};
+
+// create-binding
+export const createBining = (data) => {
+  return service({
+    url: "/recommend/create-binding",
+    method: "POST",
+    data,
+  });
+};
+
+// 当前地址子列表
+export const currentLists = (params) => {
+  return service({
+    url: "/recommend/current-lists",
+    params,
+  });
+};
+
+// 提取
+export const extractReward = (data) => {
+  return service({
+    url: "/recommend/extract-reward",
+    method: "POST",
+    data,
+  });
+};
+
+// 当前地址详情
+export const currentInfo = (params) => {
+  return service({
+    url: "/recommend/current-info",
+    params,
+  });
+};

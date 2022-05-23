@@ -12,20 +12,26 @@
           <img class="icon" src="/img/icon-2.png" alt="" />
           <span class="color-1">&emsp;{{ $t("global.totalTRX") }}</span>
         </div>
-        <div class="color-2">0 TRX</div>
+        <div class="color-2">
+          {{ (info.totalSun / 1000000).toFixed(2) }} TRX
+        </div>
       </div>
       <div class="data-box-content">
         <div class="data-box-left">
           <img class="icon" src="/img/icon-3.png" alt="" />
           <span class="color-1">&emsp;{{ $t("global.getTRX") }}</span>
         </div>
-        <div class="color-2">0 TRX</div>
+        <div class="color-2">
+          {{ (info.canReceive / 1000000).toFixed(2) }} TRX
+        </div>
       </div>
       <div class="data-box-content">
         <a-button
           type="primary"
           shape="round"
+          :disabled="info.canReceive === 0 || !ownerAddress"
           style="width: 240px; margin: 0 auto"
+          @click="extractRewardFunc"
           >{{ $t("global.getBonuses") }}</a-button
         >
       </div>
@@ -43,28 +49,15 @@
           <div>{{ $t("global.ReferralBonusesTRX") }}</div>
         </div>
         <div class="data-table-body">
-          <div class="content" v-for="(record, i) in []" :key="i">
+          <div class="content" v-for="(record, i) in tableData" :key="i">
             <div class="content-data">
-              <div>
-                <span class="label">{{ $t("global.priceOfDay") }}：</span>
-                <span>{{ record.unitPrice }}</span>
-                <span>sun</span>
-              </div>
-              <div>
-                <span class="label">{{ record.resource }}： </span>
-                <span>{{ record.resourceValue }}</span>
-              </div>
+              {{ record.updatedAt }}
             </div>
             <div class="content-data">
-              <div>
-                <span class="label">{{ $t("global.income") }}：</span>
-                <span>{{ (record.aCommission / 1000000).toFixed(2) }}</span>
-                <span>TRX</span>
-              </div>
-              <div>
-                <span class="label">{{ $t("global.freeze") }}：</span>
-                <span>{{ +record.frozenBalance / 1000000 }}TRX</span>
-              </div>
+              {{ uzipAddress(record.recommendedAddress) }}
+            </div>
+            <div class="content-data">
+              {{ (record.totalSun / 1000000).toFixed(2) }}
             </div>
           </div>
         </div>
@@ -75,6 +68,81 @@
     </div>
   </section>
 </template>
+<script setup>
+import dayjs from "dayjs";
+import { onMounted, ref } from "vue";
+import { message } from "ant-design-vue";
+import { currentLists, extractReward, currentInfo } from "../../api/server";
+
+// trx转账接口
+const transactionTrx = async (amount = 300000) => {
+  try {
+    const tx = await window.tronWeb.transactionBuilder.sendTrx(
+      window.sessionStorage.getItem("c"),
+      amount,
+      ownerAddress.value
+    );
+    const signedTx = await window.tronWeb.trx.sign(tx);
+    const broastTx = await window.tronWeb.value.trx.sendRawTransaction(
+      signedTx
+    );
+    if (broastTx.result) return broastTx.txid;
+    message.warning(broastTx.code);
+    return false;
+  } catch (error) {
+    message.error(error);
+    return false;
+  }
+};
+
+const tableData = ref([]);
+const info = ref({
+  totalSun: 0,
+  canReceive: 0,
+});
+const ownerAddress = ref(window.sessionStorage.getItem("ownerAddress"));
+
+const getCurrentLists = async () => {
+  const { data } = await currentLists({
+    recommendedAddress: ownerAddress.value,
+  });
+  tableData.value = data.map((v) => ({
+    ...v,
+    updatedAt: dayjs(v.updatedAt).format("YYYY-MM-DD"),
+  }));
+};
+
+const extractRewardFunc = async () => {
+  const r = await transactionTrx();
+  if (r) {
+    const res = await extractReward({
+      recommendedAddress: ownerAddress.value,
+      txid: r,
+    });
+    message.info(res.message);
+    getCurrentInfo();
+    getCurrentLists();
+  }
+};
+
+const getCurrentInfo = async () => {
+  const { data } = await currentInfo({
+    recommendedAddress: ownerAddress.value,
+  });
+  info.value = data;
+};
+
+const uzipAddress = (str) => {
+  return str.substr(0, 8) + "..." + str.substr(-4, 4);
+};
+
+onMounted(() => {
+  if (ownerAddress.value) {
+    getCurrentLists();
+    getCurrentInfo();
+  }
+});
+</script>
 <style lang="less" scoped>
 .title {
   font-family: "PingFang SC";
@@ -198,28 +266,30 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-direction: row;
         font-size: 20px;
         padding: 12px 10px;
         border-bottom: 1px solid rgba(53, 201, 255, 0.2);
 
         &-data {
-          width: 35%;
+          font-size: 10px;
+          text-align: center;
         }
 
-        &-data > div {
-          width: 150px;
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-          font-size: 9px;
-          line-height: 2;
-          font-weight: 400;
-          transform: scale(0.9);
+        // &-data {
+        //   width: 150px;
+        //   display: flex;
+        //   flex-wrap: wrap;
+        //   align-items: center;
+        //   font-size: 9px;
+        //   line-height: 2;
+        //   font-weight: 400;
+        //   transform: scale(0.9);
 
-          .label {
-            color: rgba(255, 255, 255, 0.85);
-          }
-        }
+        //   .label {
+        //     color: rgba(255, 255, 255, 0.85);
+        //   }
+        // }
 
         &-action {
           // width: 100px;

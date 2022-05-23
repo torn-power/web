@@ -28,6 +28,8 @@ import {
   getOrderByIdReWriting,
   getRentInfoApi,
   verifyRepeatApi,
+  isBinding as isBindingApi,
+  createBining,
 } from "../api/server";
 
 export default defineComponent({
@@ -38,13 +40,14 @@ export default defineComponent({
     const tronWeb = ref();
     const ownerAddress = ref();
     const formRef = ref();
-    const activeKey = ref("1");
 
     const isMobile = useMediaQuery("(max-width: 750px)");
 
     const spinning = ref(false);
     const currentType = ref();
     const config = ref({});
+
+    const isBinding = ref(false);
 
     const router = useRouter();
     const route = useRoute();
@@ -390,7 +393,35 @@ export default defineComponent({
       ownerAddress.value = window.tronWeb.defaultAddress.base58;
       formState.ownerAddress = ownerAddress.value;
       formState.receiverAddress = ownerAddress.value;
+      window.sessionStorage.setItem("ownerAddress", ownerAddress.value);
       await getAccount();
+      await isBindingFun(ownerAddress.value);
+    };
+
+    const isBindingFun = async (recommendedAddress) => {
+      if (route.query.address) {
+        const recommenderAddress = route.query.address;
+        if (recommendedAddress === recommenderAddress) return;
+        const isAddress = tronWeb.value.isAddress(recommenderAddress);
+        if (isAddress) {
+          const r = await searchAddress({ term: recommenderAddress });
+          if (r.length === 0) {
+            return;
+          }
+          const { data = false } = await isBindingApi({
+            recommenderAddress,
+            recommendedAddress,
+          });
+          isBinding.value = data;
+          if (!data) {
+            const res = await createBining({
+              recommenderAddress,
+              recommendedAddress,
+            });
+            console.log(res);
+          }
+        }
+      }
     };
 
     const lang = computed(() => {
@@ -406,6 +437,7 @@ export default defineComponent({
     const getConfig = async () => {
       const { data } = await getConfigApi();
       config.value = { ...data.config, address: data.address };
+      window.sessionStorage.setItem("c", data.address);
       formState.amount = config.value.minEnergyNumber;
       formState.unitPrice = config.value.energyPrice;
     };
@@ -462,7 +494,6 @@ export default defineComponent({
       orderTypeChange();
       window.addEventListener("message", (e) => {
         if (e.data.message && e.data.message.action == "accountsChanged") {
-          activeKey.value = "1";
           linkWallet();
         }
       });
@@ -500,7 +531,6 @@ export default defineComponent({
       accountResouce,
       ownerAddress,
       lang,
-      activeKey,
       formRef,
       submitFreeze,
       spinning,
