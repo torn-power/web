@@ -639,9 +639,7 @@ const tableData = reactive({
                 onOk: async () => {
                   const res = await undoApi({ _id: record._id });
                   message.info(res.message);
-                  getRecentOrders();
-                  getCurrentOrders();
-                  getBuyOrders();
+                  window.location.reload();
                 },
               });
             }}
@@ -732,6 +730,7 @@ const submitFreeze = async () => {
       });
       if (result.status === 200) {
         message.success(t("global.rent") + t("global.success"));
+        window.location.reload();
       } else {
         message.warning(t("global.rent") + t("global.fail"));
       }
@@ -794,6 +793,7 @@ const submitSoldForm = async () => {
           ownerAddress: ownerAddress.value,
         });
         message.success(t("global.sell") + t("global.success"));
+        window.location.reload();
       } else {
         await getOrderByIdReWriting({ _id: tableInfo.value._id });
         message.warning(broastTx.code);
