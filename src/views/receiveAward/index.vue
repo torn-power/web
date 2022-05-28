@@ -121,8 +121,6 @@ const extractRewardFunc = async () => {
     });
     message.info(res.message);
     window.location.reload();
-    getCurrentInfo();
-    getCurrentLists();
   }
 };
 

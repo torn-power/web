@@ -148,6 +148,7 @@ export default defineComponent({
     // 提交租赁表单
     const submitFreeze = async () => {
       const values = await validate();
+      console.log(values.receiverAddress);
       if (!tronWeb.value.isAddress(values.receiverAddress)) {
         message.warn(t("tip.tronAddress"));
         return;
@@ -191,6 +192,7 @@ export default defineComponent({
           });
           if (result.status === 200) {
             message.success(t("global.rent") + t("global.success"));
+            window.location.reload();
           } else {
             message.warning(t("global.rent") + t("global.fail"));
           }
@@ -200,7 +202,6 @@ export default defineComponent({
       } catch (error) {
         message.warning(error || "冻结有误，请联系客服");
       } finally {
-        window.location.reload();
         getAccount();
         getRentInfo();
         spinning.value = false;
@@ -265,6 +266,7 @@ export default defineComponent({
                   ownerAddress: ownerAddress.value,
                 });
                 message.success(t("global.sell") + t("global.success"));
+                window.location.reload();
               } else {
                 await getOrderByIdReWriting({ _id: record._id });
                 message.warning(broastTx.code);
@@ -275,7 +277,6 @@ export default defineComponent({
             message.warning(error);
             await getOrderByIdReWriting({ _id: record._id });
           } finally {
-            window.location.reload();
             getAccount();
             getRentInfo();
             spinning.value = false;
@@ -452,6 +453,7 @@ export default defineComponent({
           const res = await undoApi({ _id: record._id });
           message.info(res.message);
           orderTypeChange();
+          window.location.reload();
         },
       });
     };
