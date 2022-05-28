@@ -200,6 +200,7 @@ export default defineComponent({
       } catch (error) {
         message.warning(error || "冻结有误，请联系客服");
       } finally {
+        window.location.reload();
         getAccount();
         getRentInfo();
         spinning.value = false;
@@ -274,6 +275,7 @@ export default defineComponent({
             message.warning(error);
             await getOrderByIdReWriting({ _id: record._id });
           } finally {
+            window.location.reload();
             getAccount();
             getRentInfo();
             spinning.value = false;

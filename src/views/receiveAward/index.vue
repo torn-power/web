@@ -120,6 +120,7 @@ const extractRewardFunc = async () => {
       txid: r,
     });
     message.info(res.message);
+    window.location.reload();
     getCurrentInfo();
     getCurrentLists();
   }
