@@ -1,14 +1,6 @@
 import service from "../utils/request";
 
-// 测试网
-const TEST_URL = "https://shastapi.tronscan.org/api";
-
-// 主网
-const PROD_URL = "https://apilist.tronscan.org/api";
-
-const flag = 2;
-
-const URL = 2 === flag ? PROD_URL : TEST_URL;
+const URL = process.env.VUE_APP_TRON_API_URL;
 
 /**
  * 获取钱包地址信息

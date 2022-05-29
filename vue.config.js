@@ -1,4 +1,8 @@
-console.log(process.env.VUE_APP_BASE_URL);
+console.log("--------------------------------------------");
+console.log("环境：", process.env.ENV);
+console.log("后端接口：", process.env.VUE_APP_BASE_URL);
+console.log("波场接口：", process.env.VUE_APP_TRON_API_URL);
+console.log("--------------------------------------------");
 
 module.exports = {
   publicPath: "/",
