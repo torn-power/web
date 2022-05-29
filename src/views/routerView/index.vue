@@ -1,6 +1,7 @@
 <template>
   <Mobile v-if="isMobile" />
   <PC v-else />
+
   <footer class="footer" :style="{ height: isMobile ? '40px' : '87px' }">
     <img :style="{ width: isMobile ? '79px' : '153px' }" src="/img/logo.png" />
   </footer>
@@ -20,5 +21,10 @@ const isMobile = useMediaQuery("(max-width: 750px)");
   display: flex;
   justify-content: center;
   align-items: center;
+  .position {
+    position: absolute;
+    right: 0;
+    bottom: 0px;
+  }
 }
 </style>

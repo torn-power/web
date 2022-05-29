@@ -88,6 +88,22 @@
         </div>
         <a-divider />
         <a-space>
+          <!-- <img src="/telegram.png" width="20" /> -->
+          <span>{{ $t("global.customServer") }}:</span>
+          <a href="https://t.me/tronenergysharing" target="_blank"
+            >@Tron energy-sharing</a
+          >
+        </a-space>
+        <a-divider />
+        <a-space>
+          <!-- <img src="/telegram.png" width="20" /> -->
+          <span>{{ $t("global.telegram") }}:</span>
+          <a href="https://t.me/tronenergysharing" target="_blank"
+            >@Tron energy-sharing</a
+          >
+        </a-space>
+        <a-divider />
+        <a-space>
           <div :class="lang === 'zh' && 'actived'" @click="changeLang('zh')">
             中文
           </div>
