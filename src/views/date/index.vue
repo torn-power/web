@@ -37,7 +37,7 @@
             </div>
             <div class="content-action">
               <a
-                :href="`https://tronscan.org/#/transaction/${record.hash}`"
+                :href="`${VUE_APP_TRON_API}/#/transaction/${record.hash}`"
                 target="_blank"
                 style="font-size: 14px"
                 >{{ $t("global.detail") }}</a
@@ -120,7 +120,7 @@
               <a-col :span="6">
                 <div class="order-table-body-item operation-btn-wrap">
                   <a
-                    :href="`https://tronscan.org/#/transaction/${record.hash}`"
+                    :href="`${VUE_APP_TRON_API}/#/transaction/${record.hash}`"
                     target="_blank"
                     >{{ $t("global.detail") }}</a
                   >
@@ -150,6 +150,8 @@ const orderTypeChange = async () => {
   const { data } = await getOrderList({ status: 1, pageSize: 10 });
   tableData.value = data.results;
 };
+
+const VUE_APP_TRON_API = process.env.VUE_APP_TRON_API;
 
 onMounted(() => {
   orderTypeChange();

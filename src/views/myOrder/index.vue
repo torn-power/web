@@ -149,13 +149,25 @@
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { message } from "ant-design-vue";
-import { useMediaQuery } from "@vueuse/core";
-import { getOrderList } from "../../api/server";
+import { useMediaQuery, Modal } from "@vueuse/core";
+import { getOrderList, undoApi } from "../../api/server";
 
 const { t } = useI18n();
 const isMobile = useMediaQuery("(max-width: 750px)");
 // 表格数据
 const tableData = ref([]);
+
+const undo = async (record) => {
+  Modal.confirm({
+    title: () => "确定撤销？",
+    content: "此操作将扣除1TRX手续费",
+    onOk: async () => {
+      const res = await undoApi({ _id: record._id });
+      message.info(res.message);
+      orderTypeChange();
+    },
+  });
+};
 
 const orderTypeChange = async () => {
   if (!window.tronWeb) {

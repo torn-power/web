@@ -68,4 +68,4 @@ export const shardText = (address) => `
 我发现波场上有个平台可以租能量和带宽，能省下很多交易手续费，使用不需要调动合约非常安全，下单常常还有空投福利，你也来试试吧！
 
 ------------
-能量租赁平台地址：https://diditron.com/#/home?address=${address}`;
+能量租赁平台地址：${window.location.href.split("?")[0]}?address=${address}`;

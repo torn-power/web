@@ -1,16 +1,42 @@
 <template>
-  <Mobile v-if="isMobile" />
-  <PC v-else />
-
-  <footer class="footer" :style="{ height: isMobile ? '40px' : '87px' }">
-    <img :style="{ width: isMobile ? '79px' : '153px' }" src="/img/logo.png" />
-  </footer>
+  <a-spin class="sping" :spinning="useStore.spinning" :tip="$t('tip.spin')">
+    <component :is="currentView" />
+    <footer class="footer" :style="{ height: isMobile ? '40px' : '87px' }">
+      <img
+        :style="{ width: isMobile ? '79px' : '153px' }"
+        src="/img/logo.png"
+      />
+    </footer>
+  </a-spin>
 </template>
-<script setup>
+<script>
+import { watch, ref, defineComponent } from "vue";
 import { useMediaQuery } from "@vueuse/core";
 import Mobile from "../../components/mobile/index.vue";
 import PC from "../../components/pc/index.vue";
-const isMobile = useMediaQuery("(max-width: 750px)");
+import { useSpinningStore } from "../../store/global";
+
+export default defineComponent({
+  components: { Mobile, PC },
+  setup() {
+    const isMobile = useMediaQuery("(max-width: 750px)");
+    const currentView = ref("Mobile");
+    const useStore = useSpinningStore();
+    watch(
+      () => isMobile.value,
+      (v) => {
+        currentView.value = v ? "Mobile" : "PC";
+      },
+      { immediate: true }
+    );
+
+    return {
+      currentView,
+      isMobile,
+      useStore,
+    };
+  },
+});
 </script>
 
 <style lang="less">

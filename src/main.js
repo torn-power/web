@@ -5,7 +5,8 @@ import "./assets/css/global.less";
 import App from "./App.vue";
 import i18n from "./locales/i18n";
 import router from "./router/index";
+import { createPinia } from "pinia";
 
 const app = createApp(App);
 
-app.use(router).use(Antd).use(i18n).mount("#app");
+app.use(createPinia()).use(router).use(Antd).use(i18n).mount("#app");
