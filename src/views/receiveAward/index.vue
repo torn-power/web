@@ -73,6 +73,7 @@ import dayjs from "dayjs";
 import { onMounted, ref } from "vue";
 import { message } from "ant-design-vue";
 import { currentLists, extractReward, currentInfo } from "../../api/server";
+import { useSpinningStore } from "../../store/global";
 
 // trx转账接口
 const transactionTrx = async (amount = 300000) => {
@@ -83,9 +84,7 @@ const transactionTrx = async (amount = 300000) => {
       ownerAddress.value
     );
     const signedTx = await window.tronWeb.trx.sign(tx);
-    const broastTx = await window.tronWeb.value.trx.sendRawTransaction(
-      signedTx
-    );
+    const broastTx = await window.tronWeb.trx.sendRawTransaction(signedTx);
     if (broastTx.result) return broastTx.txid;
     message.warning(broastTx.code);
     return false;
@@ -113,14 +112,20 @@ const getCurrentLists = async () => {
 };
 
 const extractRewardFunc = async () => {
-  const r = await transactionTrx();
-  if (r) {
-    const res = await extractReward({
-      recommendedAddress: ownerAddress.value,
-      txid: r,
-    });
-    message.info(res.message);
-    window.location.reload();
+  try {
+    const r = await transactionTrx();
+    if (r) {
+      useSpinningStore(true);
+      const res = await extractReward({
+        recommendedAddress: ownerAddress.value,
+        txid: r,
+      });
+      message.info(res.message);
+      getCurrentLists();
+      getCurrentInfo();
+    }
+  } finally {
+    useSpinningStore(false);
   }
 };
 
@@ -128,6 +133,7 @@ const getCurrentInfo = async () => {
   const { data } = await currentInfo({
     recommendedAddress: ownerAddress.value,
   });
+  console.log(data);
   info.value = data;
 };
 
@@ -315,6 +321,7 @@ onMounted(() => {
       }
     }
   }
+
   h1,
   h2 {
     color: white;
@@ -371,6 +378,7 @@ onMounted(() => {
     }
   }
 }
+
 .no-data {
   text-align: center;
   font-weight: 600;

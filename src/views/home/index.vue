@@ -878,7 +878,8 @@ const submitSoldForm = async (record) => {
     receiverAddress: record.receiverAddress,
   });
   Modal.confirm({
-    title: "确定出售？",
+    title: "出租确认",
+    icon: () => null,
     content: r.message,
     onOk: async () => {
       try {

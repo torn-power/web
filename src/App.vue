@@ -1,4 +1,15 @@
 <template>
-  <RouterView />
+  <a-config-provider :locale="locale">
+    <RouterView />
+  </a-config-provider>
 </template>
-<script setup></script>
+<script>
+import zhCN from 'ant-design-vue/es/locale/zh_CN';
+export default {
+  data() {
+    return {
+      locale: zhCN,
+    };
+  },
+};
+</script>
