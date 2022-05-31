@@ -54,14 +54,16 @@
             <img class="icon" src="/img/icon-2.png" alt="" />
             <span class="color-1">&emsp;{{ $t("global.gainedReward") }}</span>
           </div>
-          <div class="color-2">0 TRX</div>
+          <div class="color-2">
+            {{ (info.totalSun / 1000000).toFixed(2) }} TRX
+          </div>
         </div>
         <div class="data-box-content">
           <div class="data-box-left">
             <img class="icon" src="/img/icon-3.png" alt="" />
             <span class="color-1">&emsp;{{ $t("global.invitedNumbers") }}</span>
           </div>
-          <div class="color-2">0</div>
+          <div class="color-2">{{ currentListsTotal }}</div>
         </div>
 
         <div class="line"></div>
@@ -643,6 +645,8 @@ import {
   verifyRepeatApi,
   isBinding as isBindingApi,
   createBining,
+  currentLists,
+  currentInfo,
 } from "../../api/server";
 import { getAccountv2 as getAccountApi, searchAddress } from "../../api/http";
 import { useSpinningStore, useGlobalStore } from "../../store/global";
@@ -663,6 +667,12 @@ const tableData = ref([]);
 const status = ref("home");
 const config = ref({});
 const isBinding = ref(false);
+
+const currentListsTotal = ref(0);
+const info = ref({
+  totalSun: 0,
+  canReceive: 0,
+});
 
 const useStore = useSpinningStore();
 const globalSotre = useGlobalStore();
@@ -1034,6 +1044,23 @@ const linkWallet = async () => {
   window.sessionStorage.setItem("ownerAddress", ownerAddress.value);
   await getAccount();
   await isBindingFun(ownerAddress.value);
+  getCurrentLists();
+  getCurrentInfo();
+};
+
+const getCurrentLists = async () => {
+  const { data } = await currentLists({
+    recommendedAddress: ownerAddress.value,
+  });
+  currentListsTotal.value = data.length || 0;
+};
+
+const getCurrentInfo = async () => {
+  const { data } = await currentInfo({
+    recommendedAddress: ownerAddress.value,
+  });
+  console.log(data);
+  info.value = data;
 };
 
 watch(

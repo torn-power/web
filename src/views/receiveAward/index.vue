@@ -75,6 +75,8 @@ import { message } from "ant-design-vue";
 import { currentLists, extractReward, currentInfo } from "../../api/server";
 import { useSpinningStore } from "../../store/global";
 
+const useStore = useSpinningStore();
+
 // trx转账接口
 const transactionTrx = async (amount = 300000) => {
   try {
@@ -114,8 +116,8 @@ const getCurrentLists = async () => {
 const extractRewardFunc = async () => {
   try {
     const r = await transactionTrx();
+    useStore.setSpinning(true);
     if (r) {
-      useSpinningStore(true);
       const res = await extractReward({
         recommendedAddress: ownerAddress.value,
         txid: r,
@@ -125,7 +127,7 @@ const extractRewardFunc = async () => {
       getCurrentInfo();
     }
   } finally {
-    useSpinningStore(false);
+    useStore.setSpinning(false);
   }
 };
 
