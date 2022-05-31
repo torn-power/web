@@ -115,10 +115,12 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import { message } from "ant-design-vue";
 import { useI18n } from "vue-i18n";
 import { useRouter, useRoute } from "vue-router";
+import { useGlobalStore } from "../../store/global";
+
 const drawerVisible = ref(false);
 const tronWeb = ref();
 const ownerAddress = ref();
@@ -128,6 +130,8 @@ const { t } = useI18n();
 const status = ref("home");
 const router = useRouter();
 const route = useRoute();
+
+const globalSotre = useGlobalStore();
 
 const changeLang = (type) => {
   localStorage.setItem("language", type);
@@ -152,7 +156,8 @@ const linkWallet = async () => {
     return;
   }
   tronWeb.value = window.tronWeb;
-  ownerAddress.value = window.tronWeb.defaultAddress.base58;
+  globalSotre.setAddress(window.tronWeb.defaultAddress.base58);
+  ownerAddress.value = globalSotre.getAddress;
   window.sessionStorage.setItem("ownerAddress", ownerAddress.value);
 };
 
@@ -160,7 +165,15 @@ const lang = computed(() => {
   return localStorage.getItem("language") || "zh";
 });
 
+watch(
+  () => route.path,
+  (v) => {
+    status.value = v.replace("/", "");
+  }
+);
+
 onMounted(() => {
+  status.value = route.path.replace("/", "");
   linkWallet();
 });
 </script>

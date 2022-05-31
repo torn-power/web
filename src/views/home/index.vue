@@ -645,7 +645,7 @@ import {
   createBining,
 } from "../../api/server";
 import { getAccountv2 as getAccountApi, searchAddress } from "../../api/http";
-import { useSpinningStore } from "../../store/global";
+import { useSpinningStore, useGlobalStore } from "../../store/global";
 const isMobile = useMediaQuery("(max-width: 750px)");
 
 const rent = ref({ totalBandWidth: 0, totalEnergy: 0, totalTrx: 0 });
@@ -665,6 +665,7 @@ const config = ref({});
 const isBinding = ref(false);
 
 const useStore = useSpinningStore();
+const globalSotre = useGlobalStore();
 
 // 表单
 const formState = reactive({
@@ -1026,7 +1027,8 @@ const linkWallet = async () => {
     return;
   }
   tronWeb.value = window.tronWeb;
-  ownerAddress.value = window.tronWeb.defaultAddress.base58;
+  globalSotre.setAddress(window.tronWeb.defaultAddress.base58);
+  ownerAddress.value = globalSotre.getAddress;
   formState.ownerAddress = ownerAddress.value;
   formState.receiverAddress = ownerAddress.value;
   window.sessionStorage.setItem("ownerAddress", ownerAddress.value);
