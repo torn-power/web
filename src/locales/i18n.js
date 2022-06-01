@@ -106,9 +106,9 @@ const messages = {
       unitPriceTips:
         "In case of peak traffic, the resources of Tron energy sharing platform will not meet the needs of users in real time. At this time, increasing the unit price will help users give priority to others to obtain resources.",
       cancelOrderTips:
-        "In case of peak traffic, resources on Tron Enery-Sharing platform cannot meet users' demands in real time. In this case, users can choose to continue to wait or click `My Order` to cancel the order.",
+        "In case of peak traffic, resources on Tron Energy-Sharing platform cannot meet users' demands in real time. In this case, users can choose to continue to wait or click `My Order` to cancel the order.",
       sellTips:
-        "In case of peak traffic, the resources on Tron Enery-Sharing platform will not be able to meet users' demands in real time. For TRX holders, they can choose to earn TRX by selling resources through `Current Order` on the main page.",
+        "In case of peak traffic, the resources on Tron Energy-Sharing platform will not be able to meet users' demands in real time. For TRX holders, they can choose to earn TRX by selling resources through `Current Order` on the main page.",
       security: "3.security",
       securityTips1:
         "Tron energy sharing platform is currently the lowest energy sharing platform in the whole network. The platform itself has no resources to sell. The resources purchased by users come from third-party users",
@@ -262,21 +262,21 @@ const messages = {
       helpCenter: "帮助中心",
       engeryAndBandWidth: "1.能量和带宽简介",
       engeryAndBandWidthP1:
-        "能量和带宽是波场网络下gas费的两种形态，如账户能量和带宽不足则需燃烧TRX获得能量和带宽，每个账户每日获得的免费带宽为1500单位，能量则无法免费获得。相比较通过燃烧获得能量和带宽而言，通过Tron enery-sharing平台支付租金获得能量和带宽的资费将大大降低。",
+        "能量和带宽是波场网络下gas费的两种形态，如账户能量和带宽不足则需燃烧TRX获得能量和带宽，每个账户每日获得的免费带宽为1500单位，能量则无法免费获得。相比较通过燃烧获得能量和带宽而言，通过Tron Energy-sharing平台支付租金获得能量和带宽的资费将大大降低。",
       basicOperation: "2.基本操作",
       placeOrderTips: "通过主页下单，选择所需的资源类型、数量支付订单费用。",
       unitPrice: "单价",
       unitPriceTips:
-        "如遇流量高峰期，Tron enery-sharing平台的资源将无法实时满足用户需求，此时提高单价则有助用户优先他人获得资源。",
+        "如遇流量高峰期，Tron Energy-sharing平台的资源将无法实时满足用户需求，此时提高单价则有助用户优先他人获得资源。",
       cancelOrderTips:
-        "如遇流量高峰期，Tron enery-sharing平台的资源将无法实时满足用户需求，此时用户可选择继续等待也可选择点击“我的订单”进行撤单。",
+        "如遇流量高峰期，Tron Energy-sharing平台的资源将无法实时满足用户需求，此时用户可选择继续等待也可选择点击“我的订单”进行撤单。",
       sellTips:
-        "如遇流量高峰期，Tron enery-sharing平台的资源将无法实时满足用户需求，对于持有TRX的用户，可选择通过主页面“当前订单”处出售资源，赚取TRX。",
+        "如遇流量高峰期，Tron Energy-sharing平台的资源将无法实时满足用户需求，对于持有TRX的用户，可选择通过主页面“当前订单”处出售资源，赚取TRX。",
       security: "3.安全性",
       securityTips1:
-        "Tron enery-sharing平台目前系全网最低价的能量共享平台，平台本身没有资源可供出售。用户所购买的资源来源于第三方用户",
+        "Tron Energy-sharing平台目前系全网最低价的能量共享平台，平台本身没有资源可供出售。用户所购买的资源来源于第三方用户",
       securityTips2:
-        "相比较其他能量交易平台，Tron enery-sharing平台的交易方式没有采用智能合约授权的方式，无论是买方还是卖方，平台绝无可能得到用户账户转账的授权，排除了智能合约漏洞侵害用户资产的可能，请各位用户放心使用。",
+        "相比较其他能量交易平台，Tron Energy-sharing平台的交易方式没有采用智能合约授权的方式，无论是买方还是卖方，平台绝无可能得到用户账户转账的授权，排除了智能合约漏洞侵害用户资产的可能，请各位用户放心使用。",
       teamName: "Tron energy-sharing团队",
       location: "地址：",
       homePage: "首页",
