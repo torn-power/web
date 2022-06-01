@@ -3,7 +3,7 @@
     <header>
       <a-space>
         <img class="logo" style="width: 26px" src="/img/logo-pc.png" />
-        <span>tron energy-sharing</span>
+        <span>Tron energy-sharing</span>
       </a-space>
       <a-button
         v-if="!ownerAddress"

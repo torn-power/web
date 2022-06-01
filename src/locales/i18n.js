@@ -292,7 +292,7 @@ const messages = {
       burnTrxTips: "相比燃烧TRX获得资源节省",
       receiveAward: "领取推荐奖励",
       ReferralBonuses: "推荐奖励",
-      ReferralBonusesTips: `通过主页生成专属推荐链接，普及节省手续费知识赚取推荐奖励。tron energy-sharing将为推荐用户提供每一次的订单金额的5%作为推荐奖励。推荐订单累计计算，永久有效。`,
+      ReferralBonusesTips: `通过主页生成专属推荐链接，普及节省手续费知识赚取推荐奖励。Tron energy-sharing将为推荐用户提供每一次的订单金额的5%作为推荐奖励。推荐订单累计计算，永久有效。`,
       totalTRX: "已赚取TRX数量",
       getTRX: "可提取TRX数量",
       getBonuses: "提取奖励",

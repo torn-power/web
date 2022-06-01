@@ -3,7 +3,7 @@
     <div class="header">
       <div class="logo-wrap">
         <img class="logo" src="/img/logo-pc.png" alt="logo" srcset="" />
-        <span class="logo-name">tron energy-sharing</span>
+        <span class="logo-name">Tron energy-sharing</span>
       </div>
       <div class="sub">
         <div
