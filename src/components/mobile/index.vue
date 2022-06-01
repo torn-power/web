@@ -88,17 +88,23 @@
       <a-divider />
       <a-space>
         <!-- <img src="/telegram.png" width="20" /> -->
-        <span>{{ $t("global.customServer") }}:</span>
-        <a href="https://t.me/Tron_energysharing" target="_blank"
-          >@Tron_energysharing</a
-        >
+        <span>{{ $t("global.telegram") }}:</span>
+        <a href="https://t.me/+nW1a9qgsalczNmIx" target="_blank">{{
+          $t("global.customServer")
+        }}</a>
       </a-space>
       <a-divider />
       <a-space>
         <!-- <img src="/telegram.png" width="20" /> -->
-        <span>{{ $t("global.telegram") }}:</span>
-        <a href="https://t.me/tronenergysharing" target="_blank"
-          >@Tron energy-sharing</a
+        <span>{{ $t("global.twitter") }}:</span>
+        <a
+          v-if="lang === 'en'"
+          href="https://twitter.com/SharingTron"
+          target="_blank"
+          >SharingTron</a
+        >
+        <a v-else href="https://twitter.com/TronSharing" target="_blank"
+          >TronSharing</a
         >
       </a-space>
       <a-divider />

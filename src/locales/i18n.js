@@ -138,8 +138,9 @@ const messages = {
       displayDate: "Display the date",
       ReferralBonusesTRX: "Amount of TRX awarded",
       RecommendedAddress: "Recommended address",
-      customServer: "Service",
-      telegram: "Telegrame",
+      customServer: "CustomServer",
+      telegram: "Telegram",
+      twitter: "Twitter",
     },
     tip: {
       ownerAddress: "Please enter your wallet address",
@@ -302,6 +303,7 @@ const messages = {
       ReferralBonusesTRX: "奖励TRX数量",
       customServer: "客服",
       telegram: "电报",
+      twitter: "推特",
     },
     tip: {
       ownerAddress: "请输入你的钱包地址",

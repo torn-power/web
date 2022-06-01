@@ -64,11 +64,22 @@ export const sellTip = () => {
   });
 };
 
-export const shardText = (address) => `
-我发现波场上有个平台可以租能量和带宽，能省下很多交易手续费，使用不需要调动合约非常安全，下单常常还有空投福利，你也来试试吧！
-
-------------
-能量租赁平台地址：${window.location.href.split("?")[0]}?address=${address}`;
+export const shardText = (address, lang = "zh") => {
+  const zh = `我发现波场上有个平台可以租能量和带宽，能省下很多交易手续费，使用不需要调动合约非常安全，下单常常还有空投福利，你也来试试吧！
+  
+  ------------
+  能量租赁平台地址：${window.location.href.split("?")[0]}?address=${address}`;
+  const en = `I found that there is a platform in the market that can rent energy and bandwidth, which can save a lot of transaction fees. 
+  It is very safe to use the contract without transferring. 
+  There are often airdrop benefits for ordering, so please try it! 
+  
+  ------------ 
+  Energy lease Platform Address: ${
+    window.location.href.split("?")[0]
+  }?address=${address}
+  `;
+  return lang === "zh" ? zh : en;
+};
 
 export function copyTextFunc(copyText) {
   // 判断是否为ie浏览器，此方法只对IE浏览器有用
@@ -80,17 +91,17 @@ export function copyTextFunc(copyText) {
     // 其它浏览器,用别的方法
   } else {
     // 创建一个input对象
-    var oInput = document.createElement('input');
+    var oInput = document.createElement("input");
     // 赋值
     oInput.value = copyText;
     // 添加到页面的body下
     document.body.appendChild(oInput);
     // 选择对象
     oInput.select();
-    // 执行浏览器复制命令  
+    // 执行浏览器复制命令
     document.execCommand("Copy");
-    // 隐藏内容 
-    oInput.className = 'oInput';
-    oInput.style.display = 'none';
+    // 隐藏内容
+    oInput.className = "oInput";
+    oInput.style.display = "none";
   }
 }

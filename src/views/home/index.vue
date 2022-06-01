@@ -792,7 +792,7 @@ const copyText = () => {
   //   source: shardText(ownerAddress.value),
   // });
   // copy();
-  copyTextFunc(shardText(ownerAddress.value))
+  copyTextFunc(shardText(ownerAddress.value, localStorage.getItem("language")));
   message.info("复制成功，快去分享吧");
 };
 
