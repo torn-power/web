@@ -89,8 +89,8 @@
       <a-space>
         <!-- <img src="/telegram.png" width="20" /> -->
         <span>{{ $t("global.customServer") }}:</span>
-        <a href="https://t.me/tronenergysharing" target="_blank"
-          >@Tron energy-sharing</a
+        <a href="https://t.me/Tron_energysharing" target="_blank"
+          >@Tron_energysharing</a
         >
       </a-space>
       <a-divider />
