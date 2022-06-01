@@ -69,3 +69,28 @@ export const shardText = (address) => `
 
 ------------
 能量租赁平台地址：${window.location.href.split("?")[0]}?address=${address}`;
+
+export function copyTextFunc(copyText) {
+  // 判断是否为ie浏览器，此方法只对IE浏览器有用
+  if (window.clipboardData) {
+    // 清除原有剪切板的数据
+    window.clipboardData.clearData();
+    // 将内容复制到剪切板
+    window.clipboardData.setData("Text", copyText);
+    // 其它浏览器,用别的方法
+  } else {
+    // 创建一个input对象
+    var oInput = document.createElement('input');
+    // 赋值
+    oInput.value = copyText;
+    // 添加到页面的body下
+    document.body.appendChild(oInput);
+    // 选择对象
+    oInput.select();
+    // 执行浏览器复制命令  
+    document.execCommand("Copy");
+    // 隐藏内容 
+    oInput.className = 'oInput';
+    oInput.style.display = 'none';
+  }
+}

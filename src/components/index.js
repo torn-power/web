@@ -13,7 +13,7 @@ import { useI18n } from "vue-i18n";
 import { AES } from "crypto-js";
 import { useTitle, useMediaQuery, useClipboard } from "@vueuse/core";
 import { useRouter, useRoute } from "vue-router";
-import { sellTip, shardText } from "../utils/utils";
+import { sellTip, shardText, copyTextFunc } from "../utils/utils";
 
 import { getAccountv2 as getAccountApi, searchAddress } from "../api/http";
 
@@ -518,10 +518,11 @@ export default defineComponent({
     };
 
     const copyText = () => {
-      const { copy } = useClipboard({
-        source: shardText(ownerAddress.value),
-      });
-      copy();
+      // const { copy } = useClipboard({
+      //   source: shardText(ownerAddress.value),
+      // });
+      // copy();
+      copyTextFunc(shardText(ownerAddress.value))
       message.info("复制成功，快去分享吧");
     };
 

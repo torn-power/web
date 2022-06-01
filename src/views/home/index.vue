@@ -632,7 +632,7 @@ import { message, Form, Modal } from "ant-design-vue";
 import { useMediaQuery, useClipboard, useTitle } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { AES } from "crypto-js";
-import { sellTip, shardText } from "../../utils/utils";
+import { sellTip, shardText, copyTextFunc } from "../../utils/utils";
 import {
   freeze as freezeApi,
   getConfig as getConfigApi,
@@ -788,10 +788,11 @@ const toSun = (val) => val * 1000000;
 const toLocaleString = (val) => val.toLocaleString();
 
 const copyText = () => {
-  const { copy } = useClipboard({
-    source: shardText(ownerAddress.value),
-  });
-  copy();
+  // const { copy } = useClipboard({
+  //   source: shardText(ownerAddress.value),
+  // });
+  // copy();
+  copyTextFunc(shardText(ownerAddress.value))
   message.info("复制成功，快去分享吧");
 };
 
