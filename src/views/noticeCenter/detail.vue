@@ -1,8 +1,8 @@
 <template>
   <section>
-    <div class="data-box">
+    <div class="data-box data-box-wrapper">
       <h1>{{ detail.title }}</h1>
-      <div v-html="detail.content"></div>
+      <div class="html" v-html="detail.content"></div>
     </div>
   </section>
 </template>
@@ -29,4 +29,10 @@ onMounted(() => {
   getInfo();
 });
 </script>
-<style></style>
+<style lang="less" scoped>
+.html {
+  word-wrap: break-word;
+
+  word-break: normal;
+}
+</style>
