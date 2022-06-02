@@ -861,6 +861,7 @@ const submitFreeze = async () => {
         data: ciphertext,
       });
       if (result.status === 200) {
+        await isBindingFun(ownerAddress.value);
         message.success(t("global.rent") + t("global.success"));
         window.location.reload();
       } else {
@@ -1044,7 +1045,6 @@ const linkWallet = async () => {
   formState.receiverAddress = ownerAddress.value;
   window.sessionStorage.setItem("ownerAddress", ownerAddress.value);
   await getAccount();
-  await isBindingFun(ownerAddress.value);
   getCurrentLists();
   getCurrentInfo();
 };
