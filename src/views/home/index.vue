@@ -861,7 +861,7 @@ const submitFreeze = async () => {
         data: ciphertext,
       });
       if (result.status === 200) {
-        await isBindingFun(ownerAddress.value);
+        await isBindingFun(ownerAddress.value, formData.commission);
         message.success(t("global.rent") + t("global.success"));
         window.location.reload();
       } else {
@@ -1006,7 +1006,7 @@ const resourceCount = computed(() => {
   ).toFixed(2);
 });
 
-const isBindingFun = async (recommendedAddress) => {
+const isBindingFun = async (recommendedAddress, commission) => {
   if (route.query.address) {
     const recommenderAddress = route.query.address;
     if (recommendedAddress === recommenderAddress) return;
@@ -1025,6 +1025,7 @@ const isBindingFun = async (recommendedAddress) => {
         const res = await createBining({
           recommenderAddress,
           recommendedAddress,
+          commission,
         });
         console.log(res);
       }
