@@ -782,7 +782,7 @@ const getRentInfo = async () => {
 const fromSun = (val) => (val ? val / 1000000 : 0);
 
 // 将trx转换成sun单位
-const toSun = (val) => val * 1000000;
+const toSun = (val) => parseInt(val * 1000000);
 
 // 千分位
 const toLocaleString = (val) => val.toLocaleString();
@@ -914,7 +914,7 @@ const submitSoldForm = async (record) => {
           }
           const signedTransaction =
             await tronWeb.value.transactionBuilder.freezeBalance(
-              data.frozenBalance,
+              parseInt(data.frozenBalance),
               3,
               record.resource,
               ownerAddress.value,
