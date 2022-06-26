@@ -123,8 +123,7 @@ const extractRewardFunc = async () => {
         txid: r,
       });
       message.info(res.message);
-      getCurrentLists();
-      getCurrentInfo();
+      window.location.reload();
     }
   } finally {
     useStore.setSpinning(false);
