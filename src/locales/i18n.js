@@ -141,6 +141,7 @@ const messages = {
       customServer: "CustomServer",
       telegram: "Telegram",
       twitter: "Twitter",
+      dropActivity: "Drop Activity",
     },
     tip: {
       ownerAddress: "Please enter your wallet address",
@@ -304,6 +305,7 @@ const messages = {
       customServer: "客服",
       telegram: "电报",
       twitter: "推特",
+      dropActivity: "百万空投",
     },
     tip: {
       ownerAddress: "请输入你的钱包地址",

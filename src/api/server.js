@@ -165,3 +165,19 @@ export const currentInfo = (params) => {
     params,
   });
 };
+
+// 活动列表
+export const activityLists = (params) => {
+  return service({
+    url: "/dropActivity/lists",
+    params,
+  });
+};
+
+// 活动详情
+export const activityInfo = (params) => {
+  return service({
+    url: "/dropActivity/info",
+    params,
+  });
+};

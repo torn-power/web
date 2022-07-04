@@ -46,6 +46,16 @@ const routes = [
         name: "sellerEntery",
         component: () => import("../views/sellerEntery/index.vue"),
       },
+      {
+        path: "/drop-activity",
+        name: "DropActivity",
+        component: () => import("../views/dropActivity/index.vue"),
+      },
+      {
+        path: "/drop-activity-detail",
+        name: "DropActivityDetail",
+        component: () => import("../views/dropActivity/detail.vue"),
+      },
     ],
   },
   {

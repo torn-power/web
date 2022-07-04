@@ -80,6 +80,13 @@
       </div>
       <a-divider />
       <div
+        @click="changeStatus('drop-activity')"
+        :class="status === 'drop-activity' && 'actived'"
+      >
+        {{ $t("global.dropActivity") }}
+      </div>
+      <a-divider />
+      <div
         @click="changeStatus('date')"
         :class="status === 'date' && 'actived'"
       >
