@@ -1,12 +1,14 @@
 <template>
   <a-spin class="sping" :spinning="useStore.spinning" :tip="$t('tip.spin')">
-    <component :is="currentView" />
+    <!-- <component :is="currentView" />
     <footer class="footer" :style="{ height: isMobile ? '40px' : '87px' }">
       <img
         :style="{ width: isMobile ? '79px' : '153px' }"
         src="/img/logo.png"
       />
-    </footer>
+    </footer> -->
+    <h1 align="center">diditron服务升级中 预计24小时内恢复服务 敬请谅解</h1>
+    <h2 align="center">2022-07-09 19:30</h2>
   </a-spin>
 </template>
 <script>
@@ -17,7 +19,7 @@ import PC from "../../components/pc/index.vue";
 import { useSpinningStore } from "../../store/global";
 
 export default defineComponent({
-  components: { Mobile, PC },
+  // components: { Mobile, PC },
   setup() {
     const isMobile = useMediaQuery("(max-width: 750px)");
     const currentView = ref("Mobile");
