@@ -7,8 +7,35 @@
         src="/img/logo.png"
       />
     </footer> -->
-    <h1 align="center">diditron服务升级中 预计24小时内恢复服务 敬请谅解</h1>
-    <h2 align="center">2022-07-09 19:30</h2>
+    <h1 align="center">
+      diditron为了给广大用户更好的服务 先进行服务升级 预计24小时内恢复服务
+      带来不便 敬请谅解
+    </h1>
+    <h2 align="center">2022-07-09 19:40发布</h2>
+    <h3 align="center">
+      <a-space>
+        <!-- <img src="/telegram.png" width="20" /> -->
+        <span>{{ $t("global.telegram") }}:</span>
+        <a href="https://t.me/+nW1a9qgsalczNmIx" target="_blank">{{
+          $t("global.customServer")
+        }}</a>
+      </a-space>
+      <a-divider />
+      <a-space>
+        <!-- <img src="/telegram.png" width="20" /> -->
+        <span>{{ $t("global.twitter") }}:</span>
+        <a
+          v-if="lang === 'en'"
+          href="https://twitter.com/SharingTron"
+          target="_blank"
+          >SharingTron</a
+        >
+        <a v-else href="https://twitter.com/TronSharing" target="_blank"
+          >TronSharing</a
+        >
+      </a-space>
+      <a-divider />
+    </h3>
   </a-spin>
 </template>
 <script>
