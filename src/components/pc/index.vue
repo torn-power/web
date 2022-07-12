@@ -36,12 +36,12 @@
         >
           {{ $t("global.announcementCenter") }}
         </div>
-        <!-- <div
+        <div
           @click="changeStatus('drop-activity')"
           :class="status === 'drop-activity' && 'actived'"
         >
           {{ $t("global.dropActivity") }}
-        </div> -->
+        </div>
         <div
           @click="changeStatus('helpCenter')"
           :class="status === 'helpCenter' && 'actived'"
