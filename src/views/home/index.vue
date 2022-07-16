@@ -742,6 +742,7 @@ const orderTypeChange = async (v) => {
     const { data } = await getOrderList({
       status: 0,
       orderType: 0,
+      isLock: false,
       currentType: currentType.value,
     });
     tableData.value = data.results;
