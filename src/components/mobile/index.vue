@@ -52,12 +52,13 @@
       </div>
       <a-divider />
       <div
+        v-if="ownerAddress"
         @click="changeStatus('receiveAward')"
         :class="status === 'receiveAward' && 'actived'"
       >
         {{ $t("global.receiveAward") }}
       </div>
-      <a-divider />
+      <a-divider v-if="ownerAddress" />
       <div
         @click="changeStatus('sellerEntery')"
         :class="status === 'sellerEntery' && 'actived'"
@@ -79,13 +80,13 @@
         {{ $t("global.helpCenter") }}
       </div>
       <a-divider />
-      <div
+      <!-- <div
         @click="changeStatus('drop-activity')"
         :class="status === 'drop-activity' && 'actived'"
       >
         {{ $t("global.dropActivity") }}
       </div>
-      <a-divider />
+      <a-divider /> -->
       <div
         @click="changeStatus('date')"
         :class="status === 'date' && 'actived'"

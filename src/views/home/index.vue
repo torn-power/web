@@ -39,7 +39,7 @@
       </div>
     </section>
 
-    <section>
+    <section v-if="ownerAddress">
       <div class="title font-36">{{ $t("global.recommendReward") }}</div>
       <div class="data-box m36">
         <div class="data-box-content">
@@ -283,7 +283,7 @@
       </div>
     </div>
     <!-- 推荐奖励 -->
-    <div class="recommend-reward">
+    <div class="recommend-reward" v-if="ownerAddress">
       <div class="title">{{ $t("global.recommendReward") }}</div>
       <div class="recommend-reward-wrap">
         <div class="reward-detail-content-wrap">
