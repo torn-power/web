@@ -825,11 +825,11 @@ const submitFreeze = async () => {
     return;
   }
 
-  // const r = await searchAddress({ term: values.receiverAddress });
-  // if (r.length === 0) {
-  //   message.warn(t("tip.activeAddress"));
-  //   return;
-  // }
+  const r = await searchAddress({ term: values.receiverAddress });
+  if (r.length === 0) {
+    message.warn(t("tip.activeAddress"));
+    return;
+  }
 
   if (+needTrxCount.value > +accountResouce.value.balance) {
     message.warn(t("账户余额不足"));
